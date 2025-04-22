@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualização da Árvore de Decisão</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .tree-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tree-node {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 2px solid #ccc;
+            position: relative;
+        }
+        .tree-node::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            width: 20px;
+            height: 2px;
+            background-color: #ccc;
+        }
+        .tree-node:first-child::before {
+            display: none;
+        }
+        .tree-value {
+            color: #2196F3;
+            font-weight: bold;
+        }
+        .tree-condition {
+            color: #4CAF50;
+        }
+        .tree-leaf {
+            color: #FF5722;
+            font-style: italic;
+        }
+        .tree-level {
+            margin-left: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .summary {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visualização da Árvore de Decisão</h1>
+    
+    <div class="summary">
+        <h2>Resumo da Árvore</h2>
+        <p>Esta visualização representa a estrutura da árvore de decisão de forma mais clara e organizada:</p>
+        <ul>
+            <li>Condições são mostradas em verde</li>
+            <li>Valores de decisão são mostrados em azul</li>
+            <li>Valores finais (folhas) são mostrados em laranja</li>
+            <li>A indentação representa a profundidade na árvore</li>
+        </ul>
+    </div>
+
+    <div class="tree-container">
+        <div class="tree-node">
+            <span class="tree-condition">median_income <= 0.57</span>
+            <div class="tree-level">
+                <div class="tree-node">
+                    <span class="tree-condition">median_income <= -0.40</span>
+                    <div class="tree-level">
+                        <div class="tree-node">
+                            <span class="tree-condition">ocean_proximity <= -0.41</span>
+                            <div class="tree-level">
+                                <div class="tree-node">
+                                    <span class="tree-condition">longitude <= 0.63</span>
+                                    <div class="tree-level">
+                                        <div class="tree-node">
+                                            <span class="tree-condition">longitude <= -0.25</span>
+                                            <div class="tree-level">
+                                                <div class="tree-node">
+                                                    <span class="tree-condition">latitude <= 1.51</span>
+                                                    <div class="tree-level">
+                                                        <div class="tree-node">
+                                                            <span class="tree-condition">longitude <= -1.15</span>
+                                                            <div class="tree-level">
+                                                                <div class="tree-node">
+                                                                    <span class="tree-condition">latitude <= 0.80</span>
+                                                                    <div class="tree-level">
+                                                                        <div class="tree-node">
+                                                                            <span class="tree-condition">median_income <= -0.74</span>
+                                                                            <div class="tree-level">
+                                                                                <div class="tree-node">
+                                                                                    <span class="tree-condition">housing_median_age <= 0.07</span>
+                                                                                    <div class="tree-level">
+                                                                                        <div class="tree-node">
+                                                                                            <span class="tree-leaf">Valor: 341650.00</span>
+                                                                                        </div>
+                                                                                        <div class="tree-node">
+                                                                                            <span class="tree-leaf">Valor: 250533.33</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary">
+        <h2>Notas Importantes</h2>
+        <p>Esta é uma versão simplificada da árvore, mostrando apenas os primeiros níveis para melhor visualização. A árvore completa contém:</p>
+        <ul>
+            <li>Múltiplas condições baseadas em diferentes variáveis</li>
+            <li>Valores de decisão em cada nó</li>
+            <li>Valores finais nas folhas</li>
+        </ul>
+    </div>
+</body>
+</html> 

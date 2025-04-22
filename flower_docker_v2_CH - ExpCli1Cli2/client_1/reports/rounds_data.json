@@ -1,0 +1,74 @@
+{
+    "rounds": [
+        {
+            "round": 1,
+            "timestamp": "2025-03-27 16:54:17",
+            "metrics": {
+                "training_loss": 55635382869.69957,
+                "validation_loss": 54818085888.0,
+                "evaluation_loss": 55334293091.22481,
+                "rmse": 235232.421875
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round1.png",
+                "shap": "shap_summary_round1.png"
+            }
+        },
+        {
+            "round": 2,
+            "timestamp": "2025-03-27 16:54:18",
+            "metrics": {
+                "training_loss": 55736887392.6867,
+                "validation_loss": 54817953634.46154,
+                "evaluation_loss": 55334163289.30232,
+                "rmse": 235232.140625
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round2.png",
+                "shap": "shap_summary_round2.png"
+            }
+        },
+        {
+            "round": 3,
+            "timestamp": "2025-03-27 16:54:19",
+            "metrics": {
+                "training_loss": 55739014280.24034,
+                "validation_loss": 54817822877.53846,
+                "evaluation_loss": 55334032296.68217,
+                "rmse": 235231.875
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round3.png",
+                "shap": "shap_summary_round3.png"
+            }
+        },
+        {
+            "round": 4,
+            "timestamp": "2025-03-27 16:54:20",
+            "metrics": {
+                "training_loss": 55614928236.77253,
+                "validation_loss": 54817686843.07692,
+                "evaluation_loss": 55333899811.72093,
+                "rmse": 235231.59375
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round4.png",
+                "shap": "shap_summary_round4.png"
+            }
+        },
+        {
+            "round": 5,
+            "timestamp": "2025-03-27 16:54:21",
+            "metrics": {
+                "training_loss": 55625520035.70815,
+                "validation_loss": 54817554510.76923,
+                "evaluation_loss": 55333769311.25581,
+                "rmse": 235231.3125
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round5.png",
+                "shap": "shap_summary_round5.png"
+            }
+        }
+    ]
+}

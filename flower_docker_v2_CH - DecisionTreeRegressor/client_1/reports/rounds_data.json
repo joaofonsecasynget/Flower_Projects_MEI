@@ -1,0 +1,74 @@
+{
+    "rounds": [
+        {
+            "round": 1,
+            "timestamp": "2025-03-27 16:54:42",
+            "metrics": {
+                "training_loss": 1839189452.0669367,
+                "validation_loss": 3980201075.4109836,
+                "evaluation_loss": 4386977529.680478,
+                "rmse": 66234.26250574908
+            },
+            "visualizations": {
+                "tree_structure": "tree_structure_round_1.txt",
+                "feature_importance": "feature_importance_round_1.png"
+            }
+        },
+        {
+            "round": 2,
+            "timestamp": "2025-03-27 16:54:42",
+            "metrics": {
+                "training_loss": 1839189452.0669365,
+                "validation_loss": 3980201075.4109836,
+                "evaluation_loss": 4386977529.680478,
+                "rmse": 66234.26250574908
+            },
+            "visualizations": {
+                "tree_structure": "tree_structure_round_2.txt",
+                "feature_importance": "feature_importance_round_2.png"
+            }
+        },
+        {
+            "round": 3,
+            "timestamp": "2025-03-27 16:54:42",
+            "metrics": {
+                "training_loss": 1839189452.0669365,
+                "validation_loss": 3980201075.4109836,
+                "evaluation_loss": 4386977529.680478,
+                "rmse": 66234.26250574908
+            },
+            "visualizations": {
+                "tree_structure": "tree_structure_round_3.txt",
+                "feature_importance": "feature_importance_round_3.png"
+            }
+        },
+        {
+            "round": 4,
+            "timestamp": "2025-03-27 16:54:42",
+            "metrics": {
+                "training_loss": 1839189452.0669367,
+                "validation_loss": 3980201075.4109836,
+                "evaluation_loss": 4386977529.680478,
+                "rmse": 66234.26250574908
+            },
+            "visualizations": {
+                "tree_structure": "tree_structure_round_4.txt",
+                "feature_importance": "feature_importance_round_4.png"
+            }
+        },
+        {
+            "round": 5,
+            "timestamp": "2025-03-27 16:54:42",
+            "metrics": {
+                "training_loss": 1839189452.0669367,
+                "validation_loss": 3980201075.4109836,
+                "evaluation_loss": 4386977529.680478,
+                "rmse": 66234.26250574908
+            },
+            "visualizations": {
+                "tree_structure": "tree_structure_round_5.txt",
+                "feature_importance": "feature_importance_round_5.png"
+            }
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
+    networks:
+      - flower-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9091"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  client_1:
+    build:
+      context: ./client_1
+      dockerfile: Dockerfile
+    volumes:
+      - ./client_1:/app
+    networks:
+      - flower-net
+    depends_on:
+      server:
+        condition: service_healthy
+
+  client_2:
+    build:
+      context: ./client_2
+      dockerfile: Dockerfile
+    volumes:
+      - ./client_2:/app
+    networks:
+      - flower-net
+    depends_on:
+      server:
+        condition: service_healthy
+
+networks:
+  flower-net:
+    driver: bridge

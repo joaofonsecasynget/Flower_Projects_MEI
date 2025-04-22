@@ -1,0 +1,262 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Relatório Final de Treino - Cliente 2</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                h1, h2, h3, h4 { color: #333; }
+                .metrics { margin-bottom: 30px; }
+                .round { margin-bottom: 40px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+                table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f5f5f5; }
+                .timestamp { color: #666; font-style: italic; margin-bottom: 10px; }
+                
+                /* Ajustes específicos para as imagens */
+                .metrics img { 
+                    max-width: 800px; 
+                    width: 100%; 
+                    height: auto; 
+                    margin: 20px 0;
+                }
+                .explanation-img {
+                    max-width: 500px;
+                    width: 100%;
+                    height: auto;
+                    margin: 10px 0;
+                }
+                .explanations-container {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                }
+                .explanation-section {
+                    flex: 1;
+                    min-width: 300px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Relatório Final de Treino - Cliente 2</h1>
+            
+            <div class="metrics">
+                <h2>Evolução das Métricas</h2>
+                <img src="metrics_evolution.png" alt="Metrics Evolution">
+            </div>
+            
+            <div class="metrics">
+                <h2>Evolução da Explicabilidade</h2>
+                <p>Este gráfico mostra como a importância das 5 features mais relevantes evolui ao longo das rondas de treino.</p>
+                <h3>LIME</h3>
+                <img src="explainability_evolution_lime.png" alt="LIME Explainability Evolution">
+                <h3>SHAP</h3>
+                <img src="explainability_evolution_shap.png" alt="SHAP Explainability Evolution">
+            </div>
+            
+            <h2>Detalhes por Round</h2>
+        
+            <div class="round">
+                <h3>Round 1</h3>
+                <div class="timestamp">Data/Hora: 2025-03-27 16:54:16</div>
+                
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Training Loss</td>
+                        <td>57470340416.824036</td>
+                    </tr>
+                    <tr>
+                        <td>Validation Loss</td>
+                        <td>54702850756.92308</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluation Loss</td>
+                        <td>55334293091.22481</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>235232.421875</td>
+                    </tr>
+                </table>
+                
+                <div class="explanations-container">
+                    <div class="explanation-section">
+                        <h4>Explicações LIME</h4>
+                        <img src="lime_explanation_round1.png" alt="LIME Explanation Round 1" class="explanation-img">
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <h4>Explicações SHAP</h4>
+                        <img src="shap_summary_round1.png" alt="SHAP Summary Round 1" class="explanation-img">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="round">
+                <h3>Round 2</h3>
+                <div class="timestamp">Data/Hora: 2025-03-27 16:54:18</div>
+                
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Training Loss</td>
+                        <td>57260683510.11159</td>
+                    </tr>
+                    <tr>
+                        <td>Validation Loss</td>
+                        <td>54702724017.23077</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluation Loss</td>
+                        <td>55334163289.30232</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>235232.140625</td>
+                    </tr>
+                </table>
+                
+                <div class="explanations-container">
+                    <div class="explanation-section">
+                        <h4>Explicações LIME</h4>
+                        <img src="lime_explanation_round2.png" alt="LIME Explanation Round 2" class="explanation-img">
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <h4>Explicações SHAP</h4>
+                        <img src="shap_summary_round2.png" alt="SHAP Summary Round 2" class="explanation-img">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="round">
+                <h3>Round 3</h3>
+                <div class="timestamp">Data/Hora: 2025-03-27 16:54:19</div>
+                
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Training Loss</td>
+                        <td>57315653078.248924</td>
+                    </tr>
+                    <tr>
+                        <td>Validation Loss</td>
+                        <td>54702594678.15385</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluation Loss</td>
+                        <td>55334032296.68217</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>235231.875</td>
+                    </tr>
+                </table>
+                
+                <div class="explanations-container">
+                    <div class="explanation-section">
+                        <h4>Explicações LIME</h4>
+                        <img src="lime_explanation_round3.png" alt="LIME Explanation Round 3" class="explanation-img">
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <h4>Explicações SHAP</h4>
+                        <img src="shap_summary_round3.png" alt="SHAP Summary Round 3" class="explanation-img">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="round">
+                <h3>Round 4</h3>
+                <div class="timestamp">Data/Hora: 2025-03-27 16:54:20</div>
+                
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Training Loss</td>
+                        <td>57299001581.32189</td>
+                    </tr>
+                    <tr>
+                        <td>Validation Loss</td>
+                        <td>54702467072.0</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluation Loss</td>
+                        <td>55333899811.72093</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>235231.59375</td>
+                    </tr>
+                </table>
+                
+                <div class="explanations-container">
+                    <div class="explanation-section">
+                        <h4>Explicações LIME</h4>
+                        <img src="lime_explanation_round4.png" alt="LIME Explanation Round 4" class="explanation-img">
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <h4>Explicações SHAP</h4>
+                        <img src="shap_summary_round4.png" alt="SHAP Summary Round 4" class="explanation-img">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="round">
+                <h3>Round 5</h3>
+                <div class="timestamp">Data/Hora: 2025-03-27 16:54:21</div>
+                
+                <table>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                    <tr>
+                        <td>Training Loss</td>
+                        <td>57424319017.751076</td>
+                    </tr>
+                    <tr>
+                        <td>Validation Loss</td>
+                        <td>54702337890.46154</td>
+                    </tr>
+                    <tr>
+                        <td>Evaluation Loss</td>
+                        <td>55333769311.25581</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>235231.3125</td>
+                    </tr>
+                </table>
+                
+                <div class="explanations-container">
+                    <div class="explanation-section">
+                        <h4>Explicações LIME</h4>
+                        <img src="lime_explanation_round5.png" alt="LIME Explanation Round 5" class="explanation-img">
+                    </div>
+                    
+                    <div class="explanation-section">
+                        <h4>Explicações SHAP</h4>
+                        <img src="shap_summary_round5.png" alt="SHAP Summary Round 5" class="explanation-img">
+                    </div>
+                </div>
+            </div>
+            
+            </body>
+        </html>
+        

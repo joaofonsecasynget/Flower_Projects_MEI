@@ -1,0 +1,88 @@
+{
+    "rounds": [
+        {
+            "round": 0,
+            "timestamp": "2025-03-26 13:18:27",
+            "metrics": {
+                "training_loss": 57368097980.97854,
+                "validation_loss": 54702452972.30769,
+                "evaluation_loss": null,
+                "rmse": 233785.859375
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round0.png",
+                "shap": "shap_summary_round0.png"
+            }
+        },
+        {
+            "round": 1,
+            "timestamp": "2025-03-27 16:54:16",
+            "metrics": {
+                "training_loss": 57470340416.824036,
+                "validation_loss": 54702850756.92308,
+                "evaluation_loss": 55334293091.22481,
+                "rmse": 235232.421875
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round1.png",
+                "shap": "shap_summary_round1.png"
+            }
+        },
+        {
+            "round": 2,
+            "timestamp": "2025-03-27 16:54:18",
+            "metrics": {
+                "training_loss": 57260683510.11159,
+                "validation_loss": 54702724017.23077,
+                "evaluation_loss": 55334163289.30232,
+                "rmse": 235232.140625
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round2.png",
+                "shap": "shap_summary_round2.png"
+            }
+        },
+        {
+            "round": 3,
+            "timestamp": "2025-03-27 16:54:19",
+            "metrics": {
+                "training_loss": 57315653078.248924,
+                "validation_loss": 54702594678.15385,
+                "evaluation_loss": 55334032296.68217,
+                "rmse": 235231.875
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round3.png",
+                "shap": "shap_summary_round3.png"
+            }
+        },
+        {
+            "round": 4,
+            "timestamp": "2025-03-27 16:54:20",
+            "metrics": {
+                "training_loss": 57299001581.32189,
+                "validation_loss": 54702467072.0,
+                "evaluation_loss": 55333899811.72093,
+                "rmse": 235231.59375
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round4.png",
+                "shap": "shap_summary_round4.png"
+            }
+        },
+        {
+            "round": 5,
+            "timestamp": "2025-03-27 16:54:21",
+            "metrics": {
+                "training_loss": 57424319017.751076,
+                "validation_loss": 54702337890.46154,
+                "evaluation_loss": 55333769311.25581,
+                "rmse": 235231.3125
+            },
+            "visualizations": {
+                "lime": "lime_explanation_round5.png",
+                "shap": "shap_summary_round5.png"
+            }
+        }
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "1": {
+        "longitude": 0.1644098996510451,
+        "latitude": 0.04283046425549569,
+        "housing_median_age": 0.17581904218979078,
+        "total_rooms": 0.07615609674917534,
+        "total_bedrooms": 0.0,
+        "population": 0.09787431274945395,
+        "households": 0.09779637326192592,
+        "median_income": 0.024461934956343596,
+        "ocean_proximity": 0.06033085154776926
+    },
+    "2": {
+        "longitude": 0.13024145889752875,
+        "latitude": 0.03381235474780194,
+        "housing_median_age": 0.22112517329792125,
+        "total_rooms": 0.12037290771300566,
+        "total_bedrooms": 0.0,
+        "population": 0.08901186537848489,
+        "households": 0.12699209982487694,
+        "median_income": 0.08480149351352805,
+        "ocean_proximity": 0.06745053801714676
+    },
+    "3": {
+        "longitude": 0.096434984216328,
+        "latitude": 0.1095246737195079,
+        "housing_median_age": 0.2643961944473888,
+        "total_rooms": 0.16031993111800621,
+        "total_bedrooms": 0.0,
+        "population": 0.07973935007924274,
+        "households": 0.1552874046234396,
+        "median_income": 0.19670108886944226,
+        "ocean_proximity": 0.07015937016355261
+    },
+    "4": {
+        "longitude": 0.0632864918175897,
+        "latitude": 0.18301159897528127,
+        "housing_median_age": 0.3072084441210053,
+        "total_rooms": 0.2014027251254966,
+        "total_bedrooms": 0.0,
+        "population": 0.06771594851050476,
+        "households": 0.1827909576759251,
+        "median_income": 0.3137972734305849,
+        "ocean_proximity": 0.0734654512417148
+    },
+    "5": {
+        "longitude": 0.02736367290268569,
+        "latitude": 0.261024829514818,
+        "housing_median_age": 0.35261654852005253,
+        "total_rooms": 0.24975503544361935,
+        "total_bedrooms": 0.0,
+        "population": 0.05511977836140428,
+        "households": 0.21384525037165492,
+        "median_income": 0.42505781008083043,
+        "ocean_proximity": 0.07676546773748541
+    }
+}
