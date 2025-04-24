@@ -4,9 +4,9 @@ import flwr as fl
 import torch
 import numpy as np
 import pandas as pd
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader, Dataset, random_split, TensorDataset
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from sklearn.tree import export_text
 import matplotlib.pyplot as plt
 import json
@@ -21,57 +21,84 @@ INPUT_SIZE = 9  # Número de features no dataset
 VALIDATION_SPLIT = 0.1
 BATCH_SIZE = 32
 
-def load_data():
-    """Carrega e prepara os dados para treinamento."""
-    # Carregar o dataset
-    df = pd.read_csv('dsCaliforniaHousing/housing.csv')
+# Inserir CustomDataset e load_datasets copiados de client_1.py
+class CustomDataset(Dataset):
+    def __init__(self, features, targets):
+        # Garantir que os dados estejam no formato correto
+        if isinstance(features, pd.DataFrame):
+            features = features.values
+        if isinstance(targets, pd.Series):
+            targets = targets.values
+            
+        self.features = torch.tensor(features, dtype=torch.float32)
+        self.targets = torch.tensor(targets, dtype=torch.float32)
+
+    def __len__(self):
+        return len(self.features)
+
+    def __getitem__(self, idx):
+        return self.features[idx], self.targets[idx]
+
+def load_datasets(csv_path, num_clients):
+    # Carregar e pré-processar dados
+    df = pd.read_csv(csv_path)
     
+    # Preencher valores ausentes
+    df['total_bedrooms'] = df['total_bedrooms'].fillna(df['total_bedrooms'].mean())
+    
+    # Converter ocean_proximity para valores numéricos
+    mapping = {'<1H OCEAN': 1, 'INLAND': 2, 'NEAR OCEAN': 3, 'NEAR BAY': 4, 'ISLAND': 5}
+    df['ocean_proximity'] = df['ocean_proximity'].map(mapping)
+
     # Separar features e target
-    X = df.drop('median_house_value', axis=1)
-    y = df['median_house_value']
-    
-    # Codificar a variável categórica 'ocean_proximity'
-    le = LabelEncoder()
-    X['ocean_proximity'] = le.fit_transform(X['ocean_proximity'])
-    
-    # Normalizar os dados
+    features = df.drop(['median_house_value'], axis=1)
+    target = df['median_house_value']
+
+    # Normalizar features
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
+    X = scaler.fit_transform(features)
+    y = target
+
     # Dividir em treino e teste
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Dividir dados de treino em treino e validação
-    X_train, X_val, y_train, y_val = train_test_split(
-        X_train, y_train, test_size=VALIDATION_SPLIT, random_state=42
+    # Criar dataset de treino
+    train_dataset = CustomDataset(X_train, y_train)
+
+    # Dividir dados de treino entre os clientes
+    partition_size = len(train_dataset) // num_clients
+    lengths = [partition_size] * num_clients
+    train_subsets = random_split(
+        train_dataset,
+        lengths,
+        generator=torch.Generator().manual_seed(42)
     )
-    
-    # Converter para tensores do PyTorch
-    train_features = torch.FloatTensor(X_train)
-    train_targets = torch.FloatTensor(y_train.values)
-    val_features = torch.FloatTensor(X_val)
-    val_targets = torch.FloatTensor(y_val.values)
-    test_features = torch.FloatTensor(X_test)
-    test_targets = torch.FloatTensor(y_test.values)
-    
-    # Criar DataLoaders
-    train_loader = DataLoader(
-        TensorDataset(train_features, train_targets),
-        batch_size=BATCH_SIZE,
-        shuffle=True
-    )
-    val_loader = DataLoader(
-        TensorDataset(val_features, val_targets),
-        batch_size=BATCH_SIZE
-    )
-    test_loader = DataLoader(
-        TensorDataset(test_features, test_targets),
-        batch_size=BATCH_SIZE
-    )
-    
-    return train_loader, val_loader, test_loader
+
+    # Criar dataloaders para treino e validação
+    trainloaders = []
+    valloaders = []
+
+    for subset in train_subsets:
+        # Dividir cada subset em treino e validação
+        len_val = len(subset) // 10  # 10% para validação
+        len_train = len(subset) - len_val
+        train_subset, val_subset = random_split(
+            subset,
+            [len_train, len_val],
+            generator=torch.Generator().manual_seed(42)
+        )
+        
+        # Criar dataloaders
+        trainloaders.append(DataLoader(train_subset, batch_size=32, shuffle=True))
+        valloaders.append(DataLoader(val_subset, batch_size=32, shuffle=False))
+
+    # Criar dataloader para teste
+    test_dataset = CustomDataset(X_test, y_test)
+    testloader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+    # Retornar também os nomes das features
+    feature_names = features.columns.tolist()
+    return trainloaders, valloaders, testloader, feature_names
 
 class FlowerClient(fl.client.NumPyClient):
     def __init__(self, input_size, cid, trainloader, valloader, testloader, num_rounds=5):
@@ -291,25 +318,33 @@ class FlowerClient(fl.client.NumPyClient):
         
         return report_path
 
-def main():
-    """Função principal."""
-    # Carregar dados
-    trainloader, valloader, testloader = load_data()
-    
-    # Inicializar cliente
+# Código principal ajustado para usar load_datasets
+if __name__ == "__main__":
+    # Carregar dados e criar dataloaders
+    csv_path = "./dsCaliforniaHousing/housing.csv"
+    # Chama load_datasets, que trata a divisão entre clientes
+    trainloaders, valloaders, testloader, feature_names = load_datasets(csv_path, u.NUM_CLIENTS)
+
+    # Obter dimensão de entrada do modelo (exemplo de como obter do primeiro dataloader)
+    # Acessa o dataset original através das divisões
+    if hasattr(trainloaders[1].dataset, 'dataset') and hasattr(trainloaders[1].dataset.dataset, 'dataset'):
+        dataset_base = trainloaders[1].dataset.dataset.dataset # Acesso correto ao CustomDataset original
+        input_size = dataset_base.features.shape[1]
+    else: # Fallback se a estrutura for diferente (improvável aqui)
+        input_size = INPUT_SIZE # Usa valor fixo se não conseguir determinar
+        print("Aviso: Não foi possível determinar input_size dinamicamente, usando valor fixo.")
+
+    # Criar o cliente Flower para o Cliente 2
     client = FlowerClient(
-        input_size=INPUT_SIZE,
-        cid='2',  # ID do cliente
-        trainloader=trainloader,
-        valloader=valloader,
-        testloader=testloader
-    )
-    
-    # Iniciar cliente Flower
-    fl.client.start_numpy_client(
-        server_address="server:9091",
-        client=client,
+        input_size=input_size,
+        cid=2, # ID do cliente 2
+        trainloader=trainloaders[1], # Usa o segundo dataloader de treino
+        valloader=valloaders[1],   # Usa o segundo dataloader de validação
+        testloader=testloader,     # Testloader é global
     )
 
-if __name__ == "__main__":
-    main()
+    # Atualizar nomes das features (opcional, já feito em load_datasets mas garante)
+    client.feature_names = feature_names
+
+    # Iniciar o cliente
+    fl.client.start_numpy_client(server_address="server:9091", client=client)

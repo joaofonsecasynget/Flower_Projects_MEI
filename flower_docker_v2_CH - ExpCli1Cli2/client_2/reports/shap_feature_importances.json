@@ -1,57 +1,57 @@
 {
     "1": {
-        "longitude": 0.1644098996510451,
-        "latitude": 0.04283046425549569,
-        "housing_median_age": 0.17581904218979078,
-        "total_rooms": 0.07615609674917534,
+        "longitude": 0.17817181932687579,
+        "latitude": 0.2034487869770687,
+        "housing_median_age": 0.07710235935150443,
+        "total_rooms": 0.12997856290974244,
         "total_bedrooms": 0.0,
-        "population": 0.09787431274945395,
-        "households": 0.09779637326192592,
-        "median_income": 0.024461934956343596,
-        "ocean_proximity": 0.06033085154776926
+        "population": 0.17012751355503572,
+        "households": 0.20363640920317944,
+        "median_income": 0.055281863439622964,
+        "ocean_proximity": 0.19090023729735378
     },
     "2": {
-        "longitude": 0.13024145889752875,
-        "latitude": 0.03381235474780194,
-        "housing_median_age": 0.22112517329792125,
-        "total_rooms": 0.12037290771300566,
+        "longitude": 0.2135043255195167,
+        "latitude": 0.28027486383098654,
+        "housing_median_age": 0.12538904415653498,
+        "total_rooms": 0.17140482445025718,
         "total_bedrooms": 0.0,
-        "population": 0.08901186537848489,
-        "households": 0.12699209982487694,
-        "median_income": 0.08480149351352805,
-        "ocean_proximity": 0.06745053801714676
+        "population": 0.15907979207539538,
+        "households": 0.2293782134167917,
+        "median_income": 0.16705596677406667,
+        "ocean_proximity": 0.1982569554132905
     },
     "3": {
-        "longitude": 0.096434984216328,
-        "latitude": 0.1095246737195079,
-        "housing_median_age": 0.2643961944473888,
-        "total_rooms": 0.16031993111800621,
+        "longitude": 0.242900573013425,
+        "latitude": 0.3523318539104019,
+        "housing_median_age": 0.17628668316125776,
+        "total_rooms": 0.21271082968742108,
         "total_bedrooms": 0.0,
-        "population": 0.07973935007924274,
-        "households": 0.1552874046234396,
-        "median_income": 0.19670108886944226,
-        "ocean_proximity": 0.07015937016355261
+        "population": 0.14749820543497436,
+        "households": 0.255947702964823,
+        "median_income": 0.27600054830011955,
+        "ocean_proximity": 0.20110794561256795
     },
     "4": {
-        "longitude": 0.0632864918175897,
-        "latitude": 0.18301159897528127,
-        "housing_median_age": 0.3072084441210053,
-        "total_rooms": 0.2014027251254966,
+        "longitude": 0.27948946187784046,
+        "latitude": 0.4272031173417675,
+        "housing_median_age": 0.21969295766438798,
+        "total_rooms": 0.25405803196911053,
         "total_bedrooms": 0.0,
-        "population": 0.06771594851050476,
-        "households": 0.1827909576759251,
-        "median_income": 0.3137972734305849,
-        "ocean_proximity": 0.0734654512417148
+        "population": 0.13851013197993203,
+        "households": 0.2840925514903831,
+        "median_income": 0.39124231919745994,
+        "ocean_proximity": 0.20841883850267287
     },
     "5": {
-        "longitude": 0.02736367290268569,
-        "latitude": 0.261024829514818,
-        "housing_median_age": 0.35261654852005253,
-        "total_rooms": 0.24975503544361935,
+        "longitude": 0.3108514873206978,
+        "latitude": 0.5004172553478773,
+        "housing_median_age": 0.2640169392323252,
+        "total_rooms": 0.2983775579359469,
         "total_bedrooms": 0.0,
-        "population": 0.05511977836140428,
-        "households": 0.21384525037165492,
-        "median_income": 0.42505781008083043,
-        "ocean_proximity": 0.07676546773748541
+        "population": 0.12667915612733585,
+        "households": 0.3123222446441925,
+        "median_income": 0.5052578994811651,
+        "ocean_proximity": 0.21008529155057795
     }
 }

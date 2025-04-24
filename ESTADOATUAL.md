@@ -11,10 +11,12 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 
 ## Tarefas Gerais / Próximos Passos Principais
 
-- [?] **Verificação das Implementações Atuais:**
-    - [ ] Testar reprodutibilidade (`docker-compose up` para ambas as abordagens).
-    - [ ] Validar funcionalidade completa das implementações (correr o pipeline, verificar outputs).
-    - [ ] Analisar código de pré-processamento em `utils.py` (e outros relevantes) para garantir consistência entre clientes e abordagens.
+- [/] **Verificação das Implementações Atuais:**
+    - [x] 1.1: Testar execução `docker-compose up` para `DecisionTreeRegressor`.
+    - [x] 1.2: Verificar outputs (logs, métricas, relatórios) da `DecisionTreeRegressor` vs `resumoDTR.md`. (Logs e métricas OK. Gráficos de evolução OK, mas notar plot de Soma Importância pouco útil e clarificar cálculo/apresentação da Similaridade Estrutural final vs evolução no gráfico).
+    - [x] 1.3: Testar execução `docker-compose up` para `LinearRegression`.
+    - [x] 1.4: Verificar outputs (logs, métricas, relatórios) da `LinearRegression` vs `resumo_ExpC1C2.md`. (Logs e métricas (RMSE, tempo) correspondem bem ao resumo. Confirmado RMSE elevado e convergência lenta. Relatórios LIME/SHAP gerados como esperado).
+    - [x] 1.5: Analisar consistência do pré-processamento (`utils.py` em `client_1`/`client_2` de ambas as abordagens). (Linear Regression: OK, `client_X.py` usa `load_datasets` idêntica. Decision Tree: INCONSISTENTE, `client_2.py` usa `load_data` diferente de `load_datasets` em `client_1.py` - tratar NaN, encoding, particionamento).
 - [ ] **Transição para Novo Dataset:**
     - [ ] Definir/Obter o novo dataset alvo para a dissertação.
     - [ ] Adaptar o código de carregamento e pré-processamento para o novo dataset.
@@ -40,6 +42,8 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 - *Ver tarefas gerais de verificação acima.*
 
 ### Tarefas Futuras (Sugestões Pós-Verificação e Transição Dataset)
+- [x] (Correção) Uniformizar pré-processamento: Substituída `load_data` em `client_2.py` pela função `load_datasets` (e `CustomDataset`) de `client_1.py`.
+- [x] (Verificação Correção) Re-executado `docker-compose up` para DTR: Resultados (RMSE ~66.2k vs ~64.7k) agora muito mais consistentes entre clientes, validando a correção.
 - [ ] (Prioridade Média) Avaliar desempenho e explicabilidade no novo dataset.
 - [ ] (Prioridade Média/Baixa) Explorar melhorias se necessário/desejado para a dissertação (e.g., Random Forest Federado, otimização de hiperparâmetros).
 - [ ] (Prioridade Baixa) Aprofundar análise da evolução da explicabilidade (e.g., métricas quantitativas de convergência).

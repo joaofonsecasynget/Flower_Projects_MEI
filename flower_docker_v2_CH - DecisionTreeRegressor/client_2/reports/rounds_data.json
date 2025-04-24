@@ -2,12 +2,12 @@
     "rounds": [
         {
             "round": 1,
-            "timestamp": "2025-03-27 16:54:42",
+            "timestamp": "2025-04-24 09:21:50",
             "metrics": {
-                "training_loss": 1974754373.4737144,
-                "validation_loss": 4124527045.850152,
-                "evaluation_loss": 3771168372.5083394,
-                "rmse": 61409.83937862352
+                "training_loss": 1799251402.0831585,
+                "validation_loss": 3851295180.6619124,
+                "evaluation_loss": 4190138480.8684797,
+                "rmse": 64731.27899917072
             },
             "visualizations": {
                 "tree_structure": "tree_structure_round_1.txt",
@@ -16,12 +16,12 @@
         },
         {
             "round": 2,
-            "timestamp": "2025-03-27 16:54:42",
+            "timestamp": "2025-04-24 09:21:50",
             "metrics": {
-                "training_loss": 1974754373.473714,
-                "validation_loss": 4124527045.850152,
-                "evaluation_loss": 3771168372.5083394,
-                "rmse": 61409.83937862352
+                "training_loss": 1799251402.0831587,
+                "validation_loss": 3851295180.6619124,
+                "evaluation_loss": 4190138480.8684797,
+                "rmse": 64731.27899917072
             },
             "visualizations": {
                 "tree_structure": "tree_structure_round_2.txt",
@@ -30,12 +30,12 @@
         },
         {
             "round": 3,
-            "timestamp": "2025-03-27 16:54:42",
+            "timestamp": "2025-04-24 09:21:50",
             "metrics": {
-                "training_loss": 1974754373.473714,
-                "validation_loss": 4124527045.850152,
-                "evaluation_loss": 3771168372.5083394,
-                "rmse": 61409.83937862352
+                "training_loss": 1799251402.0831585,
+                "validation_loss": 3851295180.6619124,
+                "evaluation_loss": 4190138480.8684797,
+                "rmse": 64731.27899917072
             },
             "visualizations": {
                 "tree_structure": "tree_structure_round_3.txt",
@@ -44,12 +44,12 @@
         },
         {
             "round": 4,
-            "timestamp": "2025-03-27 16:54:42",
+            "timestamp": "2025-04-24 09:21:50",
             "metrics": {
-                "training_loss": 1974754373.473714,
-                "validation_loss": 4124527045.850152,
-                "evaluation_loss": 3771168372.5083394,
-                "rmse": 61409.83937862352
+                "training_loss": 1799251402.0831583,
+                "validation_loss": 3851295180.6619124,
+                "evaluation_loss": 4190138480.8684797,
+                "rmse": 64731.27899917072
             },
             "visualizations": {
                 "tree_structure": "tree_structure_round_4.txt",
@@ -58,12 +58,12 @@
         },
         {
             "round": 5,
-            "timestamp": "2025-03-27 16:54:43",
+            "timestamp": "2025-04-24 09:21:51",
             "metrics": {
-                "training_loss": 1974754373.473714,
-                "validation_loss": 4124527045.850152,
-                "evaluation_loss": 3771168372.5083394,
-                "rmse": 61409.83937862352
+                "training_loss": 1799251402.0831585,
+                "validation_loss": 3851295180.6619124,
+                "evaluation_loss": 4190138480.8684797,
+                "rmse": 64731.27899917072
             },
             "visualizations": {
                 "tree_structure": "tree_structure_round_5.txt",
