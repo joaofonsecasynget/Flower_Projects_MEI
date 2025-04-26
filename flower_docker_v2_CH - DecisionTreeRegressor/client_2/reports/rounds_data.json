@@ -2,7 +2,7 @@
     "rounds": [
         {
             "round": 1,
-            "timestamp": "2025-04-24 09:21:50",
+            "timestamp": "2025-04-24 11:05:43",
             "metrics": {
                 "training_loss": 1799251402.0831585,
                 "validation_loss": 3851295180.6619124,
@@ -16,9 +16,9 @@
         },
         {
             "round": 2,
-            "timestamp": "2025-04-24 09:21:50",
+            "timestamp": "2025-04-24 11:05:43",
             "metrics": {
-                "training_loss": 1799251402.0831587,
+                "training_loss": 1799251402.0831583,
                 "validation_loss": 3851295180.6619124,
                 "evaluation_loss": 4190138480.8684797,
                 "rmse": 64731.27899917072
@@ -30,7 +30,7 @@
         },
         {
             "round": 3,
-            "timestamp": "2025-04-24 09:21:50",
+            "timestamp": "2025-04-24 11:05:44",
             "metrics": {
                 "training_loss": 1799251402.0831585,
                 "validation_loss": 3851295180.6619124,
@@ -44,9 +44,9 @@
         },
         {
             "round": 4,
-            "timestamp": "2025-04-24 09:21:50",
+            "timestamp": "2025-04-24 11:05:44",
             "metrics": {
-                "training_loss": 1799251402.0831583,
+                "training_loss": 1799251402.0831585,
                 "validation_loss": 3851295180.6619124,
                 "evaluation_loss": 4190138480.8684797,
                 "rmse": 64731.27899917072
@@ -58,7 +58,7 @@
         },
         {
             "round": 5,
-            "timestamp": "2025-04-24 09:21:51",
+            "timestamp": "2025-04-24 11:05:44",
             "metrics": {
                 "training_loss": 1799251402.0831585,
                 "validation_loss": 3851295180.6619124,

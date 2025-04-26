@@ -1,37 +1,57 @@
 
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Final Report - Decision Tree</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                h1, h2, h3 { color: #333; }
-                .metrics { margin: 20px 0; }
-                .round { margin: 30px 0; padding: 20px; border: 1px solid #ddd; }
-                .timestamp { color: #666; font-style: italic; }
-                pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
-                img { max-width: 100%; margin: 20px 0; }
-            </style>
-        </head>
-        <body>
-            <h1>Final Report - Client 2</h1>
-        
-            <div class="round">
-                <h2>Round 1</h2>
-                <div class="timestamp">Timestamp: 2025-04-24 09:21:50</div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Relatório Final - Cliente 2</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 40px; }
+                    h1, h2 { color: #2c3e50; }
+                    .metrics, .explanation { margin-bottom: 20px; }
+                    .round { border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; border-radius: 10px; }
+                    .timestamp { color: #888; font-size: 0.9em; }
+                </style>
+            </head>
+            <body>
+            <h1>Relatório Final - Cliente 2</h1>
+            <p>Este relatório apresenta os resultados do cliente <b>2</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+            
+            <div class='intro-section'>
+                <h2>Descrição Geral</h2>
+                <p>Este relatório apresenta os resultados do cliente <b>2</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+                <ul>
+                    <li><b>Framework:</b> Flower</li>
+                    <li><b>Dataset:</b> California Housing</li>
+                    <li><b>Modelo:</b> DecisionTreeRegressor (scikit-learn)</li>
+                    <li><b>Particionamento:</b> Cada cliente utiliza uma partição distinta e reprodutível do dataset.</li>
+                    <li><b>Objetivo:</b> Comparar abordagens e analisar explicabilidade em ambiente federado.</li>
+                </ul>
+            </div>
+            
+            <div class='explainability-section'>
+                <h2>Evolução da Explicabilidade</h2>
+                <p class='explanation'>O gráfico abaixo mostra como a explicabilidade do modelo evolui ao longo das rondas de treino:</p>
+            
+                <img src='explainability_evolution.png' alt='Evolução da Explicabilidade' style='max-width: 100%; margin: 20px 0;'>
                 
-                <div class="metrics">
-                    <h3>Metrics</h3>
-                    <ul>
-                        <li>Training Loss: 1799251402.08</li>
-                        <li>Validation Loss: 3851295180.66</li>
-                        <li>Evaluation Loss: 4190138480.87</li>
-                        <li>RMSE: 64731.28</li>
-                    </ul>
-                </div>
-                
-                <h3>Tree Structure</h3>
-                <pre>|--- median_income <= 0.91
+            </div>
+            
+                <div class="round">
+                    <h2>Ronda 1</h2>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:43</div>
+                    
+                    <div class="metrics">
+                        <h3>Métricas</h3>
+                        <ul>
+                            <li>Perda no Treino: 1799251402.08</li>
+                            <li>Perda na Validação: 3851295180.66</li>
+                            <li>Perda na Avaliação: 4190138480.87</li>
+                            <li>RMSE: 64731.28</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Estrutura da Árvore</h3>
+                    <pre>|--- median_income <= 0.91
 |   |--- median_income <= -0.36
 |   |   |--- ocean_proximity <= -0.41
 |   |   |   |--- longitude <= 0.63
@@ -1917,28 +1937,28 @@
 |   |   |   |   |   |--- latitude >  1.11
 |   |   |   |   |   |   |--- value: [397300.00]
 </pre>
-                
-                <h3>Feature Importance</h3>
-                <img src="feature_importance_round_1.png" 
-                     alt="Feature Importance - Round 1">
-            </div>
-            
-            <div class="round">
-                <h2>Round 2</h2>
-                <div class="timestamp">Timestamp: 2025-04-24 09:21:50</div>
-                
-                <div class="metrics">
-                    <h3>Metrics</h3>
-                    <ul>
-                        <li>Training Loss: 1799251402.08</li>
-                        <li>Validation Loss: 3851295180.66</li>
-                        <li>Evaluation Loss: 4190138480.87</li>
-                        <li>RMSE: 64731.28</li>
-                    </ul>
+                    
+                    <h3>Importância das Características</h3>
+                    <img src="feature_importance_round_1.png" 
+                         alt="Importância das Características - Ronda 1">
                 </div>
                 
-                <h3>Tree Structure</h3>
-                <pre>|--- median_income <= 0.91
+                <div class="round">
+                    <h2>Ronda 2</h2>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:43</div>
+                    
+                    <div class="metrics">
+                        <h3>Métricas</h3>
+                        <ul>
+                            <li>Perda no Treino: 1799251402.08</li>
+                            <li>Perda na Validação: 3851295180.66</li>
+                            <li>Perda na Avaliação: 4190138480.87</li>
+                            <li>RMSE: 64731.28</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Estrutura da Árvore</h3>
+                    <pre>|--- median_income <= 0.91
 |   |--- median_income <= -0.36
 |   |   |--- ocean_proximity <= -0.41
 |   |   |   |--- longitude <= 0.63
@@ -3824,28 +3844,28 @@
 |   |   |   |   |   |--- latitude >  1.11
 |   |   |   |   |   |   |--- value: [397300.00]
 </pre>
-                
-                <h3>Feature Importance</h3>
-                <img src="feature_importance_round_2.png" 
-                     alt="Feature Importance - Round 2">
-            </div>
-            
-            <div class="round">
-                <h2>Round 3</h2>
-                <div class="timestamp">Timestamp: 2025-04-24 09:21:50</div>
-                
-                <div class="metrics">
-                    <h3>Metrics</h3>
-                    <ul>
-                        <li>Training Loss: 1799251402.08</li>
-                        <li>Validation Loss: 3851295180.66</li>
-                        <li>Evaluation Loss: 4190138480.87</li>
-                        <li>RMSE: 64731.28</li>
-                    </ul>
+                    
+                    <h3>Importância das Características</h3>
+                    <img src="feature_importance_round_2.png" 
+                         alt="Importância das Características - Ronda 2">
                 </div>
                 
-                <h3>Tree Structure</h3>
-                <pre>|--- median_income <= 0.91
+                <div class="round">
+                    <h2>Ronda 3</h2>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
+                    
+                    <div class="metrics">
+                        <h3>Métricas</h3>
+                        <ul>
+                            <li>Perda no Treino: 1799251402.08</li>
+                            <li>Perda na Validação: 3851295180.66</li>
+                            <li>Perda na Avaliação: 4190138480.87</li>
+                            <li>RMSE: 64731.28</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Estrutura da Árvore</h3>
+                    <pre>|--- median_income <= 0.91
 |   |--- median_income <= -0.36
 |   |   |--- ocean_proximity <= -0.41
 |   |   |   |--- longitude <= 0.63
@@ -5731,28 +5751,28 @@
 |   |   |   |   |   |--- latitude >  1.11
 |   |   |   |   |   |   |--- value: [397300.00]
 </pre>
-                
-                <h3>Feature Importance</h3>
-                <img src="feature_importance_round_3.png" 
-                     alt="Feature Importance - Round 3">
-            </div>
-            
-            <div class="round">
-                <h2>Round 4</h2>
-                <div class="timestamp">Timestamp: 2025-04-24 09:21:50</div>
-                
-                <div class="metrics">
-                    <h3>Metrics</h3>
-                    <ul>
-                        <li>Training Loss: 1799251402.08</li>
-                        <li>Validation Loss: 3851295180.66</li>
-                        <li>Evaluation Loss: 4190138480.87</li>
-                        <li>RMSE: 64731.28</li>
-                    </ul>
+                    
+                    <h3>Importância das Características</h3>
+                    <img src="feature_importance_round_3.png" 
+                         alt="Importância das Características - Ronda 3">
                 </div>
                 
-                <h3>Tree Structure</h3>
-                <pre>|--- median_income <= 0.91
+                <div class="round">
+                    <h2>Ronda 4</h2>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
+                    
+                    <div class="metrics">
+                        <h3>Métricas</h3>
+                        <ul>
+                            <li>Perda no Treino: 1799251402.08</li>
+                            <li>Perda na Validação: 3851295180.66</li>
+                            <li>Perda na Avaliação: 4190138480.87</li>
+                            <li>RMSE: 64731.28</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Estrutura da Árvore</h3>
+                    <pre>|--- median_income <= 0.91
 |   |--- median_income <= -0.36
 |   |   |--- ocean_proximity <= -0.41
 |   |   |   |--- longitude <= 0.63
@@ -7638,28 +7658,28 @@
 |   |   |   |   |   |--- latitude >  1.11
 |   |   |   |   |   |   |--- value: [397300.00]
 </pre>
-                
-                <h3>Feature Importance</h3>
-                <img src="feature_importance_round_4.png" 
-                     alt="Feature Importance - Round 4">
-            </div>
-            
-            <div class="round">
-                <h2>Round 5</h2>
-                <div class="timestamp">Timestamp: 2025-04-24 09:21:51</div>
-                
-                <div class="metrics">
-                    <h3>Metrics</h3>
-                    <ul>
-                        <li>Training Loss: 1799251402.08</li>
-                        <li>Validation Loss: 3851295180.66</li>
-                        <li>Evaluation Loss: 4190138480.87</li>
-                        <li>RMSE: 64731.28</li>
-                    </ul>
+                    
+                    <h3>Importância das Características</h3>
+                    <img src="feature_importance_round_4.png" 
+                         alt="Importância das Características - Ronda 4">
                 </div>
                 
-                <h3>Tree Structure</h3>
-                <pre>|--- median_income <= 0.91
+                <div class="round">
+                    <h2>Ronda 5</h2>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
+                    
+                    <div class="metrics">
+                        <h3>Métricas</h3>
+                        <ul>
+                            <li>Perda no Treino: 1799251402.08</li>
+                            <li>Perda na Validação: 3851295180.66</li>
+                            <li>Perda na Avaliação: 4190138480.87</li>
+                            <li>RMSE: 64731.28</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Estrutura da Árvore</h3>
+                    <pre>|--- median_income <= 0.91
 |   |--- median_income <= -0.36
 |   |   |--- ocean_proximity <= -0.41
 |   |   |   |--- longitude <= 0.63
@@ -9545,12 +9565,12 @@
 |   |   |   |   |   |--- latitude >  1.11
 |   |   |   |   |   |   |--- value: [397300.00]
 </pre>
+                    
+                    <h3>Importância das Características</h3>
+                    <img src="feature_importance_round_5.png" 
+                         alt="Importância das Características - Ronda 5">
+                </div>
                 
-                <h3>Feature Importance</h3>
-                <img src="feature_importance_round_5.png" 
-                     alt="Feature Importance - Round 5">
-            </div>
+            </body>
+            </html>
             
-        </body>
-        </html>
-        

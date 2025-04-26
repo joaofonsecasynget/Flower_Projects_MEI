@@ -16,12 +16,12 @@
         },
         {
             "round": 1,
-            "timestamp": "2025-04-24 09:05:43",
+            "timestamp": "2025-04-24 14:14:13",
             "metrics": {
-                "training_loss": 57328596280.03433,
-                "validation_loss": 54702896364.30769,
-                "evaluation_loss": 55334343449.79845,
-                "rmse": 235232.53125
+                "training_loss": 57297500450.06009,
+                "validation_loss": 54702728349.53846,
+                "evaluation_loss": 55334178593.736435,
+                "rmse": 235232.171875
             },
             "visualizations": {
                 "lime": "lime_explanation_round1.png",
@@ -30,12 +30,12 @@
         },
         {
             "round": 2,
-            "timestamp": "2025-04-24 09:05:44",
+            "timestamp": "2025-04-24 14:14:14",
             "metrics": {
-                "training_loss": 57440684005.6309,
-                "validation_loss": 54702769703.38461,
-                "evaluation_loss": 55334211949.147285,
-                "rmse": 235232.25
+                "training_loss": 57280472481.51073,
+                "validation_loss": 54702597671.38461,
+                "evaluation_loss": 55334047331.22481,
+                "rmse": 235231.90625
             },
             "visualizations": {
                 "lime": "lime_explanation_round2.png",
@@ -44,12 +44,12 @@
         },
         {
             "round": 3,
-            "timestamp": "2025-04-24 09:05:45",
+            "timestamp": "2025-04-24 14:14:15",
             "metrics": {
-                "training_loss": 57328841881.81974,
-                "validation_loss": 54702640994.46154,
-                "evaluation_loss": 55334082448.86822,
-                "rmse": 235231.984375
+                "training_loss": 57291022371.1588,
+                "validation_loss": 54702469041.23077,
+                "evaluation_loss": 55333914592.24806,
+                "rmse": 235231.625
             },
             "visualizations": {
                 "lime": "lime_explanation_round3.png",
@@ -58,12 +58,12 @@
         },
         {
             "round": 4,
-            "timestamp": "2025-04-24 09:05:47",
+            "timestamp": "2025-04-24 14:14:16",
             "metrics": {
-                "training_loss": 57408974399.72532,
-                "validation_loss": 54702514176.0,
-                "evaluation_loss": 55333950551.31783,
-                "rmse": 235231.6875
+                "training_loss": 57372541262.00858,
+                "validation_loss": 54702339938.46154,
+                "evaluation_loss": 55333782742.325584,
+                "rmse": 235231.34375
             },
             "visualizations": {
                 "lime": "lime_explanation_round4.png",
@@ -72,12 +72,12 @@
         },
         {
             "round": 5,
-            "timestamp": "2025-04-24 09:05:48",
+            "timestamp": "2025-04-24 14:14:17",
             "metrics": {
-                "training_loss": 57495401485.18455,
-                "validation_loss": 54702382001.23077,
-                "evaluation_loss": 55333818463.25581,
-                "rmse": 235231.421875
+                "training_loss": 57508596327.27897,
+                "validation_loss": 54702211229.53846,
+                "evaluation_loss": 55333650511.379845,
+                "rmse": 235231.046875
             },
             "visualizations": {
                 "lime": "lime_explanation_round5.png",

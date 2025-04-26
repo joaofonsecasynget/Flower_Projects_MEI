@@ -2,44 +2,43 @@
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Relatório Final - Árvore de Decisão</title>
+                <meta charset="UTF-8">
+                <title>Relatório Final - Cliente 1</title>
                 <style>
                     body { font-family: Arial, sans-serif; margin: 40px; }
-                    h1, h2, h3 { color: #333; }
-                    .metrics { margin: 20px 0; }
-                    .round { margin: 30px 0; padding: 20px; border: 1px solid #ddd; }
-                    .timestamp { color: #666; font-style: italic; }
-                    pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
-                    img { max-width: 100%; margin: 20px 0; }
-                    .explainability-section { margin: 40px 0; padding: 20px; border: 1px solid #4CAF50; background-color: #f9fff9; }
-                    .explanation { line-height: 1.6; }
+                    h1, h2 { color: #2c3e50; }
+                    .metrics, .explanation { margin-bottom: 20px; }
+                    .round { border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; border-radius: 10px; }
+                    .timestamp { color: #888; font-size: 0.9em; }
                 </style>
             </head>
             <body>
-                <h1>Relatório Final - Cliente 1</h1>
+            <h1>Relatório Final - Cliente 1</h1>
+            <p>Este relatório apresenta os resultados do cliente <b>1</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+            
+            <div class='intro-section'>
+                <h2>Descrição Geral</h2>
+                <p>Este relatório apresenta os resultados do cliente <b>{self.cid}</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+                <ul>
+                    <li><b>Framework:</b> Flower</li>
+                    <li><b>Dataset:</b> California Housing</li>
+                    <li><b>Modelo:</b> DecisionTreeRegressor (scikit-learn)</li>
+                    <li><b>Particionamento:</b> Cada cliente utiliza uma partição distinta e reprodutível do dataset.</li>
+                    <li><b>Objetivo:</b> Comparar abordagens e analisar explicabilidade em ambiente federado.</li>
+                </ul>
+            </div>
+            
+            <div class='explainability-section'>
+                <h2>Evolução da Explicabilidade</h2>
+                <p class='explanation'>O gráfico abaixo mostra como a explicabilidade do modelo evolui ao longo das rondas de treino:</p>
+            
+                <img src='explainability_evolution.png' alt='Evolução da Explicabilidade' style='max-width: 100%; margin: 20px 0;'>
                 
-                <div class="explainability-section">
-                    <h2>Evolução da Explicabilidade</h2>
-                    <p class="explanation">O gráfico abaixo mostra como a explicabilidade do modelo evolui ao longo das rondas de treino:</p>
-                    <ul class="explanation">
-                        <li><strong>Importância das Características</strong>: Soma das importâncias das características. Valores mais altos indicam que o modelo está a atribuir importâncias mais decisivas a certas características.</li>
-                        <li><strong>Complexidade da Árvore</strong>: Estimativa da complexidade baseada no número de regras de decisão. Reflete o tamanho e a profundidade da árvore.</li>
-                        <li><strong>Similaridade Estrutural</strong>: Nova métrica que indica quão similar é a árvore atual em relação à ronda anterior (1.0 = idêntica, 0.0 = completamente diferente).</li>
-                        <li><strong>RMSE</strong>: Erro quadrático médio, mostrando a evolução do desempenho do modelo.</li>
-                    </ul>
-                    <p class="explanation">Os gráficos estão organizados numa grelha 2x2 para melhor visualização e análise independente de cada métrica:</p>
-                    <ul class="explanation">
-                        <li><strong>Superior Esquerdo</strong>: Evolução da importância das características ao longo das rondas.</li>
-                        <li><strong>Superior Direito</strong>: Evolução da complexidade da árvore, baseada no número de regras.</li>
-                        <li><strong>Inferior Esquerdo</strong>: Evolução da similaridade estrutural entre árvores de rondas consecutivas.</li>
-                        <li><strong>Inferior Direito</strong>: Evolução do RMSE (erro) do modelo ao longo das rondas.</li>
-                    </ul>
-                    <img src="explainability_evolution.png" alt="Evolução da Explicabilidade">
-                </div>
+            </div>
             
                 <div class="round">
                     <h2>Ronda 1</h2>
-                    <div class="timestamp">Data/Hora: 2025-04-24 09:21:50</div>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:43</div>
                     
                     <div class="metrics">
                         <h3>Métricas</h3>
@@ -2129,7 +2128,7 @@
                 
                 <div class="round">
                     <h2>Ronda 2</h2>
-                    <div class="timestamp">Data/Hora: 2025-04-24 09:21:50</div>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:43</div>
                     
                     <div class="metrics">
                         <h3>Métricas</h3>
@@ -4219,7 +4218,7 @@
                 
                 <div class="round">
                     <h2>Ronda 3</h2>
-                    <div class="timestamp">Data/Hora: 2025-04-24 09:21:50</div>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
                     
                     <div class="metrics">
                         <h3>Métricas</h3>
@@ -6309,7 +6308,7 @@
                 
                 <div class="round">
                     <h2>Ronda 4</h2>
-                    <div class="timestamp">Data/Hora: 2025-04-24 09:21:50</div>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
                     
                     <div class="metrics">
                         <h3>Métricas</h3>
@@ -8399,7 +8398,7 @@
                 
                 <div class="round">
                     <h2>Ronda 5</h2>
-                    <div class="timestamp">Data/Hora: 2025-04-24 09:21:51</div>
+                    <div class="timestamp">Data/Hora: 2025-04-24 11:05:44</div>
                     
                     <div class="metrics">
                         <h3>Métricas</h3>

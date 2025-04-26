@@ -7,6 +7,8 @@ import pandas as pd
 import os
 import json
 from sklearn.tree import DecisionTreeRegressor, export_text
+import matplotlib
+matplotlib.use('Agg') # Forçar backend não interativo
 import matplotlib.pyplot as plt
 
 DEVICE = "cpu"  # Não precisamos mais de GPU para árvores de decisão
@@ -210,6 +212,7 @@ class FlowerClient(fl.client.NumPyClient):
                 self._save_round_data()
                 
                 # Generate final report after last round
+                print(f"[DEBUG Client {self.cid}] Checking condition: self.current_round ({self.current_round}) == self.num_rounds ({self.num_rounds})") # DEBUG
                 if self.current_round == self.num_rounds:
                     print(f"[Client {self.cid}] Generating final report...")
                     final_report_path = self.generate_final_report()
@@ -337,11 +340,18 @@ class FlowerClient(fl.client.NumPyClient):
                 # Aqui usamos uma simplificação: calculamos a soma das importâncias absolutas
                 # Em um caso real, poderíamos ter salvado estes valores no JSON durante o treino
                 if round_num > 0 and round_num <= self.num_rounds:
-                    feature_importance_sum = sum(abs(self.model.feature_importances_))
+                    if self.model.feature_importances_ is None:
+                        feature_importance_sum = 0
+                    else:
+                        feature_importance_sum = sum(abs(self.model.feature_importances_))
                     feature_importances.append(feature_importance_sum)
                     
                     # Guardar o modelo atual para comparação
                     curr_tree = self.model.tree
+                    if curr_tree is None:
+                        # Handle case where tree might not be available? Skip similarity?
+                        # For now, let it potentially fail in similarity calculation or complexity check
+                        pass
                     tree_models.append(curr_tree)
                     
                     # Calcular similaridade com o modelo anterior, se existir
@@ -349,7 +359,6 @@ class FlowerClient(fl.client.NumPyClient):
                         similarity = self._calculate_tree_similarity(prev_tree, curr_tree)
                         tree_similarities.append(similarity)
                     else:
-                        # Para a primeira ronda, não há comparação anterior
                         tree_similarities.append(1.0)  # Similaridade máxima consigo mesmo
                     
                     prev_tree = curr_tree
@@ -434,40 +443,53 @@ class FlowerClient(fl.client.NumPyClient):
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Relatório Final - Árvore de Decisão</title>
+                <meta charset="UTF-8">
+                <title>Relatório Final - Cliente {self.cid}</title>
                 <style>
                     body {{ font-family: Arial, sans-serif; margin: 40px; }}
-                    h1, h2, h3 {{ color: #333; }}
-                    .metrics {{ margin: 20px 0; }}
-                    .round {{ margin: 30px 0; padding: 20px; border: 1px solid #ddd; }}
-                    .timestamp {{ color: #666; font-style: italic; }}
-                    pre {{ background: #f5f5f5; padding: 10px; overflow-x: auto; }}
-                    img {{ max-width: 100%; margin: 20px 0; }}
-                    .explainability-section {{ margin: 40px 0; padding: 20px; border: 1px solid #4CAF50; background-color: #f9fff9; }}
-                    .explanation {{ line-height: 1.6; }}
+                    h1, h2 {{ color: #2c3e50; }}
+                    .metrics, .explanation {{ margin-bottom: 20px; }}
+                    .round {{ border: 1px solid #ddd; padding: 20px; margin-bottom: 30px; border-radius: 10px; }}
+                    .timestamp {{ color: #888; font-size: 0.9em; }}
                 </style>
             </head>
             <body>
-                <h1>Relatório Final - Cliente {self.cid}</h1>
-                
-                <div class="explainability-section">
-                    <h2>Evolução da Explicabilidade</h2>
-                    <p class="explanation">O gráfico abaixo mostra como a explicabilidade do modelo evolui ao longo das rondas de treino:</p>
-                    <ul class="explanation">
-                        <li><strong>Importância das Características</strong>: Soma das importâncias das características. Valores mais altos indicam que o modelo está a atribuir importâncias mais decisivas a certas características.</li>
-                        <li><strong>Complexidade da Árvore</strong>: Estimativa da complexidade baseada no número de regras de decisão. Reflete o tamanho e a profundidade da árvore.</li>
-                        <li><strong>Similaridade Estrutural</strong>: Nova métrica que indica quão similar é a árvore atual em relação à ronda anterior (1.0 = idêntica, 0.0 = completamente diferente).</li>
-                        <li><strong>RMSE</strong>: Erro quadrático médio, mostrando a evolução do desempenho do modelo.</li>
-                    </ul>
-                    <p class="explanation">Os gráficos estão organizados numa grelha 2x2 para melhor visualização e análise independente de cada métrica:</p>
-                    <ul class="explanation">
-                        <li><strong>Superior Esquerdo</strong>: Evolução da importância das características ao longo das rondas.</li>
-                        <li><strong>Superior Direito</strong>: Evolução da complexidade da árvore, baseada no número de regras.</li>
-                        <li><strong>Inferior Esquerdo</strong>: Evolução da similaridade estrutural entre árvores de rondas consecutivas.</li>
-                        <li><strong>Inferior Direito</strong>: Evolução do RMSE (erro) do modelo ao longo das rondas.</li>
-                    </ul>
-                    <img src="explainability_evolution.png" alt="Evolução da Explicabilidade">
-                </div>
+            <h1>Relatório Final - Cliente {self.cid}</h1>
+            <p>Este relatório apresenta os resultados do cliente <b>{self.cid}</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+            """
+            
+            # Descrição inicial detalhada (inspirada na imagem fornecida)
+            html_template += """
+            <div class='intro-section'>
+                <h2>Descrição Geral</h2>
+                <p>Este relatório apresenta os resultados do cliente <b>{self.cid}</b> no contexto de aprendizagem federada para previsão de preços imobiliários com Decision Tree. Inclui métricas de desempenho, estrutura da árvore, importância das características e evolução da explicabilidade ao longo das rondas.</p>
+                <ul>
+                    <li><b>Framework:</b> Flower</li>
+                    <li><b>Dataset:</b> California Housing</li>
+                    <li><b>Modelo:</b> DecisionTreeRegressor (scikit-learn)</li>
+                    <li><b>Particionamento:</b> Cada cliente utiliza uma partição distinta e reprodutível do dataset.</li>
+                    <li><b>Objetivo:</b> Comparar abordagens e analisar explicabilidade em ambiente federado.</li>
+                </ul>
+            </div>
+            """
+            
+            # Secção de evolução da explicabilidade (logo após a introdução)
+            html_template += """
+            <div class='explainability-section'>
+                <h2>Evolução da Explicabilidade</h2>
+                <p class='explanation'>O gráfico abaixo mostra como a explicabilidade do modelo evolui ao longo das rondas de treino:</p>
+            """
+            import os
+            if os.path.exists("reports/explainability_evolution.png"):
+                html_template += """
+                <img src='explainability_evolution.png' alt='Evolução da Explicabilidade' style='max-width: 100%; margin: 20px 0;'>
+                """
+            else:
+                html_template += """
+                <div style='color: red; font-weight: bold;'>[Aviso] Gráfico de evolução da explicabilidade não foi encontrado ou não foi gerado corretamente.</div>
+                """
+            html_template += """
+            </div>
             """
             
             # Adicionar secções para cada ronda
@@ -503,7 +525,7 @@ class FlowerClient(fl.client.NumPyClient):
             
             # Salvar como HTML
             report_path = "reports/final_report.html"
-            with open(report_path, 'w') as f:
+            with open(report_path, 'w', encoding='utf-8') as f:
                 f.write(html_template)
             
             print(f"[Client {self.cid}] Final report generated: {report_path}")

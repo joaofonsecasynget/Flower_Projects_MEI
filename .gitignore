@@ -3,3 +3,6 @@ transformed_dataset_imeisv_8609960480666910/
 
 # Ignore zip files
 *.zip 
+
+# Ignore all CSV datasets in any DatasetIOT folder across all approaches
+**/DatasetIOT/*.csv
