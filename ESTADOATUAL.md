@@ -2,6 +2,52 @@
 
 Este documento acompanha o progresso do projeto de Aprendizagem Federada e Explicabilidade para Previsão de Preços Imobiliários, no âmbito de uma dissertação de mestrado.
 
+---
+
+## [ATUALIZAÇÃO 2025-04-26]
+
+### Contexto
+- A abordagem RLFE está agora completamente isolada e funcional dentro da pasta `RLFE/`, ignorando outras implementações do projeto.
+- O ciclo federado (geração do compose, build e arranque dos serviços) deve ser executado exclusivamente dentro de `RLFE/`.
+- O `generate_compose.py`, o Dockerfile, todos os scripts, volumes e outputs são agora relativos apenas a `RLFE/`.
+
+### Estado do Teste em Progresso
+- [/] Validação do ciclo completo federado RLFE (compose, build, up, logs) a partir de RLFE/.
+- [/] Todos os outputs, reports e resultados são agora gerados e persistidos apenas dentro de RLFE/.
+- [ ] Confirmar arranque automático dos clientes após o servidor ficar "healthy" e validação dos outputs.
+
+### Recomendações de Execução
+1. Entrar na pasta RLFE:
+   ```sh
+   cd RLFE
+   ```
+2. Gerar o compose:
+   ```sh
+   python generate_compose.py 2 20
+   ```
+3. Subir os serviços federados:
+   ```sh
+   docker compose -f docker-compose.generated.yml up --build --detach
+   ```
+4. Monitorizar logs e outputs:
+   ```sh
+   docker compose -f docker-compose.generated.yml logs --tail=100
+   ```
+
+- Todos os dados, scripts e resultados são agora independentes de outras abordagens.
+
+### Pontos Críticos para Continuidade
+- O identificador do cliente (`cid`) deve estar presente em todos os logs do próprio cliente para facilitar troubleshooting e análise federada.
+- O código atualizado encontra-se em `RLFE/client/client.py` e `RLFE/generate_compose.py`.
+- O teste federado deve ser sempre iniciado com `docker-compose -f docker-compose.generated.yml up --build` a partir da raiz do projeto.
+- Qualquer agente/usuário deve:
+    1. Garantir que containers antigos são removidos (`docker-compose -f docker-compose.generated.yml down -v` se necessário);
+    2. Relançar o teste federado;
+    3. Monitorizar logs e outputs dos clientes e servidor;
+    4. Atualizar este documento com eventuais novos erros ou soluções aplicadas.
+
+---
+
 ## Legenda
 
 - [ ] Tarefa por fazer
@@ -88,6 +134,24 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 - Utiliza FedAvg para agregação.
 - Implementa SHAP e LIME para explicabilidade.
 
+## Execução dos Clientes Federados RLFE (Docker)
+
+- Para levantar múltiplos clientes federados:
+  ```bash
+  docker-compose -f docker-compose.generated.yml up --build
+  ```
+  Cada container será iniciado com o seu `cid` correto e partilhará volumes para reports, results e dataset.
+- O script `generate_compose.py` está na raiz da pasta `RLFE/`.
+- O volume `DatasetIOT/` é read-only; `reports/` e `results/` são persistentes.
+- Para personalizar volumes, nomes de container ou adicionar serviços extra, basta ajustar o template no script.
+- O pipeline federado será integrado no cliente após validação da infraestrutura.
+
+## Execução Local de Cliente RLFE
+
+```bash
+python client.py --cid=1 --num_clients=4
+```
+
 ## Estrutura Modular RLFE
 - Nova pasta `RFLE/` criada para a abordagem Regressão Linear Federada Explicável (RLFE).
 - Cada cliente é instanciado a partir de um único script parametrizado (`client.py`), recebendo `cid` e `num_clients` como argumentos.
@@ -119,3 +183,57 @@ Estes passos permitem acelerar o desenvolvimento, garantir testes eficientes e s
     - Normalização/padronização das variáveis numéricas.
 - Recomenda-se preencher os valores em falta na tabela comparativa após os primeiros testes com o novo dataset.
 - Manter o desenvolvimento e debugging sobre o subconjunto reduzido antes de escalar para o dataset completo.
+
+---
+
+## [PLANO DE IMPLEMENTAÇÃO — RELATÓRIOS AVANÇADOS NA RLFE]
+
+### Objetivo
+Replicar e adaptar a geração de relatórios avançados (plots, HTML, artefactos de explicabilidade, modelos finais, etc.) da abordagem anterior (flower_docker_v2_CH - ExpCli1Cli2) na nova implementação RLFE.
+
+### Passos do Plano
+
+1. **Análise Detalhada dos Outputs da Versão Anterior**
+   - Listar todos os ficheiros relevantes gerados em `reports` e `results` (plots, HTML, JSON, PNG, modelos, README).
+   - Identificar dependências de geração (matplotlib, seaborn, etc.) e formatos de dados.
+
+2. **Mapeamento para a Estrutura RLFE**
+   - Definir onde e quando cada artefacto deve ser gerado no ciclo federado RLFE (por ronda, por cliente, no final, etc.).
+   - Garantir que as pastas `reports/client_X` e `results/client_X` são utilizadas conforme esperado.
+
+3. **Implementação da Geração de Artefactos**
+   - [ ] Guardar o modelo treinado final (`model_client_X.pt`) em `results/client_X`.
+   - [ ] Gerar plots de evolução (loss, RMSE, métricas, explicabilidade) ao longo das rondas em `reports/client_X`.
+   - [ ] Gerar imagens de explicabilidade (LIME, SHAP) por ronda e sumarizadas.
+   - [ ] Guardar métricas e importâncias em ficheiros JSON.
+   - [ ] Gerar relatório HTML consolidado (`final_report.html`) por cliente.
+   - [ ] Atualizar README.md descritivo dos outputs.
+
+4. **Adaptação do Código do Cliente RLFE**
+   - Modificar `client.py` para acumular métricas e artefactos ao longo das rondas (armazenar histórico em listas/dicionários).
+   - No final do ciclo federado, gerar e guardar todos os artefactos necessários.
+   - Garantir que a geração de relatórios não interfere com o desempenho do ciclo federado.
+
+5. **Testes e Validação**
+   - Testar a geração dos outputs com 2 clientes e dataset reduzido.
+   - Validar a existência, formato e conteúdo dos ficheiros gerados.
+   - Corrigir eventuais incompatibilidades ou erros.
+
+6. **Documentação**
+   - Atualizar o README e este ficheiro com instruções de execução e exemplos dos relatórios gerados.
+
+---
+
+### Tarefas Prioritárias
+- [ ] Guardar modelo treinado final em `results/client_X`.
+- [ ] Gerar plots de evolução (loss, RMSE, métricas, explicabilidade) em `reports/client_X`.
+- [ ] Gerar imagens de explicabilidade (LIME, SHAP) por ronda.
+- [ ] Gerar relatório HTML consolidado.
+- [ ] Documentar outputs e atualizar README.
+
+---
+
+### Observações
+- O plano deve ser executado iterativamente: primeiro garantir a persistência dos modelos e métricas, depois adicionar plots e relatórios HTML.
+- Priorizar outputs que facilitam análise e comparação federada (plots, métricas, explicabilidade visual).
+- Validar outputs com exemplos reais após cada alteração.

@@ -1,0 +1,8 @@
+# ficheiro de requisitos para RLFE (Regressão Linear Federada Explicável)
+pandas
+numpy
+scikit-learn
+torch
+flwr
+lime
+shap

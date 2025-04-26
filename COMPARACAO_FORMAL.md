@@ -67,6 +67,33 @@ Este documento apresenta um template de tabela comparativa e uma estrutura detal
 
 ---
 
+## Execução dos Clientes Federados RLFE (Docker)
+
+- Para levantar múltiplos clientes federados, utilize:
+  ```bash
+  docker-compose -f docker-compose.generated.yml up --build
+  ```
+  Cada container será iniciado com o seu `cid` correto e partilhará volumes para reports, results e dataset.
+
+- O script `generate_compose.py` está na raiz da pasta `RLFE/`.
+- O volume `DatasetIOT/` é montado como read-only; `reports/` e `results/` são persistentes.
+- Para personalizar volumes, nomes de container ou adicionar serviços extra (ex: servidor FL), basta ajustar o template no script.
+- O pipeline federado será integrado no cliente após validação da infraestrutura.
+
+## Execução Local de Cliente RLFE
+
+```bash
+python client.py --cid=1 --num_clients=4
+```
+
+## Notas de Infraestrutura
+- Finalizar a configuração Docker (Dockerfile e docker-compose.yml)
+- Integrar pipeline de treino federado e explicabilidade no cliente RLFE
+- Testar execução distribuída e outputs persistentes
+- Atualizar documentação após validação
+
+---
+
 Este documento serve como referência para a redação da dissertação e para a apresentação dos resultados comparativos do projeto.
 
 ## 1. Resultados Quantitativos

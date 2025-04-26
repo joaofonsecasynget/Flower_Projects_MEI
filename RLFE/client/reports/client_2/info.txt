@@ -1,0 +1,3 @@
+Client 2 - Num samples: 937
+Test loss: 0.4315
+Test RMSE: 0.65

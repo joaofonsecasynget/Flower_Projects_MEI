@@ -33,7 +33,7 @@ O novo dataset (`ds_testes_iniciais.csv`) foi criado para facilitar o desenvolvi
 ## Estrutura Modular RLFE
 
 - A abordagem RLFE (Regressão Linear Federada Explicável) está a ser migrada para uma estrutura modular e escalável.
-- Cada cliente RLFE encontra-se em `RFLE/client/` e é parametrizado por `cid` (começando em 1) e `num_clients`.
+- Cada cliente RLFE encontra-se em `RLFE/client/` e é parametrizado por `cid` (começando em 1) e `num_clients`.
 - O particionamento do dataset é feito "on-the-fly" por cada cliente, garantindo flexibilidade e reprodutibilidade.
 - Os outputs de cada cliente são guardados em subpastas dedicadas dentro de `reports/` e `results/`.
 - O arranque dos clientes será automatizado via `docker-compose.yml`, que cria N containers de cliente conforme variável `NUM_CLIENTS`.
@@ -50,32 +50,24 @@ Após o carregamento do dataset, o pipeline realiza automaticamente:
 
 Estas etapas garantem que apenas features relevantes e informativas são usadas no treino e avaliação do modelo federado.
 
-## Execução Escalável de Clientes RLFE
+## Execução dos Clientes Federados RLFE (Docker)
 
-Para garantir que cada container cliente recebe o seu argumento `--cid` único ao usar Docker Compose, utiliza-se o script `generate_compose.py`, que gera automaticamente um ficheiro `docker-compose.generated.yml` com um serviço distinto para cada cliente.
+Para levantar múltiplos clientes federados:
+```bash
+docker-compose -f docker-compose.generated.yml up --build
+```
+Cada container será iniciado com o seu `cid` correto e partilhará volumes para reports, results e dataset.
 
-### Passos para execução distribuída:
-
-1. **Escolher o número de clientes**
-   - Exemplo: para 4 clientes
-
-2. **Gerar o ficheiro docker-compose**
-   ```bash
-   python generate_compose.py 4
-   ```
-   Isto cria o ficheiro `docker-compose.generated.yml` com 4 serviços, cada um com o seu `--cid` (de 1 a 4).
-
-3. **Levantar os clientes federados**
-   ```bash
-   docker-compose -f docker-compose.generated.yml up --build
-   ```
-   Cada container será iniciado com o seu `cid` correto e partilhará volumes para reports, results e dataset.
-
-### Notas:
-- O script `generate_compose.py` está na raiz da pasta `RFLE/`.
+- O script `generate_compose.py` está na raiz da pasta `RLFE/`.
 - O volume `DatasetIOT/` é montado como read-only; `reports/` e `results/` são persistentes.
 - Para personalizar volumes, nomes de container ou adicionar serviços extra (ex: servidor FL), basta ajustar o template no script.
 - O pipeline federado será integrado no cliente após validação da infraestrutura.
+
+## Execução Local de Cliente RLFE
+
+```bash
+python client.py --cid=1 --num_clients=4
+```
 
 ## Exemplo de Execução Local
 
