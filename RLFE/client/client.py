@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import logging
 import flwr as fl
+import json
+import matplotlib.pyplot as plt
 
 # Filtro para garantir que todas as mensagens de log tenham o campo 'cid'
 class AddClientIdFilter(logging.Filter):
@@ -117,6 +119,9 @@ X_scaled = scaler.fit_transform(X)
 X_train, X_temp, y_train, y_temp = train_test_split(X_scaled, y, test_size=0.3, random_state=args.seed)
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=args.seed)
 
+# Salvar X_train para explicabilidade LIME/SHAP
+np.save(base_reports / "X_train.npy", X_train)
+
 train_ds = CustomDataset(X_train, y_train)
 val_ds = CustomDataset(X_val, y_val)
 test_ds = CustomDataset(X_test, y_test)
@@ -140,6 +145,15 @@ class RLFEClient(fl.client.NumPyClient):
         self.epochs = epochs
         self.device = device
 
+        # Histórico de métricas por ronda
+        self.history = {
+            "train_loss": [],
+            "val_loss": [],
+            "val_rmse": [],
+            "test_loss": [],
+            "test_rmse": []
+        }
+
     def get_parameters(self, config):
         """Retorna os parâmetros do modelo como uma lista de arrays numpy."""
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
@@ -155,11 +169,152 @@ class RLFEClient(fl.client.NumPyClient):
         self.set_parameters(parameters)
         train_loss = train(self.model, self.train_loader, epochs=self.epochs, device=self.device)
         val_loss, val_rmse, _, _ = evaluate(self.model, self.val_loader, device=self.device)
-        
         logger.info(f"Client {args.cid} - Train loss: {train_loss:.4f}")
         logger.info(f"Client {args.cid} - Val loss: {val_loss:.4f} | Val RMSE: {val_rmse:.2f}")
-        
-        # Retorna os parâmetros atualizados, o tamanho do conjunto de dados e as métricas
+        self.history["train_loss"].append(float(train_loss))
+        self.history["val_loss"].append(float(val_loss))
+        self.history["val_rmse"].append(float(val_rmse))
+        # Guardar histórico incremental
+        hist_path = base_reports / "metrics_history.json"
+        with open(hist_path, "w") as f:
+            json.dump(self.history, f, indent=2)
+
+        # Salvar X_train para explicabilidade (se for a última ronda)
+        round_number = config.get("round_number", -1)
+        num_rounds = config.get("num_rounds", -1)
+        if round_number == num_rounds:
+            try:
+                # Salvar X_train (features de treino) para explicabilidade
+                np.save(base_reports / "X_train.npy", X_train)
+            except Exception as e:
+                logger.error(f"Erro ao salvar X_train.npy: {e}")
+
+            # Geração das explicações LIME e SHAP
+            try:
+                X_train_path = base_reports / "X_train.npy"
+                if X_train_path.exists():
+                    X_train_local = np.load(X_train_path)
+                    # LIME
+                    instance = X_train_local[0]
+                    lime_exp = explainer.explain_lime(X_train_local, instance)
+                    lime_exp.save_to_file(str(base_reports / "lime_final.html"))
+                    lime_exp_fig = lime_exp.as_pyplot_figure()
+                    lime_exp_fig.savefig(base_reports / "lime_final.png")
+                    with open(base_reports / "lime_explanation.txt", "w") as f:
+                        f.write(str(lime_exp.as_list()))
+                    lime_ok = True
+                else:
+                    lime_ok = False
+                # SHAP
+                try:
+                    shap_values = explainer.explain_shap(X_train_local, n_samples=100)
+                    import shap as shap_lib
+                    shap_lib.summary_plot(shap_values, X_train_local, feature_names=explainer.feature_names, show=False)
+                    import matplotlib.pyplot as plt
+                    plt.savefig(base_reports / "shap_final.png")
+                    np.save(base_reports / "shap_values.npy", shap_values)
+                    shap_ok = True
+                except Exception as e:
+                    with open(base_reports / "shap_error.txt", "w") as f:
+                        f.write(str(e))
+                    shap_ok = False
+            except Exception as e:
+                with open(base_reports / "lime_shap_error.txt", "w") as f:
+                    f.write(str(e))
+                lime_ok = False
+                shap_ok = False
+
+            # Relatório HTML
+            from datetime import datetime
+            dt_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(base_reports / "final_report.html", "w") as f:
+                f.write(f"""
+            <html>
+            <head>
+                <title>Relatório Federado - Cliente {args.cid}</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 40px; }}
+                    h1, h2 {{ color: #2c3e50; }}
+                    img {{ max-width: 600px; margin: 20px 0; }}
+                    .metrics-table {{ border-collapse: collapse; margin: 20px 0; }}
+                    .metrics-table th, .metrics-table td {{ border: 1px solid #ccc; padding: 8px; }}
+                    .metrics-table th {{ background: #f0f0f0; }}
+                </style>
+            </head>
+            <body>
+                <h1>Relatório Federado - Cliente {args.cid}</h1>
+                <h2>Resumo das Métricas</h2>
+                <table class="metrics-table">
+                    <tr><th>Métrica</th><th>Valor Final</th></tr>
+                    <tr><td>Train Loss</td><td>{self.history['train_loss'][-1] if self.history['train_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Val Loss</td><td>{self.history['val_loss'][-1] if self.history['val_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Val RMSE</td><td>{self.history['val_rmse'][-1] if self.history['val_rmse'] else 'N/A'}</td></tr>
+                    <tr><td>Test Loss</td><td>{self.history['test_loss'][-1] if self.history['test_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Test RMSE</td><td>{self.history['test_rmse'][-1] if self.history['test_rmse'] else 'N/A'}</td></tr>
+                </table>
+                <h2>Plots de Evolução</h2>
+                <img src="loss_evolution.png" alt="Evolução do Loss" />
+                <img src="rmse_evolution.png" alt="Evolução do RMSE" />
+                <h2>Explicabilidade</h2>
+                <h3>LIME (última ronda)</h3>
+                {f'<img src="lime_final.png" alt="LIME final" />' if lime_ok else '<p><em>Explicabilidade LIME não disponível.</em></p>'}
+                <h3>SHAP (última ronda)</h3>
+                {f'<img src="shap_final.png" alt="SHAP final" />' if shap_ok else '<p><em>Explicabilidade SHAP não disponível.</em></p>'}
+                <h2>Artefactos e Downloads</h2>
+                <ul>
+                    <li><a href="metrics_history.json">Histórico de Métricas (JSON)</a></li>
+                    <li><a href="../results/client_{args.cid}/model_client_{args.cid}.pt">Modelo Treinado (.pt)</a></li>
+                    <li><a href="info.txt">Info.txt</a></li>
+                    <li><a href="lime_explanation.txt">LIME Explanation (texto)</a></li>
+                    <li><a href="shap_values.npy">SHAP Values (.npy)</a></li>
+                </ul>
+                <p><em>Gerado automaticamente em {dt_str}</em></p>
+            </body>
+            </html>
+            """)
+            # Plots de evolução
+            try:
+                rounds = list(range(1, len(self.history["train_loss"]) + 1))
+                plt.figure()
+                plt.plot(rounds, self.history["train_loss"], label="Train Loss")
+                plt.plot(rounds, self.history["val_loss"], label="Val Loss")
+                plt.plot(rounds, self.history["test_loss"], label="Test Loss")
+                plt.xlabel("Ronda")
+                plt.ylabel("Loss")
+                plt.title("Evolução do Loss")
+                plt.legend()
+                plt.xticks(rounds)  # Apenas inteiros
+                plt.savefig(base_reports / "loss_evolution.png")
+                plt.close()
+                plt.figure()
+                plt.plot(rounds, self.history["val_rmse"], label="Val RMSE")
+                plt.plot(rounds, self.history["test_rmse"], label="Test RMSE")
+                plt.xlabel("Ronda")
+                plt.ylabel("RMSE")
+                plt.title("Evolução do RMSE")
+                plt.legend()
+                plt.xticks(rounds)  # Apenas inteiros
+                plt.savefig(base_reports / "rmse_evolution.png")
+                plt.close()
+                logger.info(f"Metric plots saved to {base_reports}")
+            except Exception as e:
+                logger.error(f"Error generating/saving metric plots: {str(e)}")
+            # Guardar info.txt
+            with open(base_reports / "info.txt", "w") as f:
+                if self.history['test_loss'] and self.history['test_rmse']:
+                    f.write(f"Client {args.cid} - Num samples: {len(self.test_loader.dataset)}\n")
+                    f.write(f"Test loss: {self.history['test_loss'][-1]:.4f}\nTest RMSE: {self.history['test_rmse'][-1]:.2f}\n")
+                else:
+                    f.write("Client {args.cid} - Num samples: {len(self.test_loader.dataset)}\n")
+                    f.write("Test loss: N/A\nTest RMSE: N/A\n")
+            # Guardar modelo treinado final
+            try:
+                import torch
+                model_path = base_results / f"model_client_{args.cid}.pt"
+                torch.save(self.model.state_dict(), model_path)
+                logger.info(f"Final model saved to {model_path}")
+            except Exception as e:
+                logger.error(f"Error saving model: {str(e)}")
         return self.get_parameters({}), len(self.train_loader.dataset), {
             "train_loss": float(train_loss),
             "val_loss": float(val_loss),
@@ -170,32 +325,143 @@ class RLFEClient(fl.client.NumPyClient):
         """Avalia o modelo nos dados de teste locais."""
         self.set_parameters(parameters)
         test_loss, test_rmse, y_pred, y_true = evaluate(self.model, self.test_loader, device=self.device)
-        
         logger.info(f"Client {args.cid} - Test loss: {test_loss:.4f} | Test RMSE: {test_rmse:.2f}")
-        
-        # Gerar explicações após avaliação final
-        try:
-            logger.info("Generating LIME explanation...")
-            lime_exp = explainer.explain_lime(X_train, X_test[0])
-            lime_path = base_reports / "lime_explanation.txt"
-            with open(lime_path, "w") as f:
-                f.write(str(lime_exp.as_list()))
-            logger.info(f"LIME explanation saved to {lime_path}")
-            
-            logger.info("Generating SHAP explanation...")
-            shap_values = explainer.explain_shap(X_train, n_samples=50)
-            shap_path = base_reports / "shap_values.npy"
-            np.save(shap_path, shap_values)
-            logger.info(f"SHAP values saved to {shap_path}")
-        except Exception as e:
-            logger.error(f"Error generating explanations: {str(e)}")
-        
-        # Guardar info.txt e métricas
-        with open(base_reports / "info.txt", "w") as f:
-            f.write(f"Client {args.cid} - Num samples: {len(client_data)}\n")
-            f.write(f"Test loss: {test_loss:.4f}\nTest RMSE: {test_rmse:.2f}\n")
-        
-        # Retorna a perda, tamanho do conjunto de dados e métricas
+        self.history["test_loss"].append(float(test_loss))
+        self.history["test_rmse"].append(float(test_rmse))
+        # Guardar histórico incremental
+        hist_path = base_reports / "metrics_history.json"
+        with open(hist_path, "w") as f:
+            json.dump(self.history, f, indent=2)
+        # Só gerar outputs finais se for a última ronda
+        round_number = config.get("round_number", -1)
+        num_rounds = config.get("num_rounds", -1)
+        if round_number == num_rounds:
+            # Geração das explicações LIME e SHAP
+            try:
+                X_train_path = base_reports / "X_train.npy"
+                if X_train_path.exists():
+                    X_train_local = np.load(X_train_path)
+                    # LIME
+                    instance = X_train_local[0]
+                    lime_exp = explainer.explain_lime(X_train_local, instance)
+                    lime_exp.save_to_file(str(base_reports / "lime_final.html"))
+                    lime_exp_fig = lime_exp.as_pyplot_figure()
+                    lime_exp_fig.savefig(base_reports / "lime_final.png")
+                    with open(base_reports / "lime_explanation.txt", "w") as f:
+                        f.write(str(lime_exp.as_list()))
+                    lime_ok = True
+                else:
+                    lime_ok = False
+                # SHAP
+                try:
+                    shap_values = explainer.explain_shap(X_train_local, n_samples=100)
+                    import shap as shap_lib
+                    shap_lib.summary_plot(shap_values, X_train_local, feature_names=explainer.feature_names, show=False)
+                    import matplotlib.pyplot as plt
+                    plt.savefig(base_reports / "shap_final.png")
+                    np.save(base_reports / "shap_values.npy", shap_values)
+                    shap_ok = True
+                except Exception as e:
+                    with open(base_reports / "shap_error.txt", "w") as f:
+                        f.write(str(e))
+                    shap_ok = False
+            except Exception as e:
+                with open(base_reports / "lime_shap_error.txt", "w") as f:
+                    f.write(str(e))
+                lime_ok = False
+                shap_ok = False
+
+            # Relatório HTML
+            from datetime import datetime
+            dt_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(base_reports / "final_report.html", "w") as f:
+                f.write(f"""
+            <html>
+            <head>
+                <title>Relatório Federado - Cliente {args.cid}</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 40px; }}
+                    h1, h2 {{ color: #2c3e50; }}
+                    img {{ max-width: 600px; margin: 20px 0; }}
+                    .metrics-table {{ border-collapse: collapse; margin: 20px 0; }}
+                    .metrics-table th, .metrics-table td {{ border: 1px solid #ccc; padding: 8px; }}
+                    .metrics-table th {{ background: #f0f0f0; }}
+                </style>
+            </head>
+            <body>
+                <h1>Relatório Federado - Cliente {args.cid}</h1>
+                <h2>Resumo das Métricas</h2>
+                <table class="metrics-table">
+                    <tr><th>Métrica</th><th>Valor Final</th></tr>
+                    <tr><td>Train Loss</td><td>{self.history['train_loss'][-1] if self.history['train_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Val Loss</td><td>{self.history['val_loss'][-1] if self.history['val_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Val RMSE</td><td>{self.history['val_rmse'][-1] if self.history['val_rmse'] else 'N/A'}</td></tr>
+                    <tr><td>Test Loss</td><td>{self.history['test_loss'][-1] if self.history['test_loss'] else 'N/A'}</td></tr>
+                    <tr><td>Test RMSE</td><td>{self.history['test_rmse'][-1] if self.history['test_rmse'] else 'N/A'}</td></tr>
+                </table>
+                <h2>Plots de Evolução</h2>
+                <img src="loss_evolution.png" alt="Evolução do Loss" />
+                <img src="rmse_evolution.png" alt="Evolução do RMSE" />
+                <h2>Explicabilidade</h2>
+                <h3>LIME (última ronda)</h3>
+                {f'<img src="lime_final.png" alt="LIME final" />' if lime_ok else '<p><em>Explicabilidade LIME não disponível.</em></p>'}
+                <h3>SHAP (última ronda)</h3>
+                {f'<img src="shap_final.png" alt="SHAP final" />' if shap_ok else '<p><em>Explicabilidade SHAP não disponível.</em></p>'}
+                <h2>Artefactos e Downloads</h2>
+                <ul>
+                    <li><a href="metrics_history.json">Histórico de Métricas (JSON)</a></li>
+                    <li><a href="../results/client_{args.cid}/model_client_{args.cid}.pt">Modelo Treinado (.pt)</a></li>
+                    <li><a href="info.txt">Info.txt</a></li>
+                    <li><a href="lime_explanation.txt">LIME Explanation (texto)</a></li>
+                    <li><a href="shap_values.npy">SHAP Values (.npy)</a></li>
+                </ul>
+                <p><em>Gerado automaticamente em {dt_str}</em></p>
+            </body>
+            </html>
+            """)
+            # Plots de evolução
+            try:
+                rounds = list(range(1, len(self.history["train_loss"]) + 1))
+                plt.figure()
+                plt.plot(rounds, self.history["train_loss"], label="Train Loss")
+                plt.plot(rounds, self.history["val_loss"], label="Val Loss")
+                plt.plot(rounds, self.history["test_loss"], label="Test Loss")
+                plt.xlabel("Ronda")
+                plt.ylabel("Loss")
+                plt.title("Evolução do Loss")
+                plt.legend()
+                plt.xticks(rounds)  # Apenas inteiros
+                plt.savefig(base_reports / "loss_evolution.png")
+                plt.close()
+                plt.figure()
+                plt.plot(rounds, self.history["val_rmse"], label="Val RMSE")
+                plt.plot(rounds, self.history["test_rmse"], label="Test RMSE")
+                plt.xlabel("Ronda")
+                plt.ylabel("RMSE")
+                plt.title("Evolução do RMSE")
+                plt.legend()
+                plt.xticks(rounds)  # Apenas inteiros
+                plt.savefig(base_reports / "rmse_evolution.png")
+                plt.close()
+                logger.info(f"Metric plots saved to {base_reports}")
+            except Exception as e:
+                logger.error(f"Error generating/saving metric plots: {str(e)}")
+            # Guardar info.txt
+            with open(base_reports / "info.txt", "w") as f:
+                if self.history['test_loss'] and self.history['test_rmse']:
+                    f.write(f"Client {args.cid} - Num samples: {len(self.test_loader.dataset)}\n")
+                    f.write(f"Test loss: {self.history['test_loss'][-1]:.4f}\nTest RMSE: {self.history['test_rmse'][-1]:.2f}\n")
+                else:
+                    f.write("Client {args.cid} - Num samples: {len(self.test_loader.dataset)}\n")
+                    f.write("Test loss: N/A\nTest RMSE: N/A\n")
+            # Guardar modelo treinado final
+            try:
+                import torch
+                model_path = base_results / f"model_client_{args.cid}.pt"
+                torch.save(self.model.state_dict(), model_path)
+                logger.info(f"Final model saved to {model_path}")
+            except Exception as e:
+                logger.error(f"Error saving model: {str(e)}")
         return float(test_loss), len(self.test_loader.dataset), {
             "test_loss": float(test_loss),
             "test_rmse": float(test_rmse)

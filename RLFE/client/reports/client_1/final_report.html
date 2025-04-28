@@ -1,0 +1,44 @@
+
+            <html>
+            <head>
+                <title>Relatório Federado - Cliente 1</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 40px; }
+                    h1, h2 { color: #2c3e50; }
+                    img { max-width: 600px; margin: 20px 0; }
+                    .metrics-table { border-collapse: collapse; margin: 20px 0; }
+                    .metrics-table th, .metrics-table td { border: 1px solid #ccc; padding: 8px; }
+                    .metrics-table th { background: #f0f0f0; }
+                </style>
+            </head>
+            <body>
+                <h1>Relatório Federado - Cliente 1</h1>
+                <h2>Resumo das Métricas</h2>
+                <table class="metrics-table">
+                    <tr><th>Métrica</th><th>Valor Final</th></tr>
+                    <tr><td>Train Loss</td><td>0.006426801905035973</td></tr>
+                    <tr><td>Val Loss</td><td>0.019043341837823392</td></tr>
+                    <tr><td>Val RMSE</td><td>0.13866443932056427</td></tr>
+                    <tr><td>Test Loss</td><td>0.039623890444636344</td></tr>
+                    <tr><td>Test RMSE</td><td>0.19936473667621613</td></tr>
+                </table>
+                <h2>Plots de Evolução</h2>
+                <img src="loss_evolution.png" alt="Evolução do Loss" />
+                <img src="rmse_evolution.png" alt="Evolução do RMSE" />
+                <h2>Explicabilidade</h2>
+                <h3>LIME (última ronda)</h3>
+                <img src="lime_final.png" alt="LIME final" />
+                <h3>SHAP (última ronda)</h3>
+                <img src="shap_final.png" alt="SHAP final" />
+                <h2>Artefactos e Downloads</h2>
+                <ul>
+                    <li><a href="metrics_history.json">Histórico de Métricas (JSON)</a></li>
+                    <li><a href="../results/client_1/model_client_1.pt">Modelo Treinado (.pt)</a></li>
+                    <li><a href="info.txt">Info.txt</a></li>
+                    <li><a href="lime_explanation.txt">LIME Explanation (texto)</a></li>
+                    <li><a href="shap_values.npy">SHAP Values (.npy)</a></li>
+                </ul>
+                <p><em>Gerado automaticamente em 2025-04-28 10:59:32</em></p>
+            </body>
+            </html>
+            

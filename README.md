@@ -1,104 +1,77 @@
-# Projeto de Aprendizagem Federada e Explicabilidade para Previsão de Preços Imobiliários
+# Projeto de Aprendizagem Federada e Explicabilidade para Ambientes IoT
 
-Este projeto explora a implementação de modelos de aprendizagem federada (Federated Learning - FL) utilizando o framework Flower para prever os preços de imóveis na Califórnia. O foco principal reside não apenas na previsão, mas também na análise da explicabilidade (Explainability) dos modelos treinados de forma federada.
+Este projeto implementa estratégias avançadas de aprendizagem federada (Federated Learning - FL) com foco em ambientes distribuídos e seguros, utilizando um novo dataset de IoT. O objetivo é combinar desempenho preditivo com explicabilidade, explorando modelos lineares e árvores de decisão, e integrando técnicas como LIME e SHAP.
 
-## Objetivo
+## Título da Dissertação
+"Advanced Federated Learning Strategies: A Multi-Model Approach for Distributed and Secure Environments"
 
-Investigar e comparar estratégias para construir modelos interpretáveis em FL, avaliando benefícios, desafios e desempenho. O objetivo é compreender como melhorar a estabilidade dos modelos, reduzir discrepâncias entre clientes e otimizar a interpretabilidade sem comprometer a performance preditiva, sempre preservando a privacidade dos dados.
+## Estrutura do Projeto
+- **RLFE/**: Nova implementação principal, totalmente containerizada com Docker e Docker Compose.
+- **DatasetIOT/**: Contém o dataset IoT real utilizado (`transformed_dataset_imeisv_8642840401612300.csv`).
+- **reports/** e **results/**: Volumes persistentes para outputs e artefactos de cada cliente.
 
-## Abreviaturas das Abordagens
+## Abordagens
 - **ADF**: Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn)
 - **RLFE**: Regressão Linear Federada Explicável (PyTorch, LIME/SHAP)
 
-## Abordagens Exploradas
+## Principais Características
+- Orquestração completa via Docker Compose, escalando automaticamente o número de clientes.
+- Cada cliente executa em container isolado, com partição distinta do dataset (seed fixa para reprodutibilidade).
+- Outputs organizados por cliente: métricas, histórico, plots, imagens de explicabilidade e relatório HTML consolidado.
+- Explicabilidade gerada apenas após a última ronda federada, garantindo que os artefactos finais refletem o treino completo.
+- Healthcheck garante que clientes só arrancam após o servidor estar disponível.
 
-1. **ADF:**
-   - Interpretabilidade nativa.
-   - Importância das features e estrutura da árvore analisadas localmente e agregadas.
-   - Implementação: `flower_docker_v2_CH - DecisionTreeRegressor`.
-2. **RLFE:**
-   - Modelo linear treinado federadamente com Adam.
-   - Explicabilidade via LIME e SHAP (gráficos por ronda e evolução global).
-   - Implementação: `flower_docker_v2_CH - ExpCli1Cli2`.
+## Execução Federada (Docker)
 
-Ambas as abordagens usam Docker e um servidor Flower centralizado. O particionamento dos dados é feito com seed fixa, garantindo partições distintas e reprodutíveis para cada cliente.
+1. Entrar na pasta RLFE:
+   ```sh
+   cd RLFE
+   ```
+2. Gerar o docker-compose:
+   ```sh
+   python generate_compose.py <NUM_CLIENTES> <NUM_ROUNDS>
+   ```
+3. Subir os serviços federados:
+   ```sh
+   docker compose -f docker-compose.generated.yml up --build --detach
+   ```
+4. Monitorizar logs e outputs:
+   ```sh
+   docker compose -f docker-compose.generated.yml logs --tail=100
+   ```
 
-## Novo Dataset
-
-O novo dataset (`ds_testes_iniciais.csv`) foi criado para facilitar o desenvolvimento e teste das abordagens federadas.
-- Contém múltiplas features por amostra, valores ausentes representados por -1.
-- É necessário pré-processamento: substituir -1 por NaN, remover colunas não relevantes, confirmar a coluna target (`attack`) e normalizar as features.
-- Recomenda-se usar este dataset para debugging e validação inicial antes de escalar para o dataset completo.
-
-## Estrutura Modular RLFE
-
-- A abordagem RLFE (Regressão Linear Federada Explicável) está a ser migrada para uma estrutura modular e escalável.
-- Cada cliente RLFE encontra-se em `RLFE/client/` e é parametrizado por `cid` (começando em 1) e `num_clients`.
-- O particionamento do dataset é feito "on-the-fly" por cada cliente, garantindo flexibilidade e reprodutibilidade.
-- Os outputs de cada cliente são guardados em subpastas dedicadas dentro de `reports/` e `results/`.
-- O arranque dos clientes será automatizado via `docker-compose.yml`, que cria N containers de cliente conforme variável `NUM_CLIENTS`.
-- Volumes Docker serão usados para persistência dos resultados e partilha do dataset.
-- O pipeline de treino federado, avaliação e explicabilidade será integrado no script do cliente após validação da estrutura base.
-
-### Validação e Limpeza de Dados no Cliente RLFE
-
-Após o carregamento do dataset, o pipeline realiza automaticamente:
-- **Remoção de colunas constantes:** Colunas sem variância (mesmo valor para todas as amostras) são eliminadas, pois não contribuem para o modelo preditivo.
-- **Remoção de colunas de identificação/tempo:** Colunas como `índice`, `_time` e `imeisv` são removidas, pois não têm valor preditivo direto e podem introduzir viés.
-- **Tratamento de valores em falta:** Colunas com valores ausentes são preenchidas pela mediana da coluna, tornando o pipeline mais robusto a outliers.
-- **Codificação de variáveis categóricas:** Features categóricas são convertidas automaticamente para variáveis dummy (one-hot encoding), garantindo compatibilidade com modelos lineares.
-
-Estas etapas garantem que apenas features relevantes e informativas são usadas no treino e avaliação do modelo federado.
-
-## Execução dos Clientes Federados RLFE (Docker)
-
-Para levantar múltiplos clientes federados:
-```bash
-docker-compose -f docker-compose.generated.yml up --build
-```
-Cada container será iniciado com o seu `cid` correto e partilhará volumes para reports, results e dataset.
-
-- O script `generate_compose.py` está na raiz da pasta `RLFE/`.
 - O volume `DatasetIOT/` é montado como read-only; `reports/` e `results/` são persistentes.
-- Para personalizar volumes, nomes de container ou adicionar serviços extra (ex: servidor FL), basta ajustar o template no script.
-- O pipeline federado será integrado no cliente após validação da infraestrutura.
+- Para personalizar volumes, nomes de container ou adicionar serviços extra (ex: servidor FL), basta ajustar o template no script `generate_compose.py`.
 
 ## Execução Local de Cliente RLFE
 
 ```bash
-python client.py --cid=1 --num_clients=4
+python client.py --cid=1 --num_clients=4 --num_total_clients=4 --dataset_path=../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv
 ```
 
-## Exemplo de Execução Local
-
-```bash
-python client.py --cid=1 --num_clients=4
-```
-
-## Próximos Passos
-- Finalizar a configuração Docker (Dockerfile e docker-compose.yml)
-- Integrar pipeline de treino federado e explicabilidade no cliente RLFE
-- Testar execução distribuída e outputs persistentes
-- Atualizar documentação após validação
-
-## Estado Atual do Projeto
-
-- Implementação das abordagens federadas concluída para o dataset California Housing.
-- Transição em curso para o novo dataset, com recomendações de pré-processamento já definidas.
-- Documentação e comparação formal das abordagens em atualização contínua.
-
-## Próximos Passos
-- Comparação formal dos resultados entre ADF e RLFE (tabela de métricas, análise de explicabilidade, discussão de limitações).
-- Definir e adaptar o novo dataset alvo para a dissertação.
-- Desenvolver protocolo de testes e critérios para a comparação robusta das abordagens.
-- Desenvolvimento incremental da dissertação (estrutura e escrita das secções principais).
-
-#### Argumentos do Cliente RLFE
-
+## Argumentos do Cliente RLFE
 - `--cid`: ID do cliente (1-indexed)
 - `--num_clients`: número de clientes a executar neste teste
-- `--num_total_clients`: **número total de clientes para particionamento dos dados** (define em quantas partes o dataset é dividido, mesmo que só corram alguns clientes)
+- `--num_total_clients`: número total de clientes para particionamento dos dados
 - `--dataset_path`: caminho para o dataset CSV
 - `--seed`: seed para reprodutibilidade
 
 O dataset é sempre dividido por `num_total_clients` e cada cliente recebe apenas a sua fração, tornando o teste mais realista e eficiente mesmo com poucos clientes em execução.
+
+## Outputs Gerados por Cliente (ao final do ciclo federado)
+- **Modelo treinado:** `results/client_X/model_client_X.pt`
+- **Histórico de métricas:** `reports/client_X/metrics_history.json`
+- **Plots:** `reports/client_X/loss_evolution.png`, `reports/client_X/rmse_evolution.png`
+- **Explicabilidade:** `reports/client_X/lime_final.png`, `reports/client_X/shap_final.png`
+- **Relatório HTML:** `reports/client_X/final_report.html` (consolidando métricas, gráficos e imagens)
+
+## Estado Atual
+- Nova estrutura RLFE funcional, substituindo abordagens anteriores.
+- Explicabilidade, outputs e relatórios finais só gerados na última ronda.
+- Testes e validação em curso com múltiplos clientes e dataset IoT.
+- Documentação e exemplos de outputs serão incrementados após validação.
+
+## Próximos Passos
+- Comparação formal dos resultados entre ADF e RLFE (tabela de métricas, análise de explicabilidade, discussão de limitações).
+- Desenvolver protocolo de testes e critérios para comparação robusta.
+- Incrementar documentação com exemplos reais dos artefactos gerados.

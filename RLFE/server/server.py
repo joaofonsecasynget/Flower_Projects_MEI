@@ -58,14 +58,38 @@ NUM_ROUNDS = 5  # Pode ser ajustado conforme necessário
 config = fl.server.ServerConfig(num_rounds=NUM_ROUNDS)
 
 # Estratégia de federação
-strategy = fl.server.strategy.FedAvg(
-    fraction_fit=1.0,  # Usar todos os clientes disponíveis para treinamento
-    fraction_evaluate=1.0,  # Usar todos os clientes disponíveis para avaliação
-    min_fit_clients=2,  # Número mínimo de clientes para treinamento
-    min_evaluate_clients=2,  # Número mínimo de clientes para avaliação
-    min_available_clients=2,  # Espera pelo menos este número de clientes antes de iniciar
+from flwr.server.strategy import FedAvg
+
+class RLFEFedAvg(FedAvg):
+    def __init__(self, *args, num_rounds=5, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.num_rounds = num_rounds
+    def configure_fit(self, server_round, parameters, client_manager, **kwargs):
+        # Chama a implementação base para obter as instruções padrão
+        ins = super().configure_fit(server_round, parameters, client_manager, **kwargs)
+        # Injeta round_number e num_rounds na config de cada cliente
+        for i in range(len(ins)):  # ins é uma lista de tuplos (ClientProxy, FitIns)
+            if hasattr(ins[i][1], 'config') and isinstance(ins[i][1].config, dict):
+                ins[i][1].config['round_number'] = server_round
+                ins[i][1].config['num_rounds'] = self.num_rounds if hasattr(self, 'num_rounds') else 0
+        return ins
+    def configure_evaluate(self, server_round, parameters, client_manager, **kwargs):
+        eval_ins = super().configure_evaluate(server_round, parameters, client_manager, **kwargs)
+        for ins in eval_ins:
+            if hasattr(ins[1], 'config') and isinstance(ins[1].config, dict):
+                ins[1].config['round_number'] = server_round
+                ins[1].config['num_rounds'] = self.num_rounds if hasattr(self, 'num_rounds') else 0
+        return eval_ins
+
+strategy = RLFEFedAvg(
+    fraction_fit=1.0,
+    fraction_evaluate=1.0,
+    min_fit_clients=2,
+    min_evaluate_clients=2,
+    min_available_clients=2,
     fit_metrics_aggregation_fn=fit_metrics_aggregation_fn,
     evaluate_metrics_aggregation_fn=evaluate_metrics_aggregation_fn,
+    num_rounds=NUM_ROUNDS
 )
 
 if __name__ == "__main__":
