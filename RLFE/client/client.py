@@ -227,10 +227,17 @@ class RLFEClient(fl.client.NumPyClient):
                 # Usar uma instância aleatória ou a primeira para LIME
                 instance_index = np.random.randint(0, len(X_train_local))
                 instance = X_train_local[instance_index]
-                # Passar num_features explicitamente - CORREÇÃO: Remover num_features daqui, já é tratado internamente
+                # Passar num_features explicitamente - CORREÇÃO: Remover num_features daqui, já é tratado internamente --> Revertendo para o original
                 lime_exp = explainer.explain_lime(X_train_local, instance)
                 lime_exp.save_to_file(str(base_reports / "lime_final.html"))
                 lime_exp_fig = lime_exp.as_pyplot_figure()
+                
+                # Adicionar '(Top 10 Features)' ao título e ajustar layout
+                ax = lime_exp_fig.gca() # Obter eixos
+                current_title = ax.get_title()
+                ax.set_title(current_title + " (Top 10 Features)")
+                lime_exp_fig.tight_layout() # Ajustar layout para melhor legibilidade
+                
                 lime_exp_fig.savefig(base_reports / "lime_final.png")
                 plt.close(lime_exp_fig) # Fechar a figura para libertar memória
                 with open(base_reports / "lime_explanation.txt", "w") as f:

@@ -26,7 +26,7 @@ class ModelExplainer:
                 feature_names=self.feature_names,
                 mode="regression"
             )
-        exp = self.lime_explainer.explain_instance(instance, self.predict_fn, num_features=len(self.feature_names))
+        exp = self.lime_explainer.explain_instance(instance, self.predict_fn, num_features=10) # Mostrar apenas as 10 features mais importantes
         return exp
 
     def explain_shap(self, X_train, n_samples=100):
