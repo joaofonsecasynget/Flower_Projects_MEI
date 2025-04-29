@@ -25,6 +25,11 @@
                 p em { color: #7f8c8d; font-size: 0.9em; text-align: center; display: block; margin-top: 20px; }
                 .section { background-color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
                 .plot-container img { margin-bottom: 25px; }
+                /* Estilos para a tabela de plots */
+                .plot-table { width: 100%; border-collapse: separate; border-spacing: 15px; }
+                .plot-table td { vertical-align: top; text-align: center; width: 33%; background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #eee; }
+                .plot-table img { max-width: 100%; height: auto; margin: 10px auto; display: block; }
+                .plot-table h3 { margin-top: 0; font-size: 1em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555; }
             </style>
         </head>
         <body>
@@ -38,25 +43,27 @@
 <tr><th>Ronda</th><th>Train Loss</th><th>Val Loss</th><th>Test Loss</th><th>Val Rmse</th><th>Test Rmse</th><th>Fit Duration Seconds</th><th>Evaluate Duration Seconds</th><th>Lime Duration Seconds</th><th>Shap Duration Seconds</th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>0.0857</td><td>0.0880</td><td>0.1547</td><td>0.29557973</td><td>0.39075664</td><td>0.6425</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>2</td><td>0.0230</td><td>0.0253</td><td>0.0486</td><td>0.1579476</td><td>0.21922228</td><td>0.0364</td><td>0.0011</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>3</td><td>0.0137</td><td>0.0192</td><td>0.0338</td><td>0.1383594</td><td>0.1833716</td><td>0.0411</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>4</td><td>0.0109</td><td>0.0134</td><td>0.0259</td><td>0.11483872</td><td>0.15958878</td><td>0.0545</td><td>0.0013</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>5</td><td>0.0096</td><td>0.0120</td><td>0.0231</td><td>0.10935844</td><td>0.15078953</td><td>0.0394</td><td>0.0016</td><td>2.0390</td><td>398.0294</td></tr>
+<tr><td>1</td><td>0.0857</td><td>0.0880</td><td>0.1547</td><td>0.29557973</td><td>0.39075664</td><td>0.6525</td><td>0.0011</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>2</td><td>0.0230</td><td>0.0253</td><td>0.0486</td><td>0.1579476</td><td>0.21922228</td><td>0.0398</td><td>0.0011</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>3</td><td>0.0137</td><td>0.0192</td><td>0.0338</td><td>0.1383594</td><td>0.1833716</td><td>0.0387</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>4</td><td>0.0109</td><td>0.0134</td><td>0.0259</td><td>0.11483872</td><td>0.15958878</td><td>0.0394</td><td>0.0012</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>5</td><td>0.0096</td><td>0.0120</td><td>0.0231</td><td>0.10935844</td><td>0.15078953</td><td>0.0559</td><td>0.0020</td><td>1.8672</td><td>393.7999</td></tr>
 </tbody>
 </table>
 </div></div><div class="section plot-container">
 <h2>Plots de Evolução das Métricas</h2>
-<h3>Train Loss</h3>
-<img src="train_loss_evolution.png" alt="Evolução Train Loss" />
-<h3>Val Loss</h3>
-<img src="val_loss_evolution.png" alt="Evolução Val Loss" />
-<h3>Test Loss</h3>
-<img src="test_loss_evolution.png" alt="Evolução Test Loss" />
-<h3>Val Rmse</h3>
-<img src="val_rmse_evolution.png" alt="Evolução Val Rmse" />
-<h3>Test Rmse</h3>
-<img src="test_rmse_evolution.png" alt="Evolução Test Rmse" />
+<table class="plot-table">
+<tr>
+<td><h3>Train Loss</h3><img src="train_loss_evolution.png" alt="Evolução Train Loss" /></td>
+<td><h3>Val Loss</h3><img src="val_loss_evolution.png" alt="Evolução Val Loss" /></td>
+<td><h3>Test Loss</h3><img src="test_loss_evolution.png" alt="Evolução Test Loss" /></td>
+</tr>
+<tr>
+<td><h3>Val Rmse</h3><img src="val_rmse_evolution.png" alt="Evolução Val Rmse" /></td>
+<td><h3>Test Rmse</h3><img src="test_rmse_evolution.png" alt="Evolução Test Rmse" /></td>
+<td></td>
+</tr>
+</table>
 </div>
             <div class="section">
                 <h2>Explicabilidade (Resultados Finais da Última Ronda)</h2>
@@ -80,7 +87,7 @@
                 </ul>
             </div>
 
-            <p><em>Relatório gerado automaticamente em 2025-04-29 13:56:46</em></p>
+            <p><em>Relatório gerado automaticamente em 2025-04-29 14:09:31</em></p>
         </body>
         </html>
         

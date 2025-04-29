@@ -343,6 +343,11 @@ class RLFEClient(fl.client.NumPyClient):
                 p em {{ color: #7f8c8d; font-size: 0.9em; text-align: center; display: block; margin-top: 20px; }}
                 .section {{ background-color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }}
                 .plot-container img {{ margin-bottom: 25px; }}
+                /* Estilos para a tabela de plots */
+                .plot-table {{ width: 100%; border-collapse: separate; border-spacing: 15px; }}
+                .plot-table td {{ vertical-align: top; text-align: center; width: 33%; background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #eee; }}
+                .plot-table img {{ max-width: 100%; height: auto; margin: 10px auto; display: block; }}
+                .plot-table h3 {{ margin-top: 0; font-size: 1em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555; }}
             </style>
         </head>
         <body>
@@ -391,14 +396,30 @@ class RLFEClient(fl.client.NumPyClient):
         # Incluir Plots de Evolução Gerados
         html_content += '<div class="section plot-container">\n<h2>Plots de Evolução das Métricas</h2>\n'
         if plot_files:
-            for plot_file in plot_files:
-                # Usar o nome do ficheiro para gerar um título mais descritivo
+            html_content += '<table class="plot-table">\n'
+            num_plots = len(plot_files)
+            plots_per_row = 3
+            for i, plot_file in enumerate(plot_files):
+                if i % plots_per_row == 0:
+                    html_content += '<tr>\n'
+                
                 plot_title = plot_file.replace('_evolution.png','').replace('_', ' ').title()
-                html_content += f'<h3>{plot_title}</h3>\n<img src="{plot_file}" alt="Evolução {plot_title}" />\n'
+                html_content += f'<td><h3>{plot_title}</h3><img src="{plot_file}" alt="Evolução {plot_title}" /></td>\n'
+                
+                if (i + 1) % plots_per_row == 0 or (i + 1) == num_plots:
+                    # Se for o último plot da linha OU o último plot de todos
+                    # Adicionar células vazias se a linha não estiver completa
+                    if (i + 1) == num_plots and (i + 1) % plots_per_row != 0:
+                        remaining_cells = plots_per_row - ((i + 1) % plots_per_row)
+                        for _ in range(remaining_cells):
+                            html_content += '<td></td>\n' # Célula vazia
+                    html_content += '</tr>\n'
+            html_content += '</table>\n'
         else:
              html_content += "<p><em>Nenhum gráfico de evolução foi gerado ou encontrado.</em></p>\n"
         html_content += "</div>" # Fim da section dos plots
 
+ 
         # Secção de Explicabilidade (mantém-se, usa os ficheiros finais gerados antes)
         html_content += f"""
             <div class="section">
