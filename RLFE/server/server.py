@@ -52,7 +52,7 @@ def evaluate_metrics_aggregation_fn(metrics: List[Tuple[int, Dict[str, float]]])
 
 # Definir parâmetros do servidor
 server_address = "0.0.0.0:9091"
-NUM_ROUNDS = 5  # Pode ser ajustado conforme necessário
+NUM_ROUNDS = 5
 
 # Configuração do servidor
 config = fl.server.ServerConfig(num_rounds=NUM_ROUNDS)

@@ -84,7 +84,33 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 
 ---
 
-## Estado Atual do Projeto (27-04-2025)
+## Estado Atual do Projeto (28/04/2025)
+
+## Execução Federada RLFE
+- **Todos os clientes federados (client_1, client_2) concluíram a execução.**
+- Outputs finais e artefactos de explicabilidade foram gerados para ambos os clientes.
+
+### Artefactos disponíveis para cada cliente
+- Relatório HTML final: `final_report.html`
+- Explicabilidade LIME: `lime_final.png`, `lime_final.html`, `lime_explanation.txt`
+- Explicabilidade SHAP: `shap_final.png`, `shap_values.npy`
+- Histórico de métricas: `metrics_history.json`
+- Gráficos de evolução: `loss_evolution.png`, `rmse_evolution.png`
+- Modelo treinado: `model_client_X.pt` (em `results/`)
+
+### Validação automática
+- **Não foram encontrados ficheiros de erro (`*error.txt`) em nenhum cliente.**
+- As métricas de treino, validação e teste estão presentes e evoluem conforme esperado (ver `metrics_history.json`).
+- Os relatórios HTML e imagens de explicabilidade foram gerados sem falhas.
+
+### Próximos passos sugeridos
+- Documentar exemplos dos outputs (prints, screenshots, artefactos) para relatório/dissertação.
+- Comparar formalmente os resultados entre abordagens (ADF vs RLFE).
+- Atualizar README e documentação com exemplos reais.
+
+---
+
+*Atualização automática: verificação de outputs e estado dos clientes concluída em 28/04/2025 às 12:18.*
 
 ## Situação Atual
 - O sistema está funcional, mas o relatório final **não estava a ser gerado corretamente devido à ausência do arquivo `X_train.npy`**, necessário para as explicações LIME/SHAP.
@@ -100,4 +126,90 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 - **Correção aplicada em 2025-04-28: Salvamento do X_train.npy implementado.**
 
 ---
+
+## Tarefas Futuras
+
+- Automatizar a verificação dos outputs dos clientes após o treino federado:
+    - Criar um script que percorra as pastas de cada cliente e valide se todos os artefactos esperados foram gerados (relatórios, gráficos, métricas, explicações, modelos, etc.).
+    - Sumarizar os principais resultados (ex: RMSE, evolução das perdas) para facilitar a análise sem abrir manualmente cada ficheiro.
+    - Alertar se algum artefacto estiver em falta ou incompleto.
+
+---
+
+## Melhorias Prioritárias no Relatório Final (Prioridade Máxima)
+
+**Objetivo:** Aumentar a detalhe e a informação disponível no relatório final (`final_report.html`) gerado por cada cliente, incluindo tempos de execução, evolução de todas as métricas e valores por ronda.
+
+**Prioridade:** Máxima
+
+**Passos Detalhados:**
+
+1.  **Medição e Registo de Tempos:**
+    *   **Modificar `client.py`:**
+        *   No método `fit`: Registar o tempo (`time.time()`) antes e depois do loop de treino local. Calcular a duração.
+        *   No método `evaluate`: Registar o tempo antes e depois da avaliação (incluindo a geração de LIME/SHAP). Calcular a duração total da avaliação/explicabilidade.
+        *   Se possível, isolar e cronometrar especificamente a geração LIME e SHAP dentro do `evaluate`.
+    *   **Atualizar `metrics_history.json`:**
+        *   Adicionar novas chaves ao dicionário de cada ronda para guardar os tempos: `fit_duration_seconds`, `evaluate_duration_seconds`, (opcionalmente `lime_duration_seconds`, `shap_duration_seconds`).
+        *   Guardar também os tempos de início e fim (`start_time_fit`, `end_time_fit`, etc.) se for relevante ter o timestamp exato.
+
+2.  **Geração de Gráficos de Evolução Abrangentes:**
+    *   **Modificar Lógica de Plotting (em `client.py` ou script auxiliar):**
+        *   Identificar a função que gera `loss_evolution.png` e `rmse_evolution.png`.
+        *   Generalizar ou duplicar essa função para iterar sobre *todas* as métricas presentes em `metrics_history.json` (e.g., `train_loss`, `val_loss`, `val_rmse`, `test_loss`, `test_rmse`).
+        *   Gerar um ficheiro `.png` separado para cada métrica (ex: `train_loss_evolution.png`, `val_loss_evolution.png`, etc.). *Alternativa:* Criar gráficos combinados (ex: todas as losses num gráfico, todos os RMSEs noutro).
+    *   **Atualizar Geração do `final_report.html`:**
+        *   Incluir tags `<img>` para todos os novos gráficos de evolução gerados.
+
+3.  **Tabela Detalhada de Métricas por Ronda:**
+    *   **Modificar Geração do `final_report.html`:**
+        *   Remover a tabela atual que mostra apenas os valores finais.
+        *   Ler o `metrics_history.json`.
+        *   Gerar uma nova tabela HTML onde:
+            *   A primeira coluna indica a Ronda (1, 2, 3...).
+            *   As colunas seguintes mostram o valor de cada métrica (`train_loss`, `val_loss`, `val_rmse`, `test_loss`, `test_rmse`) para *essa ronda específica*.
+            *   Adicionar colunas para os tempos de duração registados no Passo 1 (`fit_duration_seconds`, `evaluate_duration_seconds`).
+
+**Ficheiros a Modificar Principalmente:**
+
+*   `/Users/joaofonseca/git/Flower_Projects_MEI/RLFE/client/client.py`: Para adicionar a lógica de timing e potencialmente a geração de plots/relatórios.
+*   Potenciais scripts utilitários de plotting ou reporting, se existirem.
+
+---
 Atualização feita em 2025-04-28.
+
+---
+
+## [2025-04-29] Correções e Ajustes Recentes
+
+- **Resolução de Erros `matplotlib`:**
+    - Corrigido o `UnboundLocalError: local variable 'plt' referenced before assignment` que impedia a geração de gráficos em algumas execuções.
+    - A causa era um import local redundante de `matplotlib.pyplot` dentro da função `evaluate`. A correção envolveu garantir um único import no topo do `client.py`.
+    - Dependências de sistema para `matplotlib` (`libfreetype6-dev`, `libpng-dev`) foram adicionadas ao `Dockerfile` para garantir o funcionamento em ambiente headless.
+- **Erro `TypeError` em LIME corrigido:** Resolvido um erro onde `num_features` era passado incorretamente para `explainer.explain_lime`.
+- **Execução de LIME/SHAP Apenas na Ronda Final:**
+    - Modificado o método `evaluate` em `client.py` para que a geração das explicações LIME e SHAP ocorra *apenas* na última ronda federada (`round_number == num_rounds`).
+    - Isto resolve o problema de tempos de avaliação excessivamente longos nas rondas intermédias e garante que as explicações são geradas sobre o estado mais atualizado do modelo no cliente após todo o treino federado.
+    - O relatório final (`final_report.html`) e o histórico (`metrics_history.json`) agora refletem corretamente esta lógica, mostrando tempos de LIME/SHAP como 0.0 nas rondas intermédias.
+- **Validação:** Testes confirmam que os gráficos são gerados e a explicabilidade ocorre apenas na ronda final, com os tempos correspondentes registados corretamente.
+
+## Situação Atual (Pós-Correções)
+- O sistema RLFE está estável e a gerar os outputs esperados, incluindo relatórios detalhados e explicações na ronda final.
+- As melhorias de detalhe no relatório (tabela por ronda, múltiplos gráficos) implementadas anteriormente estão agora a funcionar sobre uma base corrigida.
+
+## Próximos Passos
+- [x] ~~Resolver erros de execução (matplotlib, TypeError)~~.
+- [x] ~~Ajustar execução de LIME/SHAP para a ronda final~~.
+- [ ] Validar outputs finais e exemplos reais após execução completa (revisitar com base nos relatórios corrigidos).
+- [ ] Atualizar README e documentação com prints/capturas e descrições baseadas nos artefactos concretos.
+- [ ] Comparação formal entre abordagens (ADF vs RLFE) usando o novo dataset IoT.
+- [ ] Desenvolvimento incremental da dissertação.
+- [ ] Automatizar a verificação dos outputs dos clientes após o treino federado (ver secção Tarefas Futuras abaixo).
+
+---
+
+## Histórico de Alterações
+- [2025-04-26] Estrutura RLFE consolidada, outputs finais só ao final do ciclo federado, integração Docker completa.
+- [2025-04-29] Correções de erros matplotlib e ajustes na execução de LIME/SHAP.
+
+---

@@ -1,44 +1,86 @@
 
-            <html>
-            <head>
-                <title>Relatório Federado - Cliente 2</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 40px; }
-                    h1, h2 { color: #2c3e50; }
-                    img { max-width: 600px; margin: 20px 0; }
-                    .metrics-table { border-collapse: collapse; margin: 20px 0; }
-                    .metrics-table th, .metrics-table td { border: 1px solid #ccc; padding: 8px; }
-                    .metrics-table th { background: #f0f0f0; }
-                </style>
-            </head>
-            <body>
-                <h1>Relatório Federado - Cliente 2</h1>
-                <h2>Resumo das Métricas</h2>
-                <table class="metrics-table">
-                    <tr><th>Métrica</th><th>Valor Final</th></tr>
-                    <tr><td>Train Loss</td><td>0.2826790916068213</td></tr>
-                    <tr><td>Val Loss</td><td>0.40863128900527956</td></tr>
-                    <tr><td>Val RMSE</td><td>0.6192464828491211</td></tr>
-                    <tr><td>Test Loss</td><td>0.4315283238887787</td></tr>
-                    <tr><td>Test RMSE</td><td>0.6451647877693176</td></tr>
-                </table>
-                <h2>Plots de Evolução</h2>
-                <img src="loss_evolution.png" alt="Evolução do Loss" />
-                <img src="rmse_evolution.png" alt="Evolução do RMSE" />
-                <h2>Explicabilidade</h2>
-                <h3>LIME (última ronda)</h3>
-                <img src="lime_final.png" alt="LIME final" />
-                <h3>SHAP (última ronda)</h3>
-                <img src="shap_final.png" alt="SHAP final" />
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Relatório Federado Detalhado - Cliente 2</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+                h1, h2, h3 { color: #2c3e50; border-bottom: 2px solid #1abc9c; padding-bottom: 5px;}
+                h1 { text-align: center; margin-bottom: 30px; }
+                img { max-width: 800px; height: auto; margin: 15px auto; display: block; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+                .metrics-table { border-collapse: collapse; margin: 25px 0; width: 100%; box-shadow: 0 2px 3px rgba(0,0,0,0.1); background-color: white; font-size: 0.9em; }
+                .metrics-table th, .metrics-table td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+                .metrics-table th { background-color: #1abc9c; color: white; text-transform: capitalize; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+                .metrics-table tr:nth-child(even) { background-color: #f9f9f9; }
+                .metrics-table tr:hover { background-color: #f1f1f1; }
+                .metrics-table td:first-child, .metrics-table th:first-child { text-align: center; font-weight: bold; }
+                .metrics-table td { min-width: 80px; }
+                .table-container { max-height: 500px; overflow-y: auto; border: 1px solid #ddd; margin-bottom: 20px; }
+                ul { list-style-type: square; padding-left: 20px; margin-top: 10px; }
+                li { margin-bottom: 5px; }
+                li a { color: #3498db; text-decoration: none; }
+                li a:hover { text-decoration: underline; }
+                p em { color: #7f8c8d; font-size: 0.9em; text-align: center; display: block; margin-top: 20px; }
+                .section { background-color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+                .plot-container img { margin-bottom: 25px; }
+            </style>
+        </head>
+        <body>
+            <h1>Relatório Federado Detalhado - Cliente 2</h1>
+
+            <div class="section">
+                <h2>Evolução Detalhada das Métricas e Tempos por Ronda</h2>
+        <div class="table-container">
+<table class="metrics-table">
+<thead>
+<tr><th>Ronda</th><th>Train Loss</th><th>Val Loss</th><th>Test Loss</th><th>Val Rmse</th><th>Test Rmse</th><th>Fit Duration Seconds</th><th>Evaluate Duration Seconds</th><th>Lime Duration Seconds</th><th>Shap Duration Seconds</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>0.0857</td><td>0.0880</td><td>0.1547</td><td>0.29557973</td><td>0.39075664</td><td>0.6425</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>2</td><td>0.0230</td><td>0.0253</td><td>0.0486</td><td>0.1579476</td><td>0.21922228</td><td>0.0364</td><td>0.0011</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>3</td><td>0.0137</td><td>0.0192</td><td>0.0338</td><td>0.1383594</td><td>0.1833716</td><td>0.0411</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>4</td><td>0.0109</td><td>0.0134</td><td>0.0259</td><td>0.11483872</td><td>0.15958878</td><td>0.0545</td><td>0.0013</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>5</td><td>0.0096</td><td>0.0120</td><td>0.0231</td><td>0.10935844</td><td>0.15078953</td><td>0.0394</td><td>0.0016</td><td>2.0390</td><td>398.0294</td></tr>
+</tbody>
+</table>
+</div></div><div class="section plot-container">
+<h2>Plots de Evolução das Métricas</h2>
+<h3>Train Loss</h3>
+<img src="train_loss_evolution.png" alt="Evolução Train Loss" />
+<h3>Val Loss</h3>
+<img src="val_loss_evolution.png" alt="Evolução Val Loss" />
+<h3>Test Loss</h3>
+<img src="test_loss_evolution.png" alt="Evolução Test Loss" />
+<h3>Val Rmse</h3>
+<img src="val_rmse_evolution.png" alt="Evolução Val Rmse" />
+<h3>Test Rmse</h3>
+<img src="test_rmse_evolution.png" alt="Evolução Test Rmse" />
+</div>
+            <div class="section">
+                <h2>Explicabilidade (Resultados Finais da Última Ronda)</h2>
+                <h3>LIME</h3>
+                <img src="lime_final.png" alt="LIME final" style="max-width: 600px;"/>
+                <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
+                <h3>SHAP</h3>
+                <img src="shap_final.png" alt="SHAP final" style="max-width: 600px;"/>
+                <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+            </div>
+        
+            <div class="section">
                 <h2>Artefactos e Downloads</h2>
                 <ul>
-                    <li><a href="metrics_history.json">Histórico de Métricas (JSON)</a></li>
-                    <li><a href="../results/client_2/model_client_2.pt">Modelo Treinado (.pt)</a></li>
-                    <li><a href="info.txt">Info.txt</a></li>
-                    <li><a href="lime_explanation.txt">LIME Explanation (texto)</a></li>
-                    <li><a href="shap_values.npy">SHAP Values (.npy)</a></li>
+                    <li><a href="metrics_history.json" target="_blank">Histórico Completo (Métricas e Tempos - JSON)</a></li>
+                    <li><a href="../results/client_2/model_client_2.pt" download>Modelo Treinado Final (.pt)</a></li>
+                    <li><a href="info.txt" target="_blank">Informações Gerais (info.txt)</a></li>
+                    <li><a href="lime_explanation.txt" target="_blank">Explicação LIME (texto)</a></li>
+                    <li><a href="lime_final.html" target="_blank">Explicação LIME (interativo HTML)</a></li>
+                    <li><a href="shap_values.npy" download>Valores SHAP (.npy)</a></li>
                 </ul>
-                <p><em>Gerado automaticamente em 2025-04-28 10:59:32</em></p>
-            </body>
-            </html>
-            
+            </div>
+
+            <p><em>Relatório gerado automaticamente em 2025-04-29 13:56:46</em></p>
+        </body>
+        </html>
+        

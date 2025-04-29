@@ -2,8 +2,8 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Instala netcat-openbsd para healthcheck
-RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
+# Instala netcat-openbsd para healthcheck e dependências matplotlib
+RUN apt-get update && apt-get install -y netcat-openbsd libfreetype6-dev libpng-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

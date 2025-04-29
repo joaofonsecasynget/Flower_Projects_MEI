@@ -1,3 +1,5 @@
-Client 2 - Num samples: 141
-Test loss: 0.4315
-Test RMSE: 0.65
+Client ID: 2
+Dataset Path: ../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv
+Seed: 42
+Epochs: 5
+Server Address: server:9091

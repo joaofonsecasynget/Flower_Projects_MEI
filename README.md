@@ -18,30 +18,68 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 - Orquestração completa via Docker Compose, escalando automaticamente o número de clientes.
 - Cada cliente executa em container isolado, com partição distinta do dataset (seed fixa para reprodutibilidade).
 - Outputs organizados por cliente: métricas, histórico, plots, imagens de explicabilidade e relatório HTML consolidado.
-- Explicabilidade gerada apenas após a última ronda federada, garantindo que os artefactos finais refletem o treino completo.
+- Explicabilidade (LIME/SHAP) gerada **apenas após a última ronda federada**, garantindo que os artefactos finais refletem o treino completo.
 - Healthcheck garante que clientes só arrancam após o servidor estar disponível.
 
-## Execução Federada (Docker)
+## Instruções de Execução
 
-1. Entrar na pasta RLFE:
-   ```sh
-   cd RLFE
-   ```
-2. Gerar o docker-compose:
-   ```sh
-   python generate_compose.py <NUM_CLIENTES> <NUM_ROUNDS>
-   ```
-3. Subir os serviços federados:
-   ```sh
-   docker compose -f docker-compose.generated.yml up --build --detach
-   ```
-4. Monitorizar logs e outputs:
-   ```sh
-   docker compose -f docker-compose.generated.yml logs --tail=100
-   ```
+### Abordagem RLFE (Regressão Linear Federada Explicável)
 
-- O volume `DatasetIOT/` é montado como read-only; `reports/` e `results/` são persistentes.
-- Para personalizar volumes, nomes de container ou adicionar serviços extra (ex: servidor FL), basta ajustar o template no script `generate_compose.py`.
+Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flower e múltiplos clientes que treinam um modelo de regressão linear (PyTorch) de forma federada e geram explicações (LIME/SHAP) na ronda final.
+
+**Passos:**
+
+1.  **Navegar para a pasta RLFE:**
+    Abra um terminal e entre no diretório da implementação RLFE.
+    ```sh
+    cd RLFE
+    ```
+
+2.  **Gerar o Ficheiro Docker Compose:**
+    Execute o script Python para gerar o ficheiro `docker-compose.generated.yml`. Este script configura os serviços do servidor e o número desejado de clientes e rondas.
+    ```sh
+    python generate_compose.py <NUM_CLIENTES> <NUM_ROUNDS>
+    ```
+    *   `<NUM_CLIENTES>`: Substitua pelo número de clientes que deseja simular (e.g., `2`).
+    *   `<NUM_ROUNDS>`: Substitua pelo número de rondas de treino federado (e.g., `5`).
+    *   **Exemplo:** `python generate_compose.py 2 5` irá configurar 1 servidor e 2 clientes para 5 rondas.
+
+3.  **Iniciar os Serviços Federados:**
+    Utilize o Docker Compose para construir as imagens (se necessário) e iniciar os contentores do servidor e dos clientes em modo 'detached' (background).
+    ```sh
+    docker compose -f docker-compose.generated.yml up --build --detach
+    ```
+    *   `-f docker-compose.generated.yml`: Especifica o ficheiro de configuração gerado.
+    *   `up`: Comando para criar e iniciar os contentores.
+    *   `--build`: Força a reconstrução das imagens Docker se houver alterações no código ou Dockerfile desde a última build. É recomendado usar na primeira vez ou após modificações.
+    *   `--detach`: Executa os contentores em segundo plano, libertando o terminal.
+
+4.  **Monitorizar os Logs (Opcional):**
+    Pode acompanhar o progresso do treino e a comunicação entre clientes e servidor visualizando os logs.
+    ```sh
+    docker compose -f docker-compose.generated.yml logs --tail=100 -f
+    ```
+    *   `logs`: Comando para mostrar os logs dos serviços.
+    *   `--tail=100`: Mostra as últimas 100 linhas de log de cada serviço.
+    *   `-f` (follow): Continua a mostrar novos logs à medida que são gerados. Pressione `Ctrl+C` para parar de seguir.
+
+5.  **Parar os Serviços:**
+    Quando o treino federado terminar (ou se desejar interromper), pode parar e remover os contentores e a rede associada.
+    ```sh
+    docker compose -f docker-compose.generated.yml down --remove-orphans
+    ```
+    *   `down`: Para e remove os contentores, redes e volumes (se não forem externos) definidos no ficheiro compose.
+    *   `--remove-orphans`: Remove contentores de serviços que não estão mais definidos no ficheiro compose (útil para limpeza).
+
+**Notas Importantes:**
+
+*   Os outputs (relatórios, modelos, gráficos) serão guardados nas pastas `RLFE/reports/client_X` e `RLFE/results/client_X`.
+*   O volume `DatasetIOT/` é montado como read-only nos contentores.
+*   Certifique-se de que o Docker Desktop (ou Docker Engine) está em execução antes de correr os comandos `docker compose`.
+
+### Abordagem ADF (Árvore de Decisão Federada)
+
+*(Instruções detalhadas a adicionar)*
 
 ## Execução Local de Cliente RLFE
 
@@ -67,8 +105,9 @@ O dataset é sempre dividido por `num_total_clients` e cada cliente recebe apena
 
 ## Estado Atual
 - Nova estrutura RLFE funcional, substituindo abordagens anteriores.
-- Explicabilidade, outputs e relatórios finais só gerados na última ronda.
-- Testes e validação em curso com múltiplos clientes e dataset IoT.
+- Corrigidos erros relacionados com `matplotlib` e chamadas LIME.
+- Explicabilidade (LIME/SHAP), outputs e relatórios finais gerados **apenas na última ronda**.
+- Testes e validação em curso com múltiplos clientes e dataset IoT, mostrando comportamento esperado.
 - Documentação e exemplos de outputs serão incrementados após validação.
 
 ## Próximos Passos
