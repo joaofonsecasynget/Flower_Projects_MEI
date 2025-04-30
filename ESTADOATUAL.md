@@ -213,3 +213,67 @@ Atualização feita em 2025-04-28.
 - [2025-04-29] Correções de erros matplotlib e ajustes na execução de LIME/SHAP.
 
 ---
+
+## [2025-04-29] Melhorias Finais e Ajustes nos Relatórios
+
+- **Precisão dos Tempos:**
+    - Substituição de `time.time()` por `time.perf_counter()` para medir as durações (`fit_duration`, `evaluate_duration`) de forma mais precisa.
+    - Tempos formatados com 4 casas decimais no relatório HTML.
+- **Ajustes na Explicabilidade LIME:**
+    - A imagem LIME integrada no relatório HTML (`lime_final.png`) agora mostra apenas as **Top 10 features** para maior clareza inicial.
+    - O título da imagem LIME foi atualizado para indicar "Top 10 Features".
+    - Uma página HTML separada (`lime_final.html`) é gerada contendo a **explicação LIME completa** com todas as features.
+- **Organização dos Gráficos:**
+    - Os gráficos de evolução das métricas no relatório HTML foram reorganizados de uma lista vertical para uma **grelha de 3 colunas**, melhorando a visualização e comparação.
+- **Confirmação:** A lógica de gerar LIME/SHAP **apenas na última ronda** continua implementada e funcional.
+
+## Situação Atual (Pós-Correções e Melhorias)
+- O sistema RLFE está estável, funcional e a gerar os outputs esperados com as últimas melhorias.
+- Os relatórios HTML são agora mais detalhados (tabela por ronda, tempos precisos, múltiplos gráficos organizados) e a apresentação da explicabilidade LIME foi refinada (Top 10 vs Completa).
+- As correções anteriores (matplotlib, TypeError, X_train.npy, LIME/SHAP só no final) estão validadas.
+
+## Próximos Passos
+- [ ] Executar simulações para obter resultados quantitativos com o dataset IoT para a `COMPARACAO_FORMAL.md`.
+- [ ] Utilizar os artefactos e relatórios gerados para a documentação da dissertação.
+- [ ] Analisar em profundidade os resultados da explicabilidade (LIME/SHAP) no contexto do problema IoT.
+- [ ] **Decisão Pendente: Estratégia Federada para Abordagem ADF (Árvores de Decisão/Random Forest)**
+
+---
+
+## Decisão Pendente: Estratégia Federada para Abordagem ADF (Árvores de Decisão/Random Forest)
+
+Antes de prosseguir com a implementação detalhada da ADF, é necessário definir qual estratégia de "federação" será utilizada, considerando o objetivo de comparação com a RLFE e a complexidade de implementação. As opções em aberto são:
+
+1.  **Opção A: Federated Evaluation (Replicar Abordagem Antiga)**
+    *   **Implementação:** Cada cliente treina a sua própria Árvore de Decisão localmente. Flower é usado para orquestrar rondas e agregar métricas (RMSE, MSE).
+    *   **Prós:** Simples de implementar, reutiliza lógica anterior, explicabilidade local clara (árvores individuais).
+    *   **Contras:** Não é treino federado colaborativo; não resulta num modelo global único.
+
+2.  **Opção B: Federated Evaluation + Agregação de Importâncias**
+    *   **Implementação:** Igual à Opção A, mas com um passo adicional pós-simulação para recolher as árvores locais e calcular/agregar (e.g., média) a importância das features globalmente.
+    *   **Prós:** Compromisso pragmático, complexidade moderada, fornece uma visão global da importância das features.
+    *   **Contras:** O treino em si ainda é local; a agregação é feita *a posteriori*.
+
+3.  **Opção C: Federated Random Forest (Construção Colaborativa)**
+    *   **Implementação:** Utilizar uma estratégia Flower avançada (a ser implementada ou adaptada) que permita aos clientes construir colaborativamente as árvores de uma Random Forest, trocando informações seguras (e.g., estatísticas agregadas para encontrar splits).
+    *   **Prós:** Treino federado "verdadeiro", resulta num modelo global (Random Forest), alinhado com "Advanced Federated Learning Strategies", comparação rica com RLFE (estratégias FL e explicabilidade distintas).
+    *   **Contras:** Complexidade de implementação significativamente maior, explicabilidade de ensemble (não de árvore única).
+
+**Estado Atual:** A decisão sobre qual opção seguir está pendente, aguardando análise e possível consulta/feedback.
+
+---
+
+## Próximos Passos Imediatos
+
+1.  **Execução de Testes RLFE:** Realizar execuções da implementação RLFE com o dataset IoT para validar as últimas alterações nos relatórios e recolher métricas base.
+2.  **Desenvolvimento da Abordagem ADF:** Iniciar a criação da implementação alternativa baseada em Árvores de Decisão (ADF) para comparação.
+3.  **Decisão sobre Estratégia Federada para ADF:** Definir qual das seguintes abordagens será implementada para a ADF (ver secção acima).
+4.  **Preenchimento da Comparação Formal:** Utilizar os resultados de RLFE e ADF para preencher a tabela e análise no ficheiro `COMPARACAO_FORMAL.md`.
+
+---
+
+## Histórico de Alterações
+- [2025-04-26] Estrutura RLFE consolidada, outputs finais só ao final do ciclo federado, integração Docker completa.
+- [2025-04-29] Correções de erros matplotlib e ajustes na execução de LIME/SHAP.
+
+---

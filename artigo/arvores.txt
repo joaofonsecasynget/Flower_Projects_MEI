@@ -1,0 +1,136 @@
+Aplicar "verdadeiramente" o treino federado a Árvores de Decisão (ou florestas) é mais complexo do que com modelos como Regressão Linear ou Redes Neuronais, porque as árvores não têm parâmetros numéricos (como pesos) que possam ser simplesmente calculados em média (como faz o FedAvg).
+
+No entanto, existem abordagens para o fazer, focando-se em agregar de forma segura as informações necessárias para construir a árvore (ou as árvores numa floresta) de forma colaborativa. Aqui estão algumas estratégias principais:
+
+Agregação Segura de Estatísticas para Divisões (Split Finding):
+Ideia: Para decidir a melhor divisão (feature e limiar) num nó da árvore, precisamos de calcular a redução de impureza (Gini, entropia) ou variância (MSE para regressão) para várias divisões candidatas. Esta informação pode ser derivada de histogramas das features e da variável alvo.
+Como funciona federadamente:
+O servidor coordena a construção da árvore nó a nó.
+Para um nó específico, cada cliente calcula localmente histogramas ou outras estatísticas resumidas sobre as suas features e target para potenciais divisões.
+Os clientes enviam estas estatísticas agregadas (não os dados brutos) para o servidor, muitas vezes usando técnicas de agregação segura (como Secure Multi-Party Computation - SMPC ou Homomorphic Encryption) ou adicionando ruído para Privacidade Diferencial (DP).
+O servidor combina as estatísticas seguras de todos os clientes para determinar a melhor divisão global para aquele nó.
+O servidor envia a decisão da divisão de volta para os clientes.
+Os clientes atualizam a estrutura da sua árvore local e continuam o processo para os nós filhos.
+Vantagens: Constrói uma única árvore global que reflete a distribuição dos dados de todos os clientes.
+Desvantagens: Elevada complexidade de implementação (criptografia, protocolos seguros), maior custo de comunicação (troca de histogramas/estatísticas), e pode ser computacionalmente intensivo.
+Federated Random Forests (Abordagem mais comum e prática):
+Em vez de tentar construir uma única árvore federada, constrói-se uma floresta (um ensemble de árvores). Existem variações:
+a) Ensemble de Árvores Locais (Simples):
+Cada cliente treina uma ou mais árvores de decisão completamente localmente nos seus próprios dados (tal como na abordagem antiga, mas potencialmente com mais árvores por cliente).
+A "federação" ocorre apenas na fase de predição: para fazer uma previsão para uma nova instância, a instância é enviada a todos os clientes (ou a um subconjunto), cada um faz a previsão usando as suas árvores locais, e as previsões são agregadas (média para regressão, voto maioritário para classificação) no servidor ou no cliente que iniciou o pedido.
+Vantagens: Simples de implementar, reutiliza código de treino local.
+Desvantagens: As árvores individuais não beneficiam dos dados dos outros clientes durante o treino. O modelo global é um ensemble virtual, não uma estrutura única.
+b) Construção Colaborativa das Árvores da Floresta:
+Utiliza a técnica de agregação segura de estatísticas (método 1) para construir cada árvore individual dentro da floresta de forma colaborativa.
+Vantagens: Resulta numa floresta onde cada árvore potencialmente beneficia da distribuição global dos dados, levando a um modelo ensemble mais robusto. Mais alinhado com os princípios FL de treino colaborativo.
+Desvantagens: Herda a complexidade e o custo de comunicação/computacional do método 1, multiplicado pelo número de árvores na floresta.
+Federated Gradient Boosted Decision Trees (e.g., XGBoost Federado):
+GBDTs treinam árvores sequencialmente, onde cada nova árvore tenta corrigir os erros da anterior.
+Abordagens federadas para GBDT (como SecureBoost) frequentemente usam a agregação segura de histogramas (método 1) para calcular os gradientes e encontrar as melhores divisões em cada passo do boosting, de forma a construir as árvores sequenciais colaborativamente.
+Vantagens: Pode levar a modelos de alta performance.
+Desvantagens: Complexidade significativa.
+Em Resumo:
+
+Para ter treino federado "verdadeiro" com Árvores de Decisão, precisaríamos de ir além da simples agregação de métricas e implementar mecanismos para partilhar e agregar de forma segura as informações necessárias para as decisões de divisão das árvores (método 1) ou aplicar isto na construção de cada árvore numa floresta federada (método 2b ou 3).
+
+Isto seria um desvio significativo e muito mais complexo do que o plano atual de replicar a abordagem de "Federated Evaluation" para a ADF, que visa principalmente permitir uma comparação direta com a RLFE usando a mesma estrutura e métricas base.
+
+Se o objetivo principal é a comparação entre RLFE e uma abordagem baseada em árvores no mesmo cenário, manter o plano de replicar a "Federated Evaluation" para ADF é o mais pragmático. Se o objetivo fosse explorar as fronteiras da FL com árvores, então teríamos de investigar e implementar uma das abordagens mais complexas descritas acima.
+
+--- CONVERSATION SUMMARY: Creating the ADF (Decision Tree) Approach ---
+
+**Initial Request (User, Step 544):**
+Create a new approach ADF (Árvore de Decisão Federada) based on the old `flower_docker_v2_CH - DecisionTreeRegressor` implementation. Reuse the IoT dataset preprocessing and metrics structure from RLFE for comparability. Develop an action plan and add it to COMPARACAO_FORMAL.md.
+
+**Cascade's Initial Plan & Question (Step 544):**
+Proposed a plan involving:
+1. Creating the ADF folder structure based on RLFE.
+2. Adapting the client (`client.py`, `Dockerfile`, `requirements.txt`) to use `DecisionTreeRegressor`, reuse RLFE's data loading/preprocessing, implement local training/evaluation, and replace LIME/SHAP with tree visualization and feature importance.
+3. Adapting the server (checking the Flower strategy).
+4. Adapting orchestration (`generate_compose.py`).
+5. Testing and documentation.
+**Crucial Question:** How did the *old* Decision Tree implementation handle federation? Was it true model aggregation or just coordinated local training? Assumed coordinated local training (Federated Evaluation).
+
+**Investigating Old Implementation (Steps 546-554):**
+*   Located relevant files: `server/server.py` and `client_1/client_1.py` (which used `utils.py`).
+*   Analyzed the code:
+    *   Server used `FedAvg` strategy but only aggregated MSE metrics.
+    *   Client code loaded data (old dataset), instantiated a `FlowerClient` from `utils.py`.
+*   **Conclusion:** The old implementation performed **Federated Evaluation**. Clients trained trees locally, and the server only orchestrated rounds and aggregated performance metrics (MSE). No collaborative model building occurred.
+
+**Clarifying Federated Concepts (Steps 556, 558, 562):**
+*   **User Question:** Is Federated Evaluation the best strategy? What are the benefits over purely local training?
+    *   **Cascade:** Explained that FE isn't "true" collaborative FL. Its benefits over purely local are orchestration and aggregated metrics while maintaining privacy. Disadvantage: no single improved global model.
+*   **User Question:** How *could* we do true FL with Decision Trees?
+    *   **Cascade:** Explained complex methods:
+        1.  **Secure Aggregation of Split Statistics:** Collaboratively finding the best splits using secure techniques (SMPC, DP) - complex.
+        2.  **Federated Random Forests:**
+            a.  Ensemble of Local Trees (Prediction phase federation) - simple but no collaborative training.
+            b.  Collaborative Construction (Using Method 1 for each tree) - complex.
+        3.  **Federated GBDT:** Also complex, uses similar secure aggregation ideas.
+*   **User Question:** Explain Federated Evaluation again.
+    *   **Cascade:** Re-explained FE as evaluating models on distributed data without centralizing it, focusing on aggregating *metrics*, not model updates. Contrasted with Federated Learning (collaborative model building).
+
+**Refining the Goal (User, Step 564):**
+The objective is to use **Federated Learning** with a naturally **explainable model** like Decision Trees.
+
+**Presenting Options (Cascade, Step 565):**
+Given the refined goal and the complexity of true FL for trees:
+*   **Option A:** Replicate old FE approach (low complexity, local explainability, no true FL).
+*   **Option B:** FE + Post-hoc aggregation of *feature importances* (medium complexity, local trees + global feature importance view, pragmatic compromise).
+*   **Option C:** True Federated Random Forest (high complexity, true FL, ensemble explainability).
+
+**Current Status:** Waiting for the user to choose which option (A, B, or C) to pursue for the ADF implementation plan.
+
+--- COMPARISON: Option C (FRF) vs RLFE (Step 575) ---
+
+Yes, definitely! Option C (Federated Random Forest - FRF) allows for a very rich and interesting comparison with RLFE (Federated Linear Regression), focusing on several aspects:
+
+1.  **Predictive Performance:**
+    *   Both approaches will produce metrics like RMSE and Loss (MSE) on the same IoT dataset. We can directly compare which model (Linear Regression vs. Random Forest) better fits the data and achieves better predictive performance in the federated scenario. It's expected that the Random Forest, being more complex, might capture non-linear relationships that Linear Regression cannot, potentially resulting in a lower RMSE (though not always guaranteed).
+
+2.  **Explainability:**
+    *   This is a central point of comparison. We would compare:
+        *   **RLFE:** *Post-hoc* explainability via LIME (local) and SHAP (global/local).
+        *   **FRF:** *Intrinsic* explainability of the ensemble (feature importance calculated globally over the federated forest) and, potentially, SHAP applied to the final global forest model.
+    *   The analysis would focus on the differences in the *types* of insights obtained (local explanations for specific instances vs. global feature importance), their practical utility in the IoT context, and the interpretability of a linear model vs. an ensemble of trees.
+
+3.  **Efficiency and Resources:**
+    *   We would compare execution times (`fit_duration`, `evaluate_duration`) per round. FRF is likely to be slower due to the higher model complexity and secure aggregation steps.
+    *   We would discuss (qualitatively, if not measured) the communication cost. FRF with secure aggregation would likely require more communication than the simple parameter averaging of RLFE (FedAvg).
+
+4.  **Implementation Complexity and Federated Strategy:**
+    *   The very difference in complexity of implementing `FedAvg` (used in RLFE) versus a federated strategy for trees (needed in FRF) is a relevant comparison point for a dissertation on "Advanced Federated Learning Strategies".
+
+**In summary:** Option C not only allows comparison but makes it deeper. We would be comparing not just two different models, but also **two fundamentally different federated learning strategies** (parameter aggregation vs. secure statistics aggregation) and **two different explainability paradigms** (post-hoc vs. intrinsic ensemble) on the same problem.
+
+The main drawback of Option C is the **significantly higher implementation complexity**. You would need to find/adapt/implement a more advanced Flower strategy for the collaborative construction of trees.
+
+Considering the goals of your dissertation, Option C seems to align well with exploring "Advanced Federated Learning Strategies" and would allow for a richer comparative analysis. However, you must weigh the additional implementation effort.
+
+If you decide to pursue Option C, the action plan will need to be more detailed in the section on implementing the federated strategy for FRF. If you prefer a faster path, Option B still offers a valid comparison, albeit less deep in the aspect of collaborative training.
+
+--- EXPLAINABILITY OF RANDOM FORESTS ---
+
+**Why are Random Forests Considered "Naturally Explainable"?**
+
+While a single Decision Tree is highly interpretable (you can visually follow the splits), a Random Forest is an *ensemble* of many (often deep) trees, making direct visualization impractical. However, Random Forests possess a form of **intrinsic or natural explainability** primarily through **Feature Importance**:
+
+1.  **Aggregated Impurity Reduction (Mean Decrease in Impurity - MDI):**
+    *   **Concept:** When building each tree, every split on a feature reduces the impurity (Gini index for classification, variance/MSE for regression) in the resulting nodes. The total reduction achieved by a specific feature across *all splits* where it was used, averaged over *all trees* in the forest, gives a measure of that feature's importance.
+    *   **Interpretation:** Features that consistently lead to significant impurity reductions when used for splitting are considered more important for the model's overall predictive power.
+    *   **How it's Natural:** This importance measure is derived directly from the *structure and training process* of the forest itself, without needing a separate post-hoc model like LIME.
+
+2.  **Permutation Importance (Mean Decrease in Accuracy/Increase in Error):**
+    *   **Concept:** After training the forest, the importance of a feature is measured by randomly shuffling (permuting) the values of *only that feature* in the validation or test dataset and observing how much the model's performance (e.g., accuracy decreases or RMSE increases) degrades. Features whose permutation causes a larger drop in performance are considered more important.
+    *   **How it's Natural:** Although calculated after training, it directly probes the trained model's reliance on each feature for making accurate predictions, using the model's own structure.
+
+**Contrast with Single Trees and Black Boxes:**
+*   **Single Tree:** Explainable via direct visualization of paths.
+*   **Random Forest:** Explainable primarily via *aggregated feature importances*, providing a global view of which features drive the ensemble's predictions. It's less transparent than a single tree for *individual* prediction paths but more robust and often more accurate.
+*   **Black Box Models (e.g., complex Neural Networks):** Often lack clear intrinsic explainability mechanisms, requiring *post-hoc* methods like LIME or SHAP to approximate explanations.
+
+**Federated Random Forest (FRF) Context:**
+In a truly federated FRF (Option C), the goal would be to collaboratively build the forest. The resulting global forest model could then have its feature importances calculated (using MDI based on the global structure or permutation importance on a global test set if available/permissible), providing that natural, global explainability.
+
+--- END EXPLANATION ---

@@ -18,7 +18,15 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 - Orquestração completa via Docker Compose, escalando automaticamente o número de clientes.
 - Cada cliente executa em container isolado, com partição distinta do dataset (seed fixa para reprodutibilidade).
 - Outputs organizados por cliente: métricas, histórico, plots, imagens de explicabilidade e relatório HTML consolidado.
-- Explicabilidade (LIME/SHAP) gerada **apenas após a última ronda federada**, garantindo que os artefactos finais refletem o treino completo.
+- **Explicabilidade (LIME/SHAP):**
+    - Gerada **apenas após a última ronda federada**, refletindo o modelo final do cliente.
+    - **LIME:** Imagem no relatório principal (`lime_final.png`) mostra o **Top 10 features**. Relatório HTML separado (`lime_final.html`) e ficheiro de texto (`lime_explanation.txt`) contêm a explicação completa.
+    - **SHAP:** Imagem (`shap_final.png`) e valores (`shap_values.npy`) gerados.
+- **Relatórios Detalhados:**
+    - Métricas por ronda (incluindo tempos de `fit` e `evaluate`) apresentadas em tabela.
+    - Tempos de execução medidos com `time.perf_counter` para maior precisão.
+    - Gráficos de evolução para todas as métricas principais.
+    - Plots de métricas organizados em grelha no HTML.
 - Healthcheck garante que clientes só arrancam após o servidor estar disponível.
 
 ## Instruções de Execução
@@ -99,18 +107,26 @@ O dataset é sempre dividido por `num_total_clients` e cada cliente recebe apena
 ## Outputs Gerados por Cliente (ao final do ciclo federado)
 - **Modelo treinado:** `results/client_X/model_client_X.pt`
 - **Histórico de métricas:** `reports/client_X/metrics_history.json`
-- **Plots:** `reports/client_X/loss_evolution.png`, `reports/client_X/rmse_evolution.png`
-- **Explicabilidade:** `reports/client_X/lime_final.png`, `reports/client_X/shap_final.png`
-- **Relatório HTML:** `reports/client_X/final_report.html` (consolidando métricas, gráficos e imagens)
+- **Dataset de treino (para LIME/SHAP):** `reports/client_X/X_train.npy`
+- **Plots de Evolução:** `reports/client_X/<metrica>_evolution.png` (e.g., `train_loss_evolution.png`, `val_rmse_evolution.png`, etc.)
+- **Explicabilidade LIME:**
+    - `reports/client_X/lime_final.png` (Top 10 Features)
+    - `reports/client_X/lime_final.html` (Explicação Completa)
+    - `reports/client_X/lime_explanation.txt` (Explicação em Texto)
+- **Explicabilidade SHAP:**
+    - `reports/client_X/shap_final.png`
+    - `reports/client_X/shap_values.npy`
+- **Relatório HTML Consolidado:** `reports/client_X/final_report.html` (métricas por ronda, tempos, gráficos, LIME Top 10, SHAP)
 
 ## Estado Atual
-- Nova estrutura RLFE funcional, substituindo abordagens anteriores.
-- Corrigidos erros relacionados com `matplotlib` e chamadas LIME.
-- Explicabilidade (LIME/SHAP), outputs e relatórios finais gerados **apenas na última ronda**.
-- Testes e validação em curso com múltiplos clientes e dataset IoT, mostrando comportamento esperado.
-- Documentação e exemplos de outputs serão incrementados após validação.
+- Nova estrutura RLFE funcional e estável, utilizando o dataset IoT.
+- Corrigidos erros anteriores (matplotlib, TypeError LIME, falta de X_train.npy).
+- Explicabilidade (LIME/SHAP) e relatórios finais detalhados (com tempos precisos, métricas por ronda, múltiplos plots) gerados apenas na última ronda.
+- Testes confirmam o comportamento esperado: outputs corretos, explicabilidade apenas no final, tempos registados.
+- Documentação (este README, ESTADOATUAL.md) atualizada para refletir as últimas modificações.
 
 ## Próximos Passos
-- Comparação formal dos resultados entre ADF e RLFE (tabela de métricas, análise de explicabilidade, discussão de limitações).
-- Desenvolver protocolo de testes e critérios para comparação robusta.
-- Incrementar documentação com exemplos reais dos artefactos gerados.
+- Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md` com resultados do dataset IoT.
+- Comparar formalmente os resultados da RLFE com a abordagem ADF (se aplicável ao dataset IoT) ou outras baselines.
+- Utilizar os artefactos gerados (relatórios, gráficos, explicações) para a escrita da dissertação.
+- Refinar a análise da explicabilidade LIME/SHAP no contexto do problema IoT.

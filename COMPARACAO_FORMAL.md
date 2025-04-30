@@ -1,69 +1,119 @@
 # Comparação Formal das Abordagens Federadas
 
-Este documento apresenta um template de tabela comparativa e uma estrutura detalhada para a secção de comparação formal entre as duas abordagens principais desenvolvidas no projeto:
+Este documento apresenta um template de tabela comparativa e uma estrutura detalhada para a secção de comparação formal entre as abordagens de aprendizagem federada desenvolvidas no projeto, com foco na implementação **RLFE** utilizando o **dataset IoT**:
 
-- **Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn)**
-- **Regressão Linear Federada com Explicabilidade via LIME e SHAP (PyTorch)**
+- **RLFE**: Regressão Linear Federada com Explicabilidade via LIME e SHAP (PyTorch) utilizando o dataset IoT.
+- **ADF**: Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn) - *Nota: Resultados anteriores eram do dataset California Housing. A comparação direta requer testes com ADF no dataset IoT.*
 
 > **Abreviaturas utilizadas:**
 > - **ADF**: Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn)
-> - **RLFE**: Regressão Linear Federada Explicável (PyTorch, LIME/SHAP)
+> - **RLFE**: Regressão Linear Federada Explicável (PyTorch, LIME/SHAP, Dataset IoT)
 
 ---
 
-## 1. Tabela Comparativa de Resultados
+## 1. Tabela Comparativa de Resultados (Foco RLFE no Dataset IoT)
 
-| Critério / Métrica                                      | ADF | RLFE |
-|---------------------------------------------------------|:---:|:----:|
-| **RMSE (Cliente 1)**                                   | 235231.05 | [valor - preencher após teste com novo dataset] |
-| **RMSE (Cliente 2)**                                   | 64731.28 | [valor - preencher após teste com novo dataset] |
-| **Perda de Validação Média**                           | 54 817 417 452.31 (C1) / 3 851 295 180.66 (C2) | [valor - preencher após teste com novo dataset] |
-| **Tempo de Execução (min)**                            | [valor a recolher] | [valor a recolher] |
-| **Estabilidade entre rondas (variação de RMSE)**       | [valor a recolher] | [valor a recolher] |
-| **Qualidade da Explicabilidade**                       | Explicação nativa (estrutura da árvore, importância das features) | LIME/SHAP, gráficos por ronda e evolução global |
-| **Visualização da Explicabilidade**                    | Gráfico da árvore, importância das features | Gráficos LIME/SHAP por ronda e evolução |
-| **Interpretação Global**                               | Boa (estrutura da árvore) | Limitada (coeficientes lineares, LIME/SHAP para instâncias) |
-| **Interpretação Local**                                | Média (caminho na árvore) | Boa (LIME/SHAP para instâncias) |
-| **Robustez à distribuição dos dados**                  | [observação] | [observação] |
-| **Limitações Observadas**                              | Problemas de gráficos no Cliente 2; variação entre clientes | RMSE elevado; convergência lenta; valores ausentes (-1) |
-| **Explicabilidade (LIME/SHAP)**                        | Explicabilidade intrínseca (estrutura da árvore); sem LIME/SHAP | LIME e SHAP aplicados; análise detalhada das features |
+| Critério / Métrica                                      | RLFE (Dataset IoT) | ADF (Dataset California Housing - Referência Antiga) |
+|---------------------------------------------------------|:------------------:|:----------------------------------------------------:|
+| **RMSE Médio (entre clientes)**                          | [Preencher após execução RLFE com dataset IoT] | ~150k (Média dos valores antigos C1: 235k, C2: 65k) |
+| **Perda de Validação Média**                           | [Preencher após execução RLFE com dataset IoT] | ~29B (Média dos valores antigos C1: 55B, C2: 4B)   |
+| **Tempo de Execução Médio (por ronda)**                 | [Preencher - medir `fit_duration` + `evaluate_duration` do JSON] | [Não medido anteriormente] |
+| **Estabilidade entre rondas (variação de RMSE)**       | [Analisar evolução do RMSE no JSON/plots] | [Não analisado anteriormente] |
+| **Qualidade da Explicabilidade (Global)**              | Limitada (Coeficientes lineares) | Boa (Estrutura da árvore) |
+| **Qualidade da Explicabilidade (Local)**               | Boa (LIME/SHAP para instâncias específicas) | Média (Caminho na árvore) |
+| **Visualização da Explicabilidade**                    | Gráficos LIME (Top10/Completo), SHAP | Gráfico da árvore, importância das features |
+| **Robustez à distribuição dos dados**                  | [Observar variação entre clientes nos testes RLFE] | Variação significativa observada entre clientes |
+| **Limitações Observadas**                              | [Observar nos testes RLFE - e.g., convergência, escala RMSE] | Problemas de gráficos (antigo); variação entre clientes |
 
 > **Notas:**
-> - Preencher os campos [valor] e [observação] com os resultados dos relatórios.
-> - Adicionar/remover critérios conforme o foco da análise.
-> - O novo dataset (ds_testes_iniciais.csv) está pronto para testes iniciais, desde que se realize pré-processamento: substituição de -1 por NaN, remoção de colunas não relevantes, confirmação do target e normalização das features.
-> - Recomenda-se continuar a preencher os campos em falta na tabela à medida que os testes com o novo dataset forem realizados.
+> - Preencher os campos [Preencher] e [Analisar/Observar] com os resultados das execuções da RLFE no dataset IoT (`reports/client_X/metrics_history.json`, `reports/client_X/final_report.html`).
+> - A coluna ADF serve apenas como referência da implementação anterior com outro dataset. Uma comparação formal exigiria re-executar ADF no dataset IoT.
+> - O foco principal é caracterizar o desempenho e a explicabilidade da RLFE no cenário atual.
 
 ---
 
-## 2. Estrutura Sugerida para a Secção de Comparação Formal
+## 2. Estrutura Sugerida para a Secção de Análise (Foco RLFE)
 
-### 4. Comparação Formal das Abordagens
+### 4. Análise da Abordagem RLFE com Dataset IoT
 
-#### 4.1. Critérios de Comparação
-- Desempenho preditivo (RMSE, perda de validação)
-- Estabilidade entre rondas e entre clientes
-- Qualidade e utilidade da explicabilidade (global e local)
-- Tempo de execução e escalabilidade
-- Robustez à distribuição dos dados
-- Limitações observadas
+#### 4.1. Desempenho Preditivo
+- Análise do RMSE e Perda de Validação (média e por cliente).
+- Discussão da convergência ao longo das rondas (baseado nos plots de evolução).
+- Estabilidade entre clientes (comparar métricas finais dos diferentes clientes).
 
-#### 4.2. Resultados Quantitativos
-- Apresentação da tabela comparativa de métricas (ver acima)
-- Discussão dos valores obtidos para cada critério
+#### 4.2. Análise da Explicabilidade (LIME/SHAP)
+- Discussão das features mais importantes identificadas pelo LIME (Top 10 e completo) e SHAP.
+- Exemplos de interpretação local para instâncias específicas (se relevante).
+- Avaliação da utilidade das explicações no contexto do problema IoT.
+- Apresentação dos gráficos LIME/SHAP gerados.
 
-#### 4.3. Análise da Explicabilidade
-- Exemplos de explicações geradas por cada abordagem
-- Discussão sobre a utilidade prática das explicações (para utilizadores finais, decisores, etc.)
-- Visualizações: gráficos de importância, árvores, LIME/SHAP
+#### 4.3. Eficiência e Recursos
+- Análise dos tempos de execução (`fit_duration`, `evaluate_duration`) por ronda.
+- Discussão do impacto da geração de explicabilidade (apenas na ronda final) no tempo total.
 
-#### 4.4. Limitações e Considerações Práticas
-- Pontos fortes e fracos de cada abordagem no contexto federado
-- Impacto do modelo e da explicabilidade na adoção prática
+#### 4.4. Limitações e Considerações
+- Discussão sobre a adequação do modelo linear ao dataset IoT (com base no RMSE).
+- Observações sobre a heterogeneidade dos dados entre clientes (se aplicável).
+- Outras limitações encontradas durante a execução e análise.
 
-#### 4.5. Síntese e Recomendações
-- Resumo dos principais achados
-- Recomendações para uso futuro e para trabalhos subsequentes
+#### 4.5. Síntese
+- Resumo dos pontos fortes e fracos da abordagem RLFE neste cenário.
+
+---
+
+## 1. Resultados Quantitativos (Contextualização)
+
+A análise quantitativa foca-se agora na abordagem **RLFE (Regressão Linear Federada com Explicabilidade)** implementada com **PyTorch** e utilizando o **dataset IoT**. Resultados anteriores da abordagem ADF (Árvore de Decisão Federada com scikit-learn) pertencem a um contexto diferente (dataset California Housing) e servem apenas como referência histórica.
+
+**Regressão Linear Federada (RLFE) - Dataset IoT**
+- **RMSE médio (clientes):** [Preencher após execução]
+- **Perda de Validação média (clientes):** [Preencher após execução]
+- **Tempos de execução (fit, evaluate):** Disponíveis em `metrics_history.json` por ronda.
+
+A análise detalhada destes valores, incluindo a sua evolução e variação entre clientes, permitirá caracterizar o desempenho da RLFE no problema atual.
+
+## 2. Análise da Explicabilidade (RLFE - LIME/SHAP)
+
+A abordagem RLFE incorpora **LIME e SHAP**, gerados na ronda final, para fornecer interpretabilidade ao modelo de regressão linear treinado sobre o dataset IoT. Isto permite:
+- Identificar as features com maior impacto nas previsões (globalmente via SHAP, localmente via LIME).
+- Compreender o comportamento do modelo para instâncias específicas.
+- Aumentar a transparência e confiança nos resultados da RLFE.
+
+A explicabilidade é apresentada através de gráficos (`lime_final.png`, `shap_final.png`) e relatórios detalhados (`lime_final.html`, `lime_explanation.txt`, `shap_values.npy`).
+
+## 3. Limitações Identificadas (Contexto RLFE - Dataset IoT)
+
+A avaliação da RLFE com o dataset IoT permitirá identificar limitações específicas, tais como:
+- Potencial inadequação do modelo linear à complexidade dos dados (refletida no RMSE).
+- Desafios relacionados com a escala ou distribuição das features no dataset IoT.
+- Variação de desempenho entre clientes devido à heterogeneidade dos dados federados.
+- Tempo de execução, especialmente da fase de explicabilidade (embora mitigado por ocorrer só no fim).
+
+## 4. Recomendações e Trabalhos Futuros
+
+Com base na análise da RLFE:
+- Avaliar a necessidade de modelos mais complexos (e.g., redes neuronais) se o desempenho da regressão linear for insuficiente.
+- Investigar técnicas de pré-processamento específicas para o dataset IoT.
+- Aprofundar a análise das explicações LIME/SHAP para extrair insights sobre o domínio do problema.
+- Comparar formalmente com outras abordagens *após* estas serem adaptadas e testadas com o mesmo dataset IoT.
+
+---
+
+## Checklist de Validação da Secção de Comparação
+
+Utiliza esta checklist antes de integrares a secção de comparação na dissertação:
+
+- [ ] **Tabela comparativa preenchida:** Todos os campos relevantes têm valores reais ou justificação para ausência.
+- [ ] **Métricas claras:** RMSE, perdas de treino e validação, tempos de execução e variação de RMSE estão presentes para ambas as abordagens.
+- [ ] **Análise quantitativa:** O texto reflete e interpreta os valores apresentados, destacando diferenças e possíveis causas.
+- [ ] **Secção de explicabilidade:** Explica claramente como LIME e SHAP foram aplicados e o que trouxeram de valor à análise.
+- [ ] **Limitações bem identificadas:** Inclui limitações técnicas, de modelo, de dados e de visualização.
+- [ ] **Recomendações práticas:** Sugere melhorias concretas e próximos passos para o projeto.
+- [ ] **Consistência linguística:** O texto está em português europeu, claro e formal.
+- [ ] **Referências cruzadas:** O texto faz referência à tabela e aos ficheiros de relatório/dados, se relevante.
+- [ ] **Pronto para integração:** O conteúdo pode ser transposto diretamente para a dissertação sem necessidade de grandes ajustes.
+
+_Esta checklist serve para garantir a qualidade, clareza e completude da análise comparativa._
 
 ---
 
@@ -95,64 +145,3 @@ python client.py --cid=1 --num_clients=4
 ---
 
 Este documento serve como referência para a redação da dissertação e para a apresentação dos resultados comparativos do projeto.
-
-## 1. Resultados Quantitativos
-
-A comparação entre as duas abordagens de aprendizagem federada — a Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn) e a Regressão Linear Federada com Explicabilidade via LIME e SHAP (PyTorch) — foi realizada com base em métricas extraídas dos relatórios finais de cada cliente. As principais métricas analisadas foram o RMSE (Root Mean Squared Error), a perda de treino e a perda de validação.
-
-**Árvore de Decisão Federada**
-- Cliente 1:
-  - RMSE: 235231.05
-  - Perda de treino: 55 658 836 565.70
-  - Perda de validação: 54 817 417 452.31
-- Cliente 2:
-  - RMSE: 64 731.28
-  - Perda de treino: 1 799 251 402.08
-  - Perda de validação: 3 851 295 180.66
-
-Estes valores evidenciam uma variação significativa entre clientes, possivelmente relacionada com a distribuição dos dados ou características específicas de cada subconjunto.
-
-**Regressão Linear Federada**
-- RMSE global: ~235 000
-
-O valor elevado do RMSE na Regressão Linear indica menor capacidade preditiva neste contexto, apesar da sua simplicidade e interpretabilidade.
-
-## 2. Análise da Explicabilidade
-
-A abordagem de Regressão Linear Federada foi enriquecida com técnicas de explicabilidade, nomeadamente LIME e SHAP, permitindo uma análise detalhada do impacto de cada variável na previsão dos preços imobiliários. Estas ferramentas facilitaram a identificação das características mais relevantes para o modelo, promovendo transparência e confiança nos resultados.
-
-Por outro lado, a Árvore de Decisão Federada, apesar de fornecer uma certa interpretabilidade intrínseca (através da análise da estrutura da árvore), não foi complementada com métodos avançados de explicabilidade neste trabalho, limitando a profundidade da análise interpretativa.
-
-## 3. Limitações Identificadas
-
-Durante a execução dos experimentos, foram identificadas várias limitações:
-- O elevado valor de RMSE na Regressão Linear sugere que o modelo pode não ser adequado para a complexidade do problema ou que existe necessidade de maior pré-processamento dos dados.
-- Foram registados problemas na geração de gráficos no Cliente 2 da Árvore de Decisão, o que dificultou a análise visual dos resultados.
-- A discrepância entre os resultados dos clientes indica possível heterogeneidade nos dados, que poderá afetar a generalização dos modelos.
-- A utilização exclusiva do dataset California Housing pode limitar a validade externa das conclusões.
-
-## 4. Recomendações e Trabalhos Futuros
-
-Com base nos resultados obtidos, recomenda-se:
-- A exploração de modelos mais robustos e adequados à natureza dos dados, como ensembles ou redes neuronais profundas, especialmente para problemas com elevada variabilidade.
-- A integração de técnicas de explicabilidade também na abordagem baseada em árvores de decisão, para uma comparação mais equitativa.
-- A realização de experiências com diferentes datasets, de modo a validar a generalização dos resultados.
-- A melhoria dos mecanismos de visualização e geração de relatórios, garantindo uma análise mais completa e acessível dos resultados.
-
----
-
-## Checklist de Validação da Secção de Comparação
-
-Utiliza esta checklist antes de integrares a secção de comparação na dissertação:
-
-- [ ] **Tabela comparativa preenchida:** Todos os campos relevantes têm valores reais ou justificação para ausência.
-- [ ] **Métricas claras:** RMSE, perdas de treino e validação, tempos de execução e variação de RMSE estão presentes para ambas as abordagens.
-- [ ] **Análise quantitativa:** O texto reflete e interpreta os valores apresentados, destacando diferenças e possíveis causas.
-- [ ] **Secção de explicabilidade:** Explica claramente como LIME e SHAP foram aplicados e o que trouxeram de valor à análise.
-- [ ] **Limitações bem identificadas:** Inclui limitações técnicas, de modelo, de dados e de visualização.
-- [ ] **Recomendações práticas:** Sugere melhorias concretas e próximos passos para o projeto.
-- [ ] **Consistência linguística:** O texto está em português europeu, claro e formal.
-- [ ] **Referências cruzadas:** O texto faz referência à tabela e aos ficheiros de relatório/dados, se relevante.
-- [ ] **Pronto para integração:** O conteúdo pode ser transposto diretamente para a dissertação sem necessidade de grandes ajustes.
-
-_Esta checklist serve para garantir a qualidade, clareza e completude da análise comparativa._
