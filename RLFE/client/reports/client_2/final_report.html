@@ -30,7 +30,48 @@
             .plot-table td { vertical-align: top; text-align: center; width: 33%; background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #eee; }
             .plot-table img { max-width: 100%; height: auto; margin: 10px auto; display: block; }
             .plot-table h3 { margin-top: 0; font-size: 1em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555; }
-            .explanation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .explanation-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: auto auto;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            .grid-item {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                padding: 15px;
+            }
+            .grid-item h4 {
+                margin-top: 0;
+                text-align: center;
+                color: #2c3e50;
+                font-size: 16px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }
+            .grid-item img {
+                display: block;
+                margin: 0 auto;
+                max-width: 100%;
+            }
+            .feature-importance {
+                grid-column: span 3;
+            }
+            .temporal-heatmap {
+                grid-column: span 6;
+            }
+            .temporal-index {
+                grid-column: span 3;
+            }
+            .timestamp-features {
+                grid-column: span 3;
+            }
+            .temporal-trend {
+                grid-column: span 6;
+            }
         </style>
     </head>
     <body>
@@ -44,11 +85,11 @@
 <tr><th>Ronda</th><th>Train Loss</th><th>Val Loss</th><th>Test Loss</th><th>Val Rmse</th><th>Test Rmse</th><th>Fit Duration Seconds</th><th>Evaluate Duration Seconds</th><th>Lime Duration Seconds</th><th>Shap Duration Seconds</th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>0.0208</td><td>0.0217</td><td>0.0196</td><td>0.14599606</td><td>0.1391</td><td>0.4158</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>2</td><td>0.0178</td><td>0.0202</td><td>0.0183</td><td>0.14099889</td><td>0.1346</td><td>0.0381</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>3</td><td>0.0184</td><td>0.0230</td><td>0.0168</td><td>0.15086308</td><td>0.1290</td><td>0.0372</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>4</td><td>0.0142</td><td>0.0200</td><td>0.0162</td><td>0.14030236</td><td>0.1266</td><td>0.0395</td><td>0.0009</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>5</td><td>0.0177</td><td>0.0199</td><td>0.0183</td><td>0.13974766</td><td>0.1342</td><td>0.0362</td><td>0.0010</td><td>1.7580</td><td>8.6361</td></tr>
+<tr><td>1</td><td>0.0208</td><td>0.0217</td><td>0.0196</td><td>0.14599606</td><td>0.1391</td><td>0.4235</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>2</td><td>0.0178</td><td>0.0202</td><td>0.0183</td><td>0.14099889</td><td>0.1346</td><td>0.0375</td><td>0.0010</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>3</td><td>0.0184</td><td>0.0230</td><td>0.0168</td><td>0.15086308</td><td>0.1290</td><td>0.0390</td><td>0.0011</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>4</td><td>0.0142</td><td>0.0200</td><td>0.0162</td><td>0.14030236</td><td>0.1266</td><td>0.0416</td><td>0.0012</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>5</td><td>0.0177</td><td>0.0199</td><td>0.0183</td><td>0.13974766</td><td>0.1342</td><td>0.0352</td><td>0.0009</td><td>1.8916</td><td>8.4385</td></tr>
 </tbody>
 </table>
 </div></div><div class="section plot-container">
@@ -77,26 +118,35 @@
             <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
             
             <h3>Explicabilidade Agregada</h3>
+            
             <div class="explanation-grid">
-                <div>
+                <!-- Primeiro grupo: Importância por categorias de features -->
+                <div class="grid-item feature-importance">
                     <h4>Importância por Tipo de Feature</h4>
-                    <img src="shap_feature_type_importance.png" alt="Importância por tipo de feature" style="max-width: 100%;"/>
+                    <img src="shap_feature_type_importance.png" alt="Importância por tipo de feature"/>
                 </div>
-                <div>
-                    <h4>Tendências Temporais</h4>
-                    <img src="shap_temporal_trends.png" alt="Tendências temporais" style="max-width: 100%;"/>
-                </div>
-                <div style="grid-column: span 2;">
-                    <h4>Mapa de Calor Temporal</h4>
-                    <img src="shap_temporal_heatmap.png" alt="Heatmap temporal" style="max-width: 100%;"/>
-                </div>
-                <div>
-                    <h4>Importância por Índice Temporal</h4>
-                    <img src="shap_temporal_index_importance.png" alt="Importância por índice temporal" style="max-width: 100%;"/>
-                </div>
-                <div>
+                
+                <!-- Segundo grupo: Features relacionadas a timestamp -->
+                <div class="grid-item timestamp-features">
                     <h4>Importância das Features de Timestamp</h4>
-                    <img src="shap_timestamp_features_importance.png" alt="Importância das features de timestamp" style="max-width: 100%;"/>
+                    <img src="shap_timestamp_features_importance.png" alt="Importância das features de timestamp"/>
+                </div>
+                
+                <!-- Terceiro grupo: Importância do índice temporal -->
+                <div class="grid-item temporal-index">
+                    <h4>Importância por Índice Temporal</h4>
+                    <img src="shap_temporal_index_importance.png" alt="Importância por índice temporal"/>
+                </div>
+                
+                <!-- Grupo gráficos largos: Tendência temporal e Heatmap -->
+                <div class="grid-item temporal-trend">
+                    <h4>Tendências Temporais</h4>
+                    <img src="shap_temporal_trends.png" alt="Tendências temporais"/>
+                </div>
+                
+                <div class="grid-item temporal-heatmap">
+                    <h4>Mapa de Calor Temporal</h4>
+                    <img src="shap_temporal_heatmap.png" alt="Heatmap temporal"/>
                 </div>
             </div>
         </div>
@@ -113,7 +163,7 @@
             </ul>
         </div>
 
-        <p><em>Relatório gerado automaticamente em 2025-05-01 10:57:07</em></p>
+        <p><em>Relatório gerado automaticamente em 2025-05-01 11:06:51</em></p>
     </body>
     </html>
     

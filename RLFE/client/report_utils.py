@@ -113,7 +113,48 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             .plot-table td {{ vertical-align: top; text-align: center; width: 33%; background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #eee; }}
             .plot-table img {{ max-width: 100%; height: auto; margin: 10px auto; display: block; }}
             .plot-table h3 {{ margin-top: 0; font-size: 1em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555; }}
-            .explanation-grid {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }}
+            .explanation-grid {{
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: auto auto;
+                gap: 20px;
+                margin-bottom: 30px;
+            }}
+            .grid-item {{
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                padding: 15px;
+            }}
+            .grid-item h4 {{
+                margin-top: 0;
+                text-align: center;
+                color: #2c3e50;
+                font-size: 16px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }}
+            .grid-item img {{
+                display: block;
+                margin: 0 auto;
+                max-width: 100%;
+            }}
+            .feature-importance {{
+                grid-column: span 3;
+            }}
+            .temporal-heatmap {{
+                grid-column: span 6;
+            }}
+            .temporal-index {{
+                grid-column: span 3;
+            }}
+            .timestamp-features {{
+                grid-column: span 3;
+            }}
+            .temporal-trend {{
+                grid-column: span 6;
+            }}
         </style>
     </head>
     <body>
@@ -199,26 +240,35 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
             
             <h3>Explicabilidade Agregada</h3>
+            
             <div class="explanation-grid">
-                <div>
+                <!-- Primeiro grupo: Importância por categorias de features -->
+                <div class="grid-item feature-importance">
                     <h4>Importância por Tipo de Feature</h4>
-                    {f'<img src="shap_feature_type_importance.png" alt="Importância por tipo de feature" style="max-width: 100%;"/>' if 'shap_feature_type_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
+                    {f'<img src="shap_feature_type_importance.png" alt="Importância por tipo de feature"/>' if 'shap_feature_type_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
                 </div>
-                <div>
-                    <h4>Tendências Temporais</h4>
-                    {f'<img src="shap_temporal_trends.png" alt="Tendências temporais" style="max-width: 100%;"/>' if 'shap_temporal_trends.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
-                </div>
-                <div style="grid-column: span 2;">
-                    <h4>Mapa de Calor Temporal</h4>
-                    {f'<img src="shap_temporal_heatmap.png" alt="Heatmap temporal" style="max-width: 100%;"/>' if 'shap_temporal_heatmap.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
-                </div>
-                <div>
-                    <h4>Importância por Índice Temporal</h4>
-                    {f'<img src="shap_temporal_index_importance.png" alt="Importância por índice temporal" style="max-width: 100%;"/>' if 'shap_temporal_index_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
-                </div>
-                <div>
+                
+                <!-- Segundo grupo: Features relacionadas a timestamp -->
+                <div class="grid-item timestamp-features">
                     <h4>Importância das Features de Timestamp</h4>
-                    {f'<img src="shap_timestamp_features_importance.png" alt="Importância das features de timestamp" style="max-width: 100%;"/>' if 'shap_timestamp_features_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
+                    {f'<img src="shap_timestamp_features_importance.png" alt="Importância das features de timestamp"/>' if 'shap_timestamp_features_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
+                </div>
+                
+                <!-- Terceiro grupo: Importância do índice temporal -->
+                <div class="grid-item temporal-index">
+                    <h4>Importância por Índice Temporal</h4>
+                    {f'<img src="shap_temporal_index_importance.png" alt="Importância por índice temporal"/>' if 'shap_temporal_index_importance.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
+                </div>
+                
+                <!-- Grupo gráficos largos: Tendência temporal e Heatmap -->
+                <div class="grid-item temporal-trend">
+                    <h4>Tendências Temporais</h4>
+                    {f'<img src="shap_temporal_trends.png" alt="Tendências temporais"/>' if 'shap_temporal_trends.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
+                </div>
+                
+                <div class="grid-item temporal-heatmap">
+                    <h4>Mapa de Calor Temporal</h4>
+                    {f'<img src="shap_temporal_heatmap.png" alt="Heatmap temporal"/>' if 'shap_temporal_heatmap.png' in os.listdir(base_reports) else '<p><em>Gráfico não disponível</em></p>'}
                 </div>
             </div>
         </div>
