@@ -114,7 +114,7 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 
 ## Situação Atual
 - O sistema está funcional, mas o relatório final **não estava a ser gerado corretamente devido à ausência do arquivo `X_train.npy`**, necessário para as explicações LIME/SHAP.
-- **Foi corrigido o código do cliente para salvar automaticamente o `X_train.npy` após o split dos dados**, garantindo que as explicações de explicabilidade possam ser geradas.
+- **Foi corrigido o código do cliente para salvar automaticamente o `X_train.npy` após o split dos dados**, garantindo que as explicações são geradas.
 - É necessário realizar novos testes para confirmar que o relatório final agora inclui LIME/SHAP e está completo.
 
 ## Próximos Passos
@@ -195,7 +195,7 @@ Atualização feita em 2025-04-28.
 
 ## Situação Atual (Pós-Correções)
 - O sistema RLFE está estável e a gerar os outputs esperados, incluindo relatórios detalhados e explicações na ronda final.
-- As melhorias de detalhe no relatório (tabela por ronda, múltiplos gráficos) implementadas anteriormente estão agora a funcionar sobre uma base corrigida.
+- As melhorias de detalhe no relatório (tabela por ronda, tempos precisos, múltiplos gráficos) implementadas anteriormente estão agora a funcionar sobre uma base corrigida.
 
 ## Próximos Passos
 - [x] ~~Resolver erros de execução (matplotlib, TypeError)~~.
@@ -205,12 +205,6 @@ Atualização feita em 2025-04-28.
 - [ ] Comparação formal entre abordagens (ADF vs RLFE) usando o novo dataset IoT.
 - [ ] Desenvolvimento incremental da dissertação.
 - [ ] Automatizar a verificação dos outputs dos clientes após o treino federado (ver secção Tarefas Futuras abaixo).
-
----
-
-## Histórico de Alterações
-- [2025-04-26] Estrutura RLFE consolidada, outputs finais só ao final do ciclo federado, integração Docker completa.
-- [2025-04-29] Correções de erros matplotlib e ajustes na execução de LIME/SHAP.
 
 ---
 
@@ -275,5 +269,43 @@ Antes de prosseguir com a implementação detalhada da ADF, é necessário defin
 ## Histórico de Alterações
 - [2025-04-26] Estrutura RLFE consolidada, outputs finais só ao final do ciclo federado, integração Docker completa.
 - [2025-04-29] Correções de erros matplotlib e ajustes na execução de LIME/SHAP.
+
+---
+## [ATUALIZAÇÃO 2025-04-30] Notas da Reunião com Orientador
+
+### Feedback e Pontos de Ação
+- **Problema Identificado:** O índice está a aparecer erradamente no gráfico SHAP, necessitando correção.
+- **Novos Gráficos de Explicabilidade:** 
+  - Criar visualizações agregadas por séries temporais
+  - Criar visualizações agregadas por features
+- **Explicabilidade Interativa:** 
+  - Desenvolver funcionalidade para apresentar a explicabilidade de uma decisão para um registo específico escolhido pelo professor
+  - Permitir seleção de registos individuais para análise detalhada
+
+### Prioridade
+- Alta: Correção do índice no gráfico SHAP
+- Média-Alta: Implementação dos novos gráficos agregados
+- Média: Funcionalidade de explicabilidade interativa
+
+---
+
+## [ATUALIZAÇÃO 2025-05-01] Correções e Melhorias
+
+### Correções Implementadas
+- **Resolução do problema "índice" no gráfico SHAP:**
+  - Identificado que a coluna "indice" (sem acento) estava aparecendo nos gráficos SHAP apesar de ser supostamente removida
+  - Corrigido o código de pré-processamento para remover tanto "índice" (com acento) quanto "indice" (sem acento)
+  - Esta correção garante consistência entre o dataset de treinamento e os dados usados para explicabilidade
+
+### Ajustes no Processamento de Dados
+- **Tratamento mais robusto da variável target:**
+  - Implementada verificação explícita para a coluna "attack" como variável target
+  - Adicionados logs detalhados que mostram a distribuição do target e lista de features
+  - Essa modificação torna o código mais defensivo contra mudanças na estrutura do dataset
+
+### Próximos Passos
+- [ ] Implementação dos novos gráficos de explicabilidade agregados (por séries temporais e por features)
+- [ ] Desenvolvimento da funcionalidade de explicabilidade interativa para registros específicos
+- [ ] Continuação dos demais itens pendentes do roadmap
 
 ---

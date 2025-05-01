@@ -13,6 +13,7 @@ import logging
 import flwr as fl
 import json
 import matplotlib.pyplot as plt
+import sys
 
 # Filtro para garantir que todas as mensagens de log tenham o campo 'cid'
 class AddClientIdFilter(logging.Filter):
@@ -68,7 +69,7 @@ if const_cols:
     df = df.drop(columns=const_cols)
 
 # 2. Remover colunas de identificação e tempo (não preditivas)
-irrelevant_cols = ['índice', '_time', 'imeisv']
+irrelevant_cols = ['índice', 'indice', '_time', 'imeisv']  # Adicionado 'indice' sem acento
 cols_to_remove = [col for col in irrelevant_cols if col in df.columns]
 if cols_to_remove:
     logger.info(f"Removing identifier/time columns: {cols_to_remove}")
@@ -109,8 +110,19 @@ client_data = partes[args.cid - 1]  # Numeração começa em 1
 logger.info(f"Client data shape: {client_data.shape}")
 
 # Separar features e target
-X = client_data.drop(columns=[client_data.columns[-1]])
-y = client_data[client_data.columns[-1]]
+target_col = "attack"  # Definir explicitamente o nome da coluna target
+if target_col not in client_data.columns:
+    logger.error(f"Target column '{target_col}' not found in dataset! Available columns: {client_data.columns.tolist()}")
+    sys.exit(1)
+    
+X = client_data.drop(columns=[target_col])
+y = client_data[target_col]
+
+# Log das features e target para verificação
+logger.info(f"Target column: {target_col}")
+logger.info(f"Target values distribution: {y.value_counts().to_dict()}")
+logger.info(f"Number of features: {X.shape[1]}")
+logger.info(f"Features list: {X.columns.tolist()}")
 
 # Normalização
 scaler = StandardScaler()

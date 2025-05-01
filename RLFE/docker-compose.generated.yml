@@ -26,7 +26,7 @@ services:
       - ./client/results:/app/client/results
       - ./DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app/client
-    command: ["python", "client.py", "--cid", "1", "--num_clients", "2", "--num_total_clients", "10", "--server_address", "server:9091"]
+    command: ["python", "client.py", "--cid", "1", "--num_clients", "2", "--num_total_clients", "20", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
@@ -43,7 +43,7 @@ services:
       - ./client/results:/app/client/results
       - ./DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app/client
-    command: ["python", "client.py", "--cid", "2", "--num_clients", "2", "--num_total_clients", "10", "--server_address", "server:9091"]
+    command: ["python", "client.py", "--cid", "2", "--num_clients", "2", "--num_total_clients", "20", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
