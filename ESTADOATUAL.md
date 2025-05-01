@@ -303,6 +303,18 @@ Antes de prosseguir com a implementação detalhada da ADF, é necessário defin
   - Adicionados logs detalhados que mostram a distribuição do target e lista de features
   - Essa modificação torna o código mais defensivo contra mudanças na estrutura do dataset
 
+- **Particionamento estratificado dos dados:**
+  - Substituído método de particionamento sequencial (`np.array_split`) por particionamento estratificado (`StratifiedKFold`)
+  - Garante que cada cliente federado receba dados com distribuição similar da variável target
+  - Corrige problema onde alguns clientes recebiam apenas exemplos negativos (attack=0)
+  - Melhora robustez do treinamento e qualidade das explicações geradas
+
+### Melhorias na Arquitetura do Código
+- **Refatoração e modularização:**
+  - Código de geração de relatórios e visualizações extraído para funções auxiliares
+  - Funções de explicabilidade organizadas em módulo separado
+  - Adicionadas dependências faltantes (seaborn) ao requirements.txt
+
 ### Próximos Passos
 - [ ] Implementação dos novos gráficos de explicabilidade agregados (por séries temporais e por features)
 - [ ] Desenvolvimento da funcionalidade de explicabilidade interativa para registros específicos

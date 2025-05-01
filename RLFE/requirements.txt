@@ -7,3 +7,4 @@ flwr
 lime
 shap
 matplotlib
+seaborn

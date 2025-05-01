@@ -16,18 +16,10 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 
 ## Principais Características
 - Orquestração completa via Docker Compose, escalando automaticamente o número de clientes.
-- Cada cliente executa em container isolado, com partição distinta do dataset (seed fixa para reprodutibilidade).
+- Cada cliente executa em container isolado, com partição estratificada do dataset (mantendo distribuição da variável target).
 - Outputs organizados por cliente: métricas, histórico, plots, imagens de explicabilidade e relatório HTML consolidado.
-- **Explicabilidade (LIME/SHAP):**
-    - Gerada **apenas após a última ronda federada**, refletindo o modelo final do cliente.
-    - **LIME:** Imagem no relatório principal (`lime_final.png`) mostra o **Top 10 features**. Relatório HTML separado (`lime_final.html`) e ficheiro de texto (`lime_explanation.txt`) contêm a explicação completa.
-    - **SHAP:** Imagem (`shap_final.png`) e valores (`shap_values.npy`) gerados.
-- **Relatórios Detalhados:**
-    - Métricas por ronda (incluindo tempos de `fit` e `evaluate`) apresentadas em tabela.
-    - Tempos de execução medidos com `time.perf_counter` para maior precisão.
-    - Gráficos de evolução para todas as métricas principais.
-    - Plots de métricas organizados em grelha no HTML.
-- Healthcheck garante que clientes só arrancam após o servidor estar disponível.
+- Particionamento estratificado dos dados preservando a distribuição do target em cada cliente
+- Código modular e organizado com funções auxiliares para explicabilidade e geração de relatórios
 
 ## Instruções de Execução
 
@@ -102,7 +94,7 @@ python client.py --cid=1 --num_clients=4 --num_total_clients=4 --dataset_path=..
 - `--dataset_path`: caminho para o dataset CSV
 - `--seed`: seed para reprodutibilidade
 
-O dataset é sempre dividido por `num_total_clients` e cada cliente recebe apenas a sua fração, tornando o teste mais realista e eficiente mesmo com poucos clientes em execução.
+O dataset é particionado usando `StratifiedKFold` para preservar a proporção da variável target (attack) em cada cliente, tornando o treinamento mais representativo e as explicações mais robustas.
 
 ## Outputs Gerados por Cliente (ao final do ciclo federado)
 - **Modelo treinado:** `results/client_X/model_client_X.pt`
@@ -121,6 +113,8 @@ O dataset é sempre dividido por `num_total_clients` e cada cliente recebe apena
 ## Estado Atual
 - Nova estrutura RLFE funcional e estável, utilizando o dataset IoT.
 - Corrigidos erros anteriores (matplotlib, TypeError LIME, falta de X_train.npy).
+- Implementado particionamento estratificado para garantir distribuição equilibrada do target em cada cliente.
+- Refatorado o código para melhor modularidade e manutenibilidade.
 - Explicabilidade (LIME/SHAP) e relatórios finais detalhados (com tempos precisos, métricas por ronda, múltiplos plots) gerados apenas na última ronda.
 - Testes confirmam o comportamento esperado: outputs corretos, explicabilidade apenas no final, tempos registados.
 - Documentação (este README, ESTADOATUAL.md) atualizada para refletir as últimas modificações.
