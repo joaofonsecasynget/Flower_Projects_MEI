@@ -61,7 +61,7 @@ def explain_prediction(model, instance, X_train, feature_names, feature_map, arg
     os.makedirs(output_dir, exist_ok=True)
     
     # Origem dos dados - dataset original ou dados do cliente
-    dataset_origin = "dataset original completo" if hasattr(args, '_use_original') and args._use_original else "dados de treinamento do cliente"
+    dataset_origin = "Dataset original completo" if hasattr(args, '_use_original') and args._use_original else "dados de treinamento do cliente"
     
     # Converter instância para float32 para evitar problemas de compatibilidade
     instance = instance.astype(np.float32)
@@ -97,6 +97,17 @@ def explain_prediction(model, instance, X_train, feature_names, feature_map, arg
         
         f.write("\n")
         f.write(f"Origem dos dados: {dataset_origin}\n")
+    
+    # Salvar arquivo com todos os valores da instância
+    with open(os.path.join(output_dir, "instance_values_full.txt"), 'w') as f:
+        f.write("Valores completos da instância analisada:\n\n")
+        for i, (name, value) in enumerate(zip(feature_names, instance)):
+            # Verificar se o valor é um número inteiro
+            if value == int(value):
+                formatted_value = f"{int(value)}"
+            else:
+                formatted_value = f"{value:.6f}"
+            f.write(f"{i+1:4d}. {name:30s}: {formatted_value}\n")
     
     # Criar explicações LIME
     explainer = lime.lime_tabular.LimeTabularExplainer(

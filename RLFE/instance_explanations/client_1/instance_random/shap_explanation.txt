@@ -2,42 +2,42 @@ TOP 10 FEATURES POR IMPACTO (SHAP)
 ================================
 
 1. imeisv = 8642840536023040.0
-   SHAP value: -241625028838059.500000
+   SHAP value: -241625028533685.812500
    Impacto: diminui a predição
 
-2. dl_bitrate_11 = 5670591.0
-   SHAP value: -82840.101477
+2. dl_bitrate_62 = 5387387.0
+   SHAP value: 79539.585634
+   Impacto: aumenta a predição
+
+3. dl_bitrate_118 = 5606651.0
+   SHAP value: 74762.673693
+   Impacto: aumenta a predição
+
+4. dl_total_bytes_non_incr_91 = 3334039.0
+   SHAP value: -50755.556021
    Impacto: diminui a predição
 
-3. dl_bitrate_30 = 5590756.0
-   SHAP value: 56591.731752
-   Impacto: aumenta a predição
+5. dl_total_bytes_non_incr_28 = 3433895.0
+   SHAP value: -42412.205040
+   Impacto: diminui a predição
 
-4. dl_bitrate_43 = 5539553.0
-   SHAP value: 49136.186652
-   Impacto: aumenta a predição
+6. dl_bitrate_33 = 4050279.0
+   SHAP value: -39292.081548
+   Impacto: diminui a predição
 
-5. dl_bitrate_107 = 5412697.0
-   SHAP value: 43365.136461
-   Impacto: aumenta a predição
+7. dl_bitrate_81 = 3766836.0
+   SHAP value: -37696.890144
+   Impacto: diminui a predição
 
-6. dl_bitrate_88 = 5436896.0
-   SHAP value: 37739.584745
-   Impacto: aumenta a predição
+8. dl_bitrate_14 = 5598029.0
+   SHAP value: -30920.427111
+   Impacto: diminui a predição
 
-7. dl_bitrate_63 = 5640564.0
-   SHAP value: 33654.654518
-   Impacto: aumenta a predição
+9. dl_bitrate_7 = 5454957.0
+   SHAP value: -24356.968750
+   Impacto: diminui a predição
 
-8. dl_total_bytes_non_incr_36 = 2637147.0
-   SHAP value: 33312.646936
-   Impacto: aumenta a predição
-
-9. dl_total_bytes_non_incr_101 = 3321230.0
-   SHAP value: 24203.259128
-   Impacto: aumenta a predição
-
-10. dl_bitrate_85 = 2570835.0
-   SHAP value: 18512.343750
-   Impacto: aumenta a predição
+10. dl_bitrate_89 = 3982728.0
+   SHAP value: -19566.359666
+   Impacto: diminui a predição
 

@@ -17,7 +17,7 @@ def load_train_data(client_id, dataset_path=None):
     - Caso contrário, carrega apenas os dados de treinamento do cliente
     """
     if dataset_path and os.path.exists(dataset_path):
-        logger.info(f"Carregando dataset original completo de {dataset_path}")
+        logger.info(f"Carregando Dataset original completo de {dataset_path}")
         
         # Importar pandas para ler o CSV
         import pandas as pd
@@ -207,7 +207,7 @@ def select_instance(data, args, is_original_dataset=False):
         # Armazenar o índice real para referência 
         args._instance_idx = instance_idx
         
-        dataset_desc = "dataset original completo" if is_original_dataset else "dados de treinamento do cliente"
+        dataset_desc = "Dataset original completo" if is_original_dataset else "dados de treinamento do cliente"
         logger.info(f"Selecionada instância aleatória com índice {instance_idx} do {dataset_desc}")
     else:
         # Comportamento padrão

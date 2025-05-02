@@ -86,7 +86,10 @@ def gerar_tabela_shap(shap_values, feature_names, instance_values, category_valu
             arrow = "↓"
         
         # Formatar valores numéricos
-        formatted_value = f"{value:.4f}" if abs(value) < 10000 else f"{value:.1f}"
+        if value == int(value):
+            formatted_value = f"{int(value)}"
+        else:
+            formatted_value = f"{value:.4f}" if abs(value) <= 1000 else f"{value:.1f}"
         
         html += f"""
             <tr>
@@ -202,14 +205,16 @@ def generate_html_report(
         
         accuracy_class = "success" if acerto == "Correto" else "danger"
         
-        target_info += '<p><strong>Comparação:</strong> Modelo <span class="'
+        target_info += '<p><strong>Comparação:</strong> <span class="'
         target_info += accuracy_class
         target_info += '">'
         target_info += acerto
         target_info += '</span></p>'
     
     # Gerar tabela para mostrar os valores principais da instância
-    instance_values_html = "<h3>10 Valores Principais da Instância</h3>"
+    instance_values_html = "<h3>Valores Iniciais da Instância</h3>"
+    instance_values_html += "<p>Esta tabela mostra alguns dos valores iniciais da instância. "
+    instance_values_html += "<a href='instance_values_full.txt' target='_blank'>Ver todos os valores da instância</a></p>"
     instance_values_html += "<table class='table table-striped table-sm'>"
     instance_values_html += "<thead><tr><th>Feature</th><th>Valor</th></tr></thead><tbody>"
     
@@ -223,7 +228,10 @@ def generate_html_report(
             idx = feature_names.index(feature)
             value = instance_values[idx]
             # Formatar valores numéricos grandes
-            formatted_value = f"{value:.1f}" if abs(value) > 1000 else f"{value:.4f}"
+            if value == int(value):
+                formatted_value = f"{int(value)}"
+            else:
+                formatted_value = f"{value:.4f}" if abs(value) <= 1000 else f"{value:.1f}"
             # Remover o tag <strong> para evitar confusão com o cabeçalho
             instance_values_html += f"<tr><td>{feature}</td><td>{formatted_value}</td></tr>"
     
@@ -233,7 +241,10 @@ def generate_html_report(
         if name not in important_features and features_added < 10:
             if "extra_feature" not in name and "indice" not in name.lower():  # Ignorar features extras e índices
                 # Formatar valores numéricos grandes
-                formatted_value = f"{value:.1f}" if abs(value) > 1000 else f"{value:.4f}"
+                if value == int(value):
+                    formatted_value = f"{int(value)}"
+                else:
+                    formatted_value = f"{value:.4f}" if abs(value) <= 1000 else f"{value:.1f}"
                 instance_values_html += f"<tr><td>{name}</td><td>{formatted_value}</td></tr>"
                 features_added += 1
     
@@ -255,7 +266,11 @@ def generate_html_report(
             if idx < len(instance_values):
                 # Formatar valores numéricos grandes
                 value = instance_values[idx]
-                value = f"{value:.1f}" if abs(value) > 1000 else f"{value:.4f}"
+                if value == int(value):
+                    formatted_value = f"{int(value)}"
+                else:
+                    formatted_value = f"{value:.4f}" if abs(value) <= 1000 else f"{value:.1f}"
+                value = formatted_value
         
         lime_table_html += f"<tr><td>{feature}</td><td>{value}</td><td class='{color}'>{direction} ({impact:.4f})</td></tr>"
     
@@ -285,7 +300,12 @@ def generate_html_report(
                 color = "text-success" if shap_value > 0 else "text-danger"
                 direction = "↑" if shap_value > 0 else "↓"
                 
-                categories_html += f"<tr><td>{feature}</td><td>{value:.4f}</td><td class='{color}'>{direction} {abs(shap_value):.6f}</td></tr>"
+                if value == int(value):
+                    formatted_value = f"{int(value)}"
+                else:
+                    formatted_value = f"{value:.4f}" if abs(value) <= 1000 else f"{value:.1f}"
+                
+                categories_html += f"<tr><td>{feature}</td><td>{formatted_value}</td><td class='{color}'>{direction} {abs(shap_value):.6f}</td></tr>"
             
             categories_html += "</tbody></table></div>"
     

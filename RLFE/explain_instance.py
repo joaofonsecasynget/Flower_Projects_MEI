@@ -61,10 +61,10 @@ def main(args):
     # Carregar o dataset original se fornecido
     if args.use_original_dataset:
         X_data, is_original_dataset, original_indices, target_values, feature_columns = load_train_data(args.client, args.dataset)
-        dataset_desc = "dataset original completo"
+        dataset_desc = "Dataset original completo"
     else:
         X_data, is_original_dataset, original_indices, target_values, feature_columns = X_train, False, None, None, None
-        dataset_desc = "dados de treinamento do cliente"
+        dataset_desc = "Dados de treinamento do cliente"
     
     logger.info(f"Usando {dataset_desc} para seleção de instância")
     
