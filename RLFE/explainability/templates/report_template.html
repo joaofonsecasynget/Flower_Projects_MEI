@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ TITLE }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            margin-top: 0;
+        }
+        
+        h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+        
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        
+        .tab button.active {
+            background-color: #ccc;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        
+        .prediction {
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 3px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+        
+        .normal, .success {
+            background-color: #28a745;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        .attack, .danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ TITLE }}</h1>
+    
+    <div class="container">
+        <h2>Informações da Previsão</h2>
+        <p><strong>Cliente:</strong> {{ CLIENT_ID }}</p>
+        <p><strong>Instância:</strong> {{ INSTANCE_INDEX }}</p>
+        <p><strong>Origem dos dados:</strong> {{ DATASET_ORIGIN }}</p>
+        <p><strong>Previsão:</strong> <span class="{{ PREDICTION_CLASS }}">{{ PREDICTION_VALUE }}</span></p>
+        {{ TARGET_INFO }}
+    </div>
+
+    <div class="container">
+        <h2>Valores da Instância</h2>
+        <p>Valores principais das features para a instância analisada:</p>
+        {{ INSTANCE_VALUES }}
+    </div>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'LIME')">LIME</button>
+            <button class="tab" onclick="openTab(event, 'SHAP')">SHAP</button>
+            <button class="tab" onclick="openTab(event, 'Categories')">Categorias</button>
+        </div>
+        
+        <div id="LIME" class="tabcontent" style="display:block;">
+            <h3>Explicação LIME</h3>
+            <p>O LIME mostra como cada feature contribui para a previsão deste exemplo específico:</p>
+            <img src="{{ LIME_IMAGE }}" alt="Explicação LIME" style="max-width:100%; height:auto; margin:10px 0;">
+            
+            <h3>Top Features (LIME)</h3>
+            {{ LIME_EXPLANATION }}
+        </div>
+        
+        <div id="SHAP" class="tabcontent">
+            <h3>Explicação SHAP</h3>
+            <p>O SHAP mostra o impacto de cada feature no modelo:</p>
+            {{ SHAP_TABLE }}
+        </div>
+        
+        <div id="Categories" class="tabcontent">
+            <h3>Features por Categoria</h3>
+            <p>Visualização das features agrupadas por categoria:</p>
+            {{ CATEGORIES_SECTION }}
+        </div>
+    </div>
+    
+    <footer class="container" style="text-align: center; font-size: 12px; color: #777;">
+        <p>Relatório gerado automaticamente pelo sistema de explicabilidade RLFE</p>
+    </footer>
+    
+    <script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    </script>
+</body>
+</html>

@@ -108,7 +108,13 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - **Explicabilidade SHAP:**
     - `reports/client_X/shap_final.png`
     - `reports/client_X/shap_values.npy`
+    - `reports/client_X/shap_feature_type_importance.png` (Importância por tipo de feature)
+    - `reports/client_X/shap_temporal_trends.png` (Tendências temporais)
+    - `reports/client_X/shap_temporal_heatmap.png` (Mapa de calor temporal)
+    - `reports/client_X/shap_temporal_index_importance.png` (Importância por índice temporal)
+    - `reports/client_X/shap_timestamp_features_importance.png` (Importância das features derivadas de timestamp)
 - **Relatório HTML Consolidado:** `reports/client_X/final_report.html` (métricas por ronda, tempos, gráficos, LIME Top 10, SHAP)
+- **Ferramenta de Explicabilidade Interativa:** `explain_instance.py` (permite selecionar e explicar qualquer instância individual)
 
 ## Estado Atual
 - Nova estrutura RLFE funcional e estável, utilizando o dataset IoT.
@@ -116,6 +122,10 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - Implementado particionamento estratificado para garantir distribuição equilibrada do target em cada cliente.
 - Refatorado o código para melhor modularidade e manutenibilidade.
 - Explicabilidade (LIME/SHAP) e relatórios finais detalhados (com tempos precisos, métricas por ronda, múltiplos plots) gerados apenas na última ronda.
+- Corrigido o processamento de features temporais para extrair componentes do timestamp antes da remoção da coluna original.
+- Implementado tratamento robusto de formatos de timestamp com suporte a ISO8601.
+- Melhorado o layout e a organização das visualizações de explicabilidade no relatório HTML final.
+- Implementada ferramenta para análise interativa de instâncias individuais pós-treinamento.
 - Testes confirmam o comportamento esperado: outputs corretos, explicabilidade apenas no final, tempos registados.
 - Documentação (este README, ESTADOATUAL.md) atualizada para refletir as últimas modificações.
 
@@ -123,4 +133,5 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md` com resultados do dataset IoT.
 - Comparar formalmente os resultados da RLFE com a abordagem ADF (se aplicável ao dataset IoT) ou outras baselines.
 - Utilizar os artefactos gerados (relatórios, gráficos, explicações) para a escrita da dissertação.
+- Aprofundar a análise das features temporais que demonstraram alta importância para o modelo de detecção.
 - Refinar a análise da explicabilidade LIME/SHAP no contexto do problema IoT.
