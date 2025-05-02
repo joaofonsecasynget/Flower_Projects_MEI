@@ -6,13 +6,13 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 "Advanced Federated Learning Strategies: A Multi-Model Approach for Distributed and Secure Environments"
 
 ## Estrutura do Projeto
-- **RLFE/**: Nova implementação principal, totalmente containerizada com Docker e Docker Compose.
+- **CLFE/**: Nova implementação principal, totalmente containerizada com Docker e Docker Compose.
 - **DatasetIOT/**: Contém o dataset IoT real utilizado (`transformed_dataset_imeisv_8642840401612300.csv`).
 - **reports/** e **results/**: Volumes persistentes para outputs e artefactos de cada cliente.
 
 ## Abordagens
 - **ADF**: Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn)
-- **RLFE**: Regressão Linear Federada Explicável (PyTorch, LIME/SHAP)
+- **CLFE**: Classificação Linear Federada Explicável (PyTorch, LIME/SHAP)
 
 ## Principais Características
 - Orquestração completa via Docker Compose, escalando automaticamente o número de clientes.
@@ -20,19 +20,20 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 - Outputs organizados por cliente: métricas, histórico, plots, imagens de explicabilidade e relatório HTML consolidado.
 - Particionamento estratificado dos dados preservando a distribuição do target em cada cliente
 - Código modular e organizado com funções auxiliares para explicabilidade e geração de relatórios
+- Relatórios de explicabilidade interativos com formatação inteligente e acesso a todos os valores da instância explicada
 
 ## Instruções de Execução
 
-### Abordagem RLFE (Regressão Linear Federada Explicável)
+### Abordagem CLFE (Classificação Linear Federada Explicável)
 
-Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flower e múltiplos clientes que treinam um modelo de regressão linear (PyTorch) de forma federada e geram explicações (LIME/SHAP) na ronda final.
+Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flower e múltiplos clientes que treinam um modelo de classificação linear (PyTorch) de forma federada e geram explicações (LIME/SHAP) na ronda final.
 
 **Passos:**
 
-1.  **Navegar para a pasta RLFE:**
-    Abra um terminal e entre no diretório da implementação RLFE.
+1.  **Navegar para a pasta CLFE:**
+    Abra um terminal e entre no diretório da implementação CLFE.
     ```sh
-    cd RLFE
+    cd CLFE
     ```
 
 2.  **Gerar o Ficheiro Docker Compose:**
@@ -73,7 +74,7 @@ Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flowe
 
 **Notas Importantes:**
 
-*   Os outputs (relatórios, modelos, gráficos) serão guardados nas pastas `RLFE/reports/client_X` e `RLFE/results/client_X`.
+*   Os outputs (relatórios, modelos, gráficos) serão guardados nas pastas `CLFE/reports/client_X` e `CLFE/results/client_X`.
 *   O volume `DatasetIOT/` é montado como read-only nos contentores.
 *   Certifique-se de que o Docker Desktop (ou Docker Engine) está em execução antes de correr os comandos `docker compose`.
 
@@ -81,13 +82,13 @@ Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flowe
 
 *(Instruções detalhadas a adicionar)*
 
-## Execução Local de Cliente RLFE
+## Execução Local de Cliente CLFE
 
 ```bash
 python client.py --cid=1 --num_clients=4 --num_total_clients=4 --dataset_path=../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv
 ```
 
-## Argumentos do Cliente RLFE
+## Argumentos do Cliente CLFE
 - `--cid`: ID do cliente (1-indexed)
 - `--num_clients`: número de clientes a executar neste teste
 - `--num_total_clients`: número total de clientes para particionamento dos dados
@@ -117,21 +118,20 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - **Ferramenta de Explicabilidade Interativa:** `explain_instance.py` (permite selecionar e explicar qualquer instância individual)
 
 ## Estado Atual
-- Nova estrutura RLFE funcional e estável, utilizando o dataset IoT.
-- Corrigidos erros anteriores (matplotlib, TypeError LIME, falta de X_train.npy).
-- Implementado particionamento estratificado para garantir distribuição equilibrada do target em cada cliente.
-- Refatorado o código para melhor modularidade e manutenibilidade.
-- Explicabilidade (LIME/SHAP) e relatórios finais detalhados (com tempos precisos, métricas por ronda, múltiplos plots) gerados apenas na última ronda.
-- Corrigido o processamento de features temporais para extrair componentes do timestamp antes da remoção da coluna original.
-- Implementado tratamento robusto de formatos de timestamp com suporte a ISO8601.
-- Melhorado o layout e a organização das visualizações de explicabilidade no relatório HTML final.
-- Implementada ferramenta para análise interativa de instâncias individuais pós-treinamento.
-- Testes confirmam o comportamento esperado: outputs corretos, explicabilidade apenas no final, tempos registados.
-- Documentação (este README, ESTADOATUAL.md) atualizada para refletir as últimas modificações.
+- Conversão de RLFE (Regressão Linear) para CLFE (Classificação Linear) concluída com sucesso
+- Nova estrutura CLFE funcional e estável, utilizando o dataset IoT para detecção de ataques
+- Correção da última ronda para garantir métricas completas em todas as rondas
+- Interface de relatório otimizada com tabelas divididas por tipo de métrica (treino/validação, teste, tempos)
+- Particionamento estratificado para garantir distribuição equilibrada do target em cada cliente
+- Excelente desempenho do modelo (Acurácia ~99%, Precision ~98%, Recall ~97%, F1-score ~98%)
+- Explicabilidade (LIME/SHAP) gerando visualizações categorizadas por tipo de feature
+- Relatórios HTML finais detalhados com múltiplos gráficos e visualizações
+- Implementação do sistema de metadados para rastreabilidade completa das features
 
 ## Próximos Passos
-- Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md` com resultados do dataset IoT.
-- Comparar formalmente os resultados da RLFE com a abordagem ADF (se aplicável ao dataset IoT) ou outras baselines.
-- Utilizar os artefactos gerados (relatórios, gráficos, explicações) para a escrita da dissertação.
-- Aprofundar a análise das features temporais que demonstraram alta importância para o modelo de detecção.
-- Refinar a análise da explicabilidade LIME/SHAP no contexto do problema IoT.
+- Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md`
+- Comparar formalmente os resultados da CLFE com a abordagem ADF no contexto do dataset IoT
+- Investigar razões para o excepcional desempenho do modelo linear na detecção de ataques
+- Aprofundar a análise das features temporais que demonstraram alta importância
+- Resolver a incompatibilidade entre features do modelo e do dataset original
+- Utilizar os artefactos gerados para finalizar a escrita da dissertação

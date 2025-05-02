@@ -1,0 +1,5 @@
+Previsão: -941029.0
+Classe: Normal
+Cliente: 1
+Índice da instância: Aleatório (índice 15787) (índice original: 15787)
+Origem dos dados: Dataset original completo

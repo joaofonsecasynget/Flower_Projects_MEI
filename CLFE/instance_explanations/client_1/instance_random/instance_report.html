@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Explicabilidade - RLFE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        
+        .tab button.active {
+            background-color: #4a69bd;
+            color: white;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .prediction {
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 3px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+        
+        .normal, .success {
+            background-color: #28a745;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        .attack, .danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Explicabilidade - RLFE</h1>
+    
+    <div class="container">
+        <h2>Informações da Previsão</h2>
+        <p><strong>Cliente:</strong> 1</p>
+        <p><strong>Instância:</strong> Aleatório (índice 15787)</p>
+        <p><strong>Origem dos dados:</strong> Dataset original completo</p>
+        <p><strong>Previsão:</strong> <span class="normal">-941029 (Normal)</span></p>
+        <p><strong>Valor real:</strong> <span class="normal">Normal</span></p><p><strong>Comparação:</strong> <span class="success">Correto</span></p>
+    </div>
+
+    <div class="container">
+        <h2>Valores da Instância</h2>
+        <p>Esta tabela mostra alguns dos valores iniciais da instância. <a href='instance_values_full.txt' target='_blank'>Ver todos os valores da instância</a></p>
+        <table class='table table-striped table-sm'><thead><tr><th>Feature</th><th>Valor</th></tr></thead><tbody><tr><td>dl_bitrate_1</td><td>13419300</td></tr><tr><td>ul_bitrate_1</td><td>57683</td></tr><tr><td>cell_x_dl_retx_1</td><td>-1</td></tr><tr><td>cell_x_dl_tx_1</td><td>-1</td></tr><tr><td>cell_x_ul_retx_1</td><td>-1</td></tr><tr><td>cell_x_ul_tx_1</td><td>-1</td></tr><tr><td>ul_total_bytes_non_incr_1</td><td>420</td></tr><tr><td>dl_total_bytes_non_incr_1</td><td>8524600</td></tr><tr><td>dl_bitrate_2</td><td>11156503</td></tr><tr><td>ul_bitrate_2</td><td>57233</td></tr></tbody></table>
+    </div>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'LIME')">LIME</button>
+            <button class="tab" onclick="openTab(event, 'SHAP')">SHAP</button>
+            <button class="tab" onclick="openTab(event, 'Categories')">Categorias</button>
+        </div>
+        
+        <div id="LIME" class="tabcontent" style="display:block;">
+            <h3>Explicação LIME</h3>
+            <p>O LIME mostra como cada feature contribui para a previsão deste exemplo específico:</p>
+            <img src="lime_explanation.png" alt="Explicação LIME" style="max-width:100%; height:auto; margin:10px 0;">
+            
+            <h3>Top Features (LIME)</h3>
+            <table class='table table-striped table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto</th></tr></thead><tbody><tr><td>ul_bitrate_66 > 0.78</td><td>N/A</td><td class='text-danger'>Negativo (-1613.7670)</td></tr><tr><td>dl_total_bytes_non_incr_117 > 0.94</td><td>N/A</td><td class='text-danger'>Negativo (-1570.6765)</td></tr><tr><td>dl_total_bytes_non_incr_57 > 0.82</td><td>N/A</td><td class='text-danger'>Negativo (-1566.9544)</td></tr><tr><td>cell_x_ul_retx_50 <= -0.75</td><td>N/A</td><td class='text-danger'>Negativo (-1556.7747)</td></tr><tr><td>cell_x_ul_retx_90 <= -0.61</td><td>N/A</td><td class='text-danger'>Negativo (-1533.7659)</td></tr><tr><td>cell_x_dl_retx_75 <= -0.48</td><td>N/A</td><td class='text-danger'>Negativo (-1497.8417)</td></tr><tr><td>cell_x_ul_tx_58 <= -0.71</td><td>N/A</td><td class='text-danger'>Negativo (-1496.9538)</td></tr><tr><td>cell_x_dl_tx_4 <= -0.75</td><td>N/A</td><td class='text-danger'>Negativo (-1491.3494)</td></tr><tr><td>ul_bitrate_25 > 0.62</td><td>N/A</td><td class='text-danger'>Negativo (-1485.6718)</td></tr><tr><td>ul_bitrate_119 > 0.80</td><td>N/A</td><td class='text-danger'>Negativo (-1400.8079)</td></tr></tbody></table>
+        </div>
+        
+        <div id="SHAP" class="tabcontent">
+            <h3>Explicação SHAP</h3>
+            <p>O SHAP mostra o impacto de cada feature no modelo:</p>
+            <div class="shap-table">
+<h3>Top Features por Importância SHAP</h3>
+<table class="table table-striped table-sm">
+  <tr><th>Feature</th><th>Categoria</th><th>Valor da Feature</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>dl_bitrate_92</td>
+    <td>dl_bitrate</td>
+    <td>13838695.0</td>
+    <td class="text-danger">-205787.375108</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_29</td>
+    <td>dl_bitrate</td>
+    <td>13504542.0</td>
+    <td class="text-danger">-150066.883636</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_75</td>
+    <td>dl_bitrate</td>
+    <td>13850643.0</td>
+    <td class="text-danger">-124226.399846</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_27</td>
+    <td>dl_bitrate</td>
+    <td>11380053.0</td>
+    <td class="text-danger">-111990.313082</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_87</td>
+    <td>dl_bitrate</td>
+    <td>14900337.0</td>
+    <td class="text-danger">-110254.315424</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_68</td>
+    <td>dl_bitrate</td>
+    <td>13220274.0</td>
+    <td class="text-danger">-78514.743354</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_112</td>
+    <td>dl_bitrate</td>
+    <td>14161386.0</td>
+    <td class="text-danger">-50494.459890</td>
+  </tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_34</td>
+    <td>dl_total_bytes_non_incr</td>
+    <td>7105459.0</td>
+    <td class="text-danger">-44466.153900</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_73</td>
+    <td>dl_bitrate</td>
+    <td>15132694.0</td>
+    <td class="text-danger">-36912.078881</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_94</td>
+    <td>dl_bitrate</td>
+    <td>15520622.0</td>
+    <td class="text-danger">-28316.404372</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_tx_81</td>
+    <td>cell_x_ul_tx</td>
+    <td>-1.0000</td>
+    <td class="text-danger">0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_retx_81</td>
+    <td>cell_x_ul_retx</td>
+    <td>-1.0000</td>
+    <td class="text-danger">0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_retx_81</td>
+    <td>cell_x_dl_retx</td>
+    <td>-1.0000</td>
+    <td class="text-danger">0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_tx_81</td>
+    <td>cell_x_dl_tx</td>
+    <td>-1.0000</td>
+    <td class="text-danger">0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_bitrate_81</td>
+    <td>ul_bitrate</td>
+    <td>58549.0</td>
+    <td class="text-danger">0.000000</td>
+  </tr>
+</table>
+<h3>Principais Features por Categoria</h3>
+<div class="category-section mb-4">
+<h4>Dl Bitrate</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>dl_bitrate_92</td>
+    <td>13838695.0</td>
+    <td class="text-danger">↓ 205787.375108</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_29</td>
+    <td>13504542.0</td>
+    <td class="text-danger">↓ 150066.883636</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_75</td>
+    <td>13850643.0</td>
+    <td class="text-danger">↓ 124226.399846</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_27</td>
+    <td>11380053.0</td>
+    <td class="text-danger">↓ 111990.313082</td>
+  </tr>
+  <tr>
+    <td>dl_bitrate_87</td>
+    <td>14900337.0</td>
+    <td class="text-danger">↓ 110254.315424</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Dl Total Bytes Non Incr</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_34</td>
+    <td>7105459.0</td>
+    <td class="text-danger">↓ 44466.153900</td>
+  </tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_1</td>
+    <td>8524600.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_2</td>
+    <td>7080143.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_3</td>
+    <td>8411631.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>dl_total_bytes_non_incr_4</td>
+    <td>9191346.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Ul Bitrate</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>ul_bitrate_1</td>
+    <td>57683.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_bitrate_2</td>
+    <td>57233.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_bitrate_3</td>
+    <td>58735.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_bitrate_4</td>
+    <td>57222.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_bitrate_5</td>
+    <td>57945.0</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Cell X Dl Retx</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>cell_x_dl_retx_1</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_retx_2</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_retx_3</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_retx_4</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_retx_5</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Cell X Dl Tx</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>cell_x_dl_tx_1</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_tx_2</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_tx_3</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_tx_4</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_dl_tx_5</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Cell X Ul Retx</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>cell_x_ul_retx_1</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_retx_2</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_retx_3</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_retx_4</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_retx_5</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Cell X Ul Tx</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>cell_x_ul_tx_1</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_tx_2</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_tx_3</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_tx_4</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>cell_x_ul_tx_5</td>
+    <td>-1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Ul Total Bytes Non Incr</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>ul_total_bytes_non_incr_1</td>
+    <td>420.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_total_bytes_non_incr_2</td>
+    <td>420.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_total_bytes_non_incr_3</td>
+    <td>420.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_total_bytes_non_incr_4</td>
+    <td>420.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>ul_total_bytes_non_incr_5</td>
+    <td>504.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+<div class="category-section mb-4">
+<h4>Timestamp</h4>
+<table class="table table-sm">
+  <tr><th>Feature</th><th>Valor</th><th>Contribuição SHAP</th></tr>
+  <tr>
+    <td>hour</td>
+    <td>18.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>dayofweek</td>
+    <td>6.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>day</td>
+    <td>24.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>month</td>
+    <td>3.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+  <tr>
+    <td>is_weekend</td>
+    <td>1.0000</td>
+    <td class="text-danger">↓ 0.000000</td>
+  </tr>
+</table>
+</div>
+</div>
+
+        </div>
+        
+        <div id="Categories" class="tabcontent">
+            <h3>Features por Categoria</h3>
+            <p>Visualização das features agrupadas por categoria:</p>
+            <div class='category-section mb-4'><h4>Dl Bitrate</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>dl_bitrate_92</td><td>13838695</td><td class='text-danger'>↓ 205787.375108</td></tr><tr><td>dl_bitrate_29</td><td>13504542</td><td class='text-danger'>↓ 150066.883636</td></tr><tr><td>dl_bitrate_75</td><td>13850643</td><td class='text-danger'>↓ 124226.399846</td></tr><tr><td>dl_bitrate_27</td><td>11380053</td><td class='text-danger'>↓ 111990.313082</td></tr><tr><td>dl_bitrate_87</td><td>14900337</td><td class='text-danger'>↓ 110254.315424</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Dl Total Bytes Non Incr</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>dl_total_bytes_non_incr_34</td><td>7105459</td><td class='text-danger'>↓ 44466.153900</td></tr><tr><td>dl_total_bytes_non_incr_1</td><td>8524600</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>dl_total_bytes_non_incr_2</td><td>7080143</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>dl_total_bytes_non_incr_3</td><td>8411631</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>dl_total_bytes_non_incr_4</td><td>9191346</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Ul Bitrate</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>ul_bitrate_1</td><td>57683</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_bitrate_2</td><td>57233</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_bitrate_3</td><td>58735</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_bitrate_4</td><td>57222</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_bitrate_5</td><td>57945</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Cell X Dl Retx</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>cell_x_dl_retx_1</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_retx_2</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_retx_3</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_retx_4</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_retx_5</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Cell X Dl Tx</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>cell_x_dl_tx_1</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_tx_2</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_tx_3</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_tx_4</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_dl_tx_5</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Cell X Ul Retx</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>cell_x_ul_retx_1</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_retx_2</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_retx_3</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_retx_4</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_retx_5</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Cell X Ul Tx</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>cell_x_ul_tx_1</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_tx_2</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_tx_3</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_tx_4</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>cell_x_ul_tx_5</td><td>-1</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Ul Total Bytes Non Incr</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>ul_total_bytes_non_incr_1</td><td>420</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_total_bytes_non_incr_2</td><td>420</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_total_bytes_non_incr_3</td><td>420</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_total_bytes_non_incr_4</td><td>420</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>ul_total_bytes_non_incr_5</td><td>504</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div><div class='category-section mb-4'><h4>Timestamp</h4><table class='table table-sm'><thead><tr><th>Feature</th><th>Valor</th><th>Impacto SHAP</th></tr></thead><tbody><tr><td>hour</td><td>18</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>dayofweek</td><td>6</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>day</td><td>24</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>month</td><td>3</td><td class='text-danger'>↓ 0.000000</td></tr><tr><td>is_weekend</td><td>1</td><td class='text-danger'>↓ 0.000000</td></tr></tbody></table></div>
+        </div>
+    </div>
+    
+    <footer class="container" style="text-align: center; font-size: 12px; color: #777;">
+        <p>Relatório gerado automaticamente pelo sistema de explicabilidade RLFE</p>
+    </footer>
+    
+    <script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    </script>
+</body>
+</html>

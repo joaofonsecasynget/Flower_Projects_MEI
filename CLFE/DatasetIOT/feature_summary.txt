@@ -1,0 +1,20 @@
+RESUMO DE FEATURES
+================
+
+Contagem de Features por Categoria:
+- dl_bitrate: 120 features (120 usadas no treinamento)
+- ul_bitrate: 120 features (120 usadas no treinamento)
+- cell_x_dl_retx: 120 features (120 usadas no treinamento)
+- cell_x_dl_tx: 120 features (120 usadas no treinamento)
+- cell_x_ul_retx: 120 features (120 usadas no treinamento)
+- cell_x_ul_tx: 120 features (120 usadas no treinamento)
+- identifier: 3 features (0 usadas no treinamento)
+- time_features: 5 features (5 usadas no treinamento)
+- other: 241 features (241 usadas no treinamento)
+
+Features Derivadas:
+- hour (derivada de: _time)
+- dayofweek (derivada de: _time)
+- day (derivada de: _time)
+- month (derivada de: _time)
+- is_weekend (derivada de: _time)
