@@ -1,5 +1,5 @@
 Previsão: -241625028624384.0
 Classe: Normal
 Cliente: 1
-Índice da instância: Aleatório (índice 12565) (índice original: 12565)
+Índice da instância: Aleatório (índice 6985) (índice original: 6985)
 Origem dos dados: dataset original completo

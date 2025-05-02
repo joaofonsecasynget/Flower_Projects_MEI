@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             color: #333;
+            background-color: #f9f9f9;
         }
         
         h1 {
@@ -18,25 +19,34 @@
             padding: 20px 0;
             background-color: #f8f9fa;
             margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
         }
         
         h2 {
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-top: 30px;
+            color: #2c3e50;
         }
         
         .container {
             width: 90%;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 20px auto;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-radius: 4px;
+            overflow: hidden;
         }
         
         th, td {
@@ -47,12 +57,15 @@
         
         th {
             background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
         }
         
         .tab {
             overflow: hidden;
             border: 1px solid #ccc;
             background-color: #f1f1f1;
+            border-radius: 4px 4px 0 0;
         }
         
         .tab button {
@@ -63,6 +76,7 @@
             cursor: pointer;
             padding: 14px 16px;
             transition: 0.3s;
+            font-weight: bold;
         }
         
         .tab button:hover {
@@ -70,14 +84,17 @@
         }
         
         .tab button.active {
-            background-color: #ccc;
+            background-color: #4a69bd;
+            color: white;
         }
         
         .tabcontent {
             display: none;
-            padding: 6px 12px;
+            padding: 12px 15px;
             border: 1px solid #ccc;
             border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         
         .prediction {
