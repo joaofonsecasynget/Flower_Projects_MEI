@@ -406,6 +406,8 @@ Este plano será executado como parte das melhorias contínuas do projeto CLFE, 
 - **LIME - Identificação da Instância**: Não havia informação clara sobre qual instância estava sendo analisada e seu índice original no dataset.
 - **LIME - Valores das Features**: Os valores apresentados eram normalizados, dificultando a interpretação no contexto do domínio do problema.
 - **LIME - Somente Valores Negativos**: A visualização LIME mostrava apenas contribuições negativas, com esquema de cores inadequado.
+- **LIME - Ordenação das Features**: As features não estavam ordenadas por relevância, dificultando a identificação rápida das mais importantes.
+- **LIME - Informação de Previsão**: Não havia indicação se a previsão estava correta ou incorreta em relação ao valor real.
 - **SHAP - Inconsistências na Apresentação das Features**: Algumas features podem não estar sendo exibidas corretamente na visualização SHAP.
 
 #### Melhorias Implementadas na Explicabilidade (2025-05-04)
@@ -418,7 +420,7 @@ Este plano será executado como parte das melhorias contínuas do projeto CLFE, 
 2. **Melhoria na Identificação da Instância**:
    - Implementada seleção aleatória de instâncias para análise
    - Adicionado rastreamento e exibição do índice original no dataset
-   - Apresentação clara separando "Índice na amostra" do "Índice no dataset original"
+   - Apresentação clara do "Índice no dataset original"
 
 3. **Correção dos Valores das Features**:
    - Implementado carregamento do dataset original para obter valores não normalizados
@@ -430,8 +432,37 @@ Este plano será executado como parte das melhorias contínuas do projeto CLFE, 
    - Layout de duas colunas para LIME e SHAP para melhor aproveitamento do espaço
    - Seção dedicada com informações detalhadas sobre a instância analisada
 
+5. **Correção do Modo do Explicador LIME** (2025-05-04):
+   - Alterado o modo do explicador LIME de "regression" para "classification"
+   - Aumentado o número de amostras para melhorar a precisão da explicação
+   - Corrigido o formato de saída do modelo para fornecer probabilidades para ambas as classes
+
+6. **Ordenação das Features por Relevância** (2025-05-04):
+   - Implementada ordenação das features por valor absoluto da contribuição (importância)
+   - Configurada a visualização para mostrar as features mais importantes no topo do gráfico
+   - Facilitada a identificação rápida das features com maior impacto na previsão
+
+7. **Adição de Informações sobre Precisão da Previsão** (2025-05-04):
+   - Adicionado o valor real (target) do dataset original
+   - Implementada indicação visual clara se a previsão está correta (verde) ou incorreta (vermelho)
+   - Facilitada a análise de casos de falsos positivos e falsos negativos
+
 #### Próximos Passos para Explicabilidade
 
-- Investigar e corrigir o problema de valores apenas negativos no LIME
-- Verificar e corrigir as inconsistências na apresentação de features no SHAP
-- Avaliar a possibilidade de integrar mais aspectos do sistema especializado de explicabilidade (`CLFE/explainability/`) no fluxo principal
+1. **Alta Prioridade:**
+   - Implementar agrupamento de features por categorias específicas (dl_bitrate, ul_bitrate, etc.)
+   - Adicionar análise comparativa de falsos positivos/negativos
+   - Implementar métricas de confiabilidade por feature
+
+2. **Média Prioridade:**
+   - Adicionar visualização temporal de contribuições importantes
+   - Implementar interface para comparação entre instâncias classificadas corretamente vs. incorretamente
+   - Adicionar filtragem de features irrelevantes (com contribuições muito pequenas)
+   - Clarificação e documentação da visualização SHAP
+
+3. **Baixa Prioridade (Melhorias Futuras):**
+   - Visualizações SHAP adicionais
+   - Interface para seleção interativa de instâncias para explicação
+   - Integrar mais aspectos do sistema especializado de explicabilidade (`CLFE/explainability/`) no fluxo principal
+
+Este plano continuará sendo executado como parte das melhorias contínuas do projeto CLFE, com objetivo de aumentar a interpretabilidade e utilidade das explicações LIME/SHAP, fundamentais para a transparência do modelo de detecção de ataques IoT.

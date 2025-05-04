@@ -1,5 +1,5 @@
 Cliente: 2
-Data: 2025-05-04 08:47:42
+Data: 2025-05-04 08:59:57
 Dataset Path: ../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv
 Seed: 42
 Epochs: 5

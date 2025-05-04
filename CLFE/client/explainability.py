@@ -74,25 +74,39 @@ class ModelExplainer:
     def create_custom_lime_visualization(self, exp, output_path):
         """
         Cria uma visualização LIME personalizada com nomes de features completos
-        e esquema de cores correto (verde=normal, vermelho=ataque)
+        e esquema de cores específico.
+        
+        Args:
+            exp: explicação LIME
+            output_path: caminho para salvar a figura
+        
+        Returns:
+            caminho para a figura salva
         """
+        import matplotlib.pyplot as plt
+        import numpy as np
+        
         # Obter explicação como lista
         explanation = exp.as_list()
         
-        # Ordenar por importância (valor absoluto do coeficiente)
-        explanation.sort(key=lambda x: abs(x[1]), reverse=True)
+        # Ordenar por valor absoluto da contribuição (importância)
+        explanation = sorted(explanation, key=lambda x: abs(x[1]), reverse=True)
+        
+        # Em gráficos de barras horizontais no matplotlib, o primeiro elemento da lista aparece 
+        # na parte inferior. Para colocar as features mais importantes no topo, precisamos inverter a lista.
+        explanation.reverse()
         
         # Separar features e valores
         features = [item[0] for item in explanation]
         values = [item[1] for item in explanation]
         
-        # Criar figura maior para acomodar nomes longos
-        plt.figure(figsize=(12, 8))
-        
         # Definir cores com base no valor e na classe prevista
         # valores NEGATIVOS contribuem para a classe "Normal" (0) - cor VERDE
         # valores POSITIVOS contribuem para a classe "Ataque" (1) - cor VERMELDA
         colors = ['green' if val < 0 else 'red' for val in values]
+        
+        # Criar figura maior para acomodar nomes longos
+        plt.figure(figsize=(12, 8))
         
         # Criar gráfico horizontal de barras
         y_pos = range(len(features))
