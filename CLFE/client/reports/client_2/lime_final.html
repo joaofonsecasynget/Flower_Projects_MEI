@@ -37094,20 +37094,20 @@
         <script>
         var top_div = d3.select('#top_divF83ASVBK10LDA12').classed('lime top_div', true);
         
-        
-                    var pp_div = top_div.append('div')
-                                        .classed('lime predicted_value', true);
-                    var pp_svg = pp_div.append('svg').style('width', '100%');
-                    var pp = new lime.PredictedValue(pp_svg, 0.0002548783377278596, 0.0002548783377278596, 1.0);
-                    
-        var exp_div;
-            var exp = new lime.Explanation(["negative", "positive"]);
-        
-            exp_div = top_div.append('div').classed('lime explanation', true);
-            exp.show([["dl_bitrate_112 > -0.00", -0.0034092056113833574], ["ul_total_bytes_non_incr_62 <= -0.58", -0.003118247332072329], ["ul_total_bytes_non_incr_120 <= -0.62", -0.0030410217761752613], ["ul_bitrate_92 <= -0.59", -0.0028259107084607055], ["dl_total_bytes_non_incr_28 > -0.01", -0.002597883593045646], ["ul_bitrate_89 <= -0.59", -0.002580210488516641], ["ul_total_bytes_non_incr_97 <= -0.57", -0.002556219695582166], ["ul_bitrate_117 <= -0.62", -0.0025328454410697265], ["dl_bitrate_118 > 0.11", -0.002508220194412545], ["dl_total_bytes_non_incr_82 > -0.18", -0.002407588029498077]], 1, exp_div);
+            var pp_div = top_div.append('div')
+                                .classed('lime predict_proba', true);
+            var pp_svg = pp_div.append('svg').style('width', '100%');
+            var pp = new lime.PredictProba(pp_svg, ["0", "1"], [0.9997451216622721, 0.0002548783377278596]);
             
+        
+        var exp_div;
+            var exp = new lime.Explanation(["0", "1"]);
+        
+                exp_div = top_div.append('div').classed('lime explanation', true);
+                exp.show([["dl_bitrate_112 > -0.00", -0.003267656798705755], ["ul_total_bytes_non_incr_62 <= -0.58", -0.003067361570555328], ["dl_total_bytes_non_incr_35 > 0.00", -0.00303908583301798], ["ul_total_bytes_non_incr_120 <= -0.62", -0.0029800099473729505], ["ul_total_bytes_non_incr_39 <= -0.61", -0.002801085468002437], ["ul_bitrate_92 <= -0.59", -0.002777679346433145], ["ul_bitrate_79 <= -0.59", -0.002658754151617968], ["ul_bitrate_89 <= -0.59", -0.0026543944026199916], ["ul_total_bytes_non_incr_88 <= -0.58", -0.0025808797015704405], ["ul_bitrate_117 <= -0.62", -0.0025683240707180524], ["ul_total_bytes_non_incr_105 <= -0.57", -0.0025306087923511935], ["dl_bitrate_118 > 0.11", -0.0025128556856880745], ["dl_total_bytes_non_incr_28 > -0.01", -0.0024978466381996795], ["dl_total_bytes_non_incr_82 > -0.18", -0.002445624873197988], ["ul_bitrate_110 <= -0.62", -0.0024303434017018148], ["ul_total_bytes_non_incr_97 <= -0.57", -0.0024082468385948227], ["ul_bitrate_90 <= -0.59", -0.0023254714894078514], ["dl_bitrate_110 > -0.06", -0.002106674122081327], ["ul_bitrate_119 <= -0.62", -0.0020590613601466695], ["ul_bitrate_21 <= -0.59", -0.0019414342494036337]], 1, exp_div);
+                
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["dl_bitrate_112", "1.47", -0.0034092056113833574], ["ul_total_bytes_non_incr_62", "-0.74", -0.003118247332072329], ["ul_total_bytes_non_incr_120", "-0.75", -0.0030410217761752613], ["ul_bitrate_92", "-0.70", -0.0028259107084607055], ["dl_total_bytes_non_incr_28", "1.28", -0.002597883593045646], ["ul_bitrate_89", "-0.70", -0.002580210488516641], ["ul_total_bytes_non_incr_97", "-0.74", -0.002556219695582166], ["ul_bitrate_117", "-0.70", -0.0025328454410697265], ["dl_bitrate_118", "1.94", -0.002508220194412545], ["dl_total_bytes_non_incr_82", "1.94", -0.002407588029498077]], 1, raw_div);
+            exp.show_raw_tabular([["dl_bitrate_112", "1.47", -0.003267656798705755], ["ul_total_bytes_non_incr_62", "-0.74", -0.003067361570555328], ["dl_total_bytes_non_incr_35", "1.24", -0.00303908583301798], ["ul_total_bytes_non_incr_120", "-0.75", -0.0029800099473729505], ["ul_total_bytes_non_incr_39", "-0.74", -0.002801085468002437], ["ul_bitrate_92", "-0.70", -0.002777679346433145], ["ul_bitrate_79", "-0.71", -0.002658754151617968], ["ul_bitrate_89", "-0.70", -0.0026543944026199916], ["ul_total_bytes_non_incr_88", "-0.75", -0.0025808797015704405], ["ul_bitrate_117", "-0.70", -0.0025683240707180524], ["ul_total_bytes_non_incr_105", "-0.73", -0.0025306087923511935], ["dl_bitrate_118", "1.94", -0.0025128556856880745], ["dl_total_bytes_non_incr_28", "1.28", -0.0024978466381996795], ["dl_total_bytes_non_incr_82", "1.94", -0.002445624873197988], ["ul_bitrate_110", "-0.70", -0.0024303434017018148], ["ul_total_bytes_non_incr_97", "-0.74", -0.0024082468385948227], ["ul_bitrate_90", "-0.70", -0.0023254714894078514], ["dl_bitrate_110", "1.10", -0.002106674122081327], ["ul_bitrate_119", "-0.70", -0.0020590613601466695], ["ul_bitrate_21", "-0.71", -0.0019414342494036337]], 1, raw_div);
         
         </script>
         </body></html>

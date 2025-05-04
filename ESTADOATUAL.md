@@ -226,3 +226,212 @@ Este documento acompanha o progresso do projeto de Aprendizagem Federada e Expli
 - Desenvolvimento do módulo final de comparação formal
 - Testes com números maiores de clientes para analisar o impacto na federação
 - Análise das explicabilidades LIME/SHAP para compreender as razões do excelente desempenho
+
+### [2025-05-04] Refinamentos na Interface de Relatório e Correções de Bugs
+
+#### Problemas Identificados
+- Gráficos de métricas mostravam 10 rondas quando na realidade eram apenas 5
+- Duplicação de valores no histórico de métricas de classificação (accuracy, precision, recall, f1)
+- Organização subótima dos gráficos no relatório HTML final
+- Duplicação do gráfico "Comparação de Accuracy" na seção de evolução
+
+#### Melhorias Implementadas
+1. **Correção de duplicação de métricas:**
+   - Corrigida a lógica que armazenava as métricas de classificação no histórico
+   - Implementada verificação para evitar duplicação de registros por ronda
+   - Melhorada a consistência entre número de valores em diferentes métricas
+
+2. **Reorganização dos gráficos no relatório HTML:**
+   - Tempos de explicabilidade (LIME/SHAP) movidos para o início da seção de explicabilidade
+   - Implementado layout de duas colunas para visualização lado a lado de LIME e SHAP
+   - Otimizada a apresentação para melhor aproveitamento do espaço e visualização
+
+3. **Refatoração do código:**
+   - Simplificação da geração de plot_files para evitar filtros desnecessários
+   - Melhoria na organização e readabilidade do código
+   - Documentação das decisões de design com comentários
+
+#### Benefícios 
+- Representação mais fiel do número real de rondas nos gráficos
+- Melhor experiência de visualização com layout de colunas para LIME/SHAP
+- Organização mais lógica dos gráficos no relatório HTML
+- Redução da duplicação e simplificação do código
+
+#### Status Atual
+- Todas as melhorias estão implementadas e testadas
+- Relatório HTML agora apresenta corretamente os dados e gráficos
+- Experiência de visualização significativamente melhorada
+
+#### Próximos Passos
+- Continuar a execução de experimentos com diferentes números de clientes
+- Incorporar os insights obtidos dos relatórios aprimorados na dissertação
+- Avaliar se são necessárias melhorias adicionais na interface de relatório
+
+### [2025-05-04] Plano de Melhorias para Gráficos de Explicabilidade
+
+#### Problemas Identificados com Explicabilidade LIME/SHAP
+
+1. **LIME - Identificação da Instância:**
+   - A instância específica sendo explicada pelo LIME não está identificada no relatório
+   - Não há informações sobre o índice, características ou classificação real/prevista da instância
+   - Impossível contextualizar a explicação sem conhecer a instância analisada
+
+2. **LIME - Truncamento de Nomes de Features:**
+   - Nomes das features estão truncados no gráfico `lime_final.png`
+   - Dificulta a identificação precisa de quais features estão influenciando a previsão
+   - Compromete a interpretabilidade do gráfico
+
+3. **LIME - Apenas Valores Negativos:**
+   - O gráfico LIME atual mostra apenas valores de contribuição negativos
+   - Pode indicar um problema na forma como a explicação está sendo gerada ou visualizada
+   - Normalmente esperaríamos ver contribuições positivas (que aumentam a probabilidade da classe prevista) e negativas (que diminuem)
+
+4. **SHAP - Inconsistência na Apresentação de Features:**
+   - Foi indicado que SHAP mostraria a distribuição completa de todas as features, mas o gráfico não mostra todas
+   - Possível conflito entre a documentação/explicação e a implementação real
+   - Necessário esclarecer se é uma limitação intencional ou um problema
+
+#### Análise Técnica e Causas Prováveis
+
+1. **Problema LIME - Identificação:**
+   - Provável causa: Na função `generate_explainability()`, a instância é selecionada arbitrariamente (índice 0 por padrão)
+   - Não há código para extrair e exibir metadados sobre a instância no relatório HTML
+
+2. **Problema LIME - Nomes Truncados:**
+   - Provável causa: Configuração padrão da biblioteca LIME para visualização
+   - Falta de personalização no tamanho do gráfico ou nas margens para acomodar nomes longos
+
+3. **Problema LIME - Apenas Valores Negativos:**
+   - Possíveis causas:
+     * Configuração incorreta da classe positiva no LIME (invertendo a interpretação)
+     * A instância selecionada tem características que reduzem a probabilidade da classe prevista
+     * Bug na geração da visualização LIME
+
+4. **Problema SHAP - Features Limitadas:**
+   - Possíveis causas:
+     * Configuração padrão do `summary_plot` do SHAP que limita o número de features mostradas
+     * Filtragem intencional não documentada
+     * Diferença entre a quantidade total de features e as que têm impacto significativo
+
+#### Plano de Ação Detalhado
+
+1. **Melhorias para LIME:**
+   
+   a) **Identificação da Instância:**
+   ```python
+   # Modificar generate_explainability para incluir:
+   # - Permitir seleção aleatória com seed ou índice específico
+   # - Extrair características básicas da instância
+   # - Salvar informações sobre a instância em um arquivo adicional
+   # - Incluir metadados no relatório HTML
+   ```
+   
+   b) **Correção do Truncamento de Nomes:**
+   ```python
+   # Ajustar a função de geração do gráfico LIME:
+   # - Aumentar o tamanho da figura para acomodar nomes longos
+   # - Ajustar margens/padding do gráfico
+   # - Implementar tratamento de nomes longos (abreviação inteligente ou quebra de linha)
+   ```
+   
+   c) **Investigação dos Valores Negativos:**
+   ```python
+   # 1. Verificar a configuração da classe positiva no explainer LIME
+   # 2. Analisar diferentes instâncias para verificar se o problema persiste
+   # 3. Ajustar parâmetros de visualização se necessário
+   # 4. Documentar o comportamento esperado com base na interpretação correta
+   ```
+
+2. **Melhorias para SHAP:**
+   
+   a) **Clarificação da Visualização de Features:**
+   ```python
+   # 1. Verificar a documentação do SHAP sobre limites padrão
+   # 2. Implementar controle explícito do número de features mostradas
+   # 3. Documentar o comportamento real vs. esperado
+   # 4. Adicionar opção para visualizar todas as features ou apenas as mais importantes
+   ```
+   
+   b) **Adição de Visualizações Complementares:**
+   ```python
+   # Implementar visualizações adicionais que mostram outras perspectivas dos valores SHAP:
+   # - Gráfico de barras com todas as features ordenadas por importância
+   # - Opção para filtrar por grupos de features
+   ```
+
+3. **Melhorias na Documentação e Relatório:**
+   
+   a) **Esclarecimentos no Relatório HTML:**
+   ```html
+   <!-- Adicionar seções explicativas: -->
+   <div class="explanation-notes">
+     <h4>Notas sobre LIME:</h4>
+     <p>Esta explicação refere-se à instância [ID]. Valores negativos indicam características que reduzem a probabilidade de classificação como ataque.</p>
+     
+     <h4>Notas sobre SHAP:</h4>
+     <p>Este gráfico mostra as [X] features mais importantes. Cores representam o valor da feature (vermelho = alto, azul = baixo).</p>
+   </div>
+   ```
+   
+   b) **Documentação do Código:**
+   ```python
+   # Melhorar documentação em-código para:
+   # - Esclarecer a interpretação correta dos valores LIME/SHAP
+   # - Documentar parâmetros e comportamentos padrão
+   # - Explicar limitações e configurações personalizáveis
+   ```
+
+#### Priorização e Cronograma
+
+1. **Alta Prioridade (Implementação Imediata):**
+   - Identificação da instância LIME no relatório
+   - Correção do problema de truncamento de nomes de features
+   - Investigação e correção dos valores apenas negativos no LIME
+
+2. **Média Prioridade:**
+   - Clarificação e documentação da visualização SHAP
+   - Melhorias na documentação do relatório HTML
+
+3. **Baixa Prioridade (Melhorias Futuras):**
+   - Visualizações SHAP adicionais
+   - Interface para seleção interativa de instâncias para explicação
+
+Este plano será executado como parte das melhorias contínuas do projeto CLFE, com objetivo de aumentar a interpretabilidade e utilidade das explicações LIME/SHAP, fundamentais para a transparência do modelo de detecção de ataques IoT.
+
+### [2025-05-04] Problemas Identificados com Explicabilidade LIME/SHAP
+
+#### Problemas Identificados com Explicabilidade LIME/SHAP
+
+- **LIME - Truncamento dos Nomes das Features**: Os nomes das features apareciam truncados na visualização LIME, dificultando a identificação precisa das variáveis importantes.
+- **LIME - Identificação da Instância**: Não havia informação clara sobre qual instância estava sendo analisada e seu índice original no dataset.
+- **LIME - Valores das Features**: Os valores apresentados eram normalizados, dificultando a interpretação no contexto do domínio do problema.
+- **LIME - Somente Valores Negativos**: A visualização LIME mostrava apenas contribuições negativas, com esquema de cores inadequado.
+- **SHAP - Inconsistências na Apresentação das Features**: Algumas features podem não estar sendo exibidas corretamente na visualização SHAP.
+
+#### Melhorias Implementadas na Explicabilidade (2025-05-04)
+
+1. **Correção do Truncamento de Nomes das Features no LIME**:
+   - Implementada visualização LIME personalizada com maior tamanho (12x8) para acomodar nomes completos
+   - Ajustado o layout e formatação para melhor visualização
+   - Adicionada legenda explicativa sobre o significado das cores (verde para normal, vermelho para ataque)
+
+2. **Melhoria na Identificação da Instância**:
+   - Implementada seleção aleatória de instâncias para análise
+   - Adicionado rastreamento e exibição do índice original no dataset
+   - Apresentação clara separando "Índice na amostra" do "Índice no dataset original"
+
+3. **Correção dos Valores das Features**:
+   - Implementado carregamento do dataset original para obter valores não normalizados
+   - Exibição dos valores originais (não normalizados) no relatório
+   - Adicionada indicação clara de que os valores apresentados são os originais
+
+4. **Apresentação Visual Aprimorada**:
+   - Implementado esquema de cores correto (verde=normal, vermelho=ataque) 
+   - Layout de duas colunas para LIME e SHAP para melhor aproveitamento do espaço
+   - Seção dedicada com informações detalhadas sobre a instância analisada
+
+#### Próximos Passos para Explicabilidade
+
+- Investigar e corrigir o problema de valores apenas negativos no LIME
+- Verificar e corrigir as inconsistências na apresentação de features no SHAP
+- Avaliar a possibilidade de integrar mais aspectos do sistema especializado de explicabilidade (`CLFE/explainability/`) no fluxo principal

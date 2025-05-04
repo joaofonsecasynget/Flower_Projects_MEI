@@ -32,18 +32,96 @@ class ModelExplainer:
         self.model.eval()
         with torch.no_grad():
             x_tensor = torch.tensor(x, dtype=torch.float32).to(self.device)
-            preds = self.model(x_tensor).cpu().numpy().reshape(-1)
-        return preds
+            preds = self.model(x_tensor).cpu().numpy()
+            
+            # Garantir que retornamos sempre um array 2D com probabilidades para ambas as classes
+            # (normal e ataque) - formato requerido para mode="classification"
+            if len(preds.shape) == 1:  # se preds for um array 1D
+                # Converter para array 2D com probabilidades para ambas as classes
+                probs = np.zeros((len(preds), 2))
+                probs[:, 1] = preds      # probabilidade de ataque (classe 1)
+                probs[:, 0] = 1 - preds  # probabilidade de normal (classe 0)
+                return probs
+            elif preds.shape[1] == 1:  # se preds for um array 2D mas com apenas 1 coluna
+                # Converter para array 2D com probabilidades para ambas as classes
+                probs = np.zeros((preds.shape[0], 2))
+                probs[:, 1] = preds[:, 0]  # probabilidade de ataque (classe 1)
+                probs[:, 0] = 1 - probs[:, 1]  # probabilidade de normal (classe 0)
+                return probs
+            else:
+                # Já está no formato esperado (array 2D com 2 colunas)
+                return preds
 
     def explain_lime(self, X_train, instance):
         if self.lime_explainer is None:
             self.lime_explainer = lime.lime_tabular.LimeTabularExplainer(
                 X_train,
                 feature_names=self.feature_names,
-                mode="regression"
+                mode="classification"  # Mudando para 'classification' em vez de 'regression'
             )
-        exp = self.lime_explainer.explain_instance(instance, self.predict_fn, num_features=10) # Mostrar apenas as 10 features mais importantes
+        # Gerar explicação LIME para a instância
+        exp = self.lime_explainer.explain_instance(
+            instance, 
+            self.predict_fn, 
+            num_features=20,  # Aumentado de 10 para 20 para mostrar mais features
+            num_samples=5000  # Aumentando o número de amostras para melhorar a precisão
+        )
+        
+        # Personalizar a forma como o gráfico é gerado para evitar truncamento
+        # e aplicar o esquema de cores correto (verde para normal, vermelho para ataque)
         return exp
+    
+    def create_custom_lime_visualization(self, exp, output_path):
+        """
+        Cria uma visualização LIME personalizada com nomes de features completos
+        e esquema de cores correto (verde=normal, vermelho=ataque)
+        """
+        # Obter explicação como lista
+        explanation = exp.as_list()
+        
+        # Ordenar por importância (valor absoluto do coeficiente)
+        explanation.sort(key=lambda x: abs(x[1]), reverse=True)
+        
+        # Separar features e valores
+        features = [item[0] for item in explanation]
+        values = [item[1] for item in explanation]
+        
+        # Criar figura maior para acomodar nomes longos
+        plt.figure(figsize=(12, 8))
+        
+        # Definir cores com base no valor e na classe prevista
+        # valores NEGATIVOS contribuem para a classe "Normal" (0) - cor VERDE
+        # valores POSITIVOS contribuem para a classe "Ataque" (1) - cor VERMELDA
+        colors = ['green' if val < 0 else 'red' for val in values]
+        
+        # Criar gráfico horizontal de barras
+        y_pos = range(len(features))
+        bars = plt.barh(y_pos, values, color=colors)
+        
+        # Configurar eixos
+        plt.yticks(y_pos, features, fontsize=11)
+        plt.xlabel('Contribuição', fontsize=12)
+        plt.title('Explicação LIME - Top Features', fontsize=14)
+        
+        # Adicionar linha zero para referência
+        plt.axvline(x=0, color='black', linestyle='-', alpha=0.3)
+        
+        # Adicionar uma legenda para clarificar o significado das cores
+        from matplotlib.patches import Patch
+        legend_elements = [
+            Patch(facecolor='green', label='Contribui para classificação como Normal'),
+            Patch(facecolor='red', label='Contribui para classificação como Ataque')
+        ]
+        plt.legend(handles=legend_elements, loc='best')
+        
+        # Ajustar layout para evitar truncamento
+        plt.tight_layout()
+        
+        # Salvar figura
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        return output_path
 
     def explain_shap(self, X_train, n_samples=100):
         if self.shap_explainer is None:

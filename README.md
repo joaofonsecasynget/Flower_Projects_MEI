@@ -127,6 +127,9 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - Explicabilidade (LIME/SHAP) gerando visualizações categorizadas por tipo de feature
 - Relatórios HTML finais detalhados com múltiplos gráficos e visualizações
 - Implementação do sistema de metadados para rastreabilidade completa das features
+- **NOVO:** Correção de gráficos para mostrar o número correto de rondas (5 em vez de 10)
+- **NOVO:** Interface de relatório melhorada com apresentação lado a lado de LIME/SHAP
+- **NOVO:** Reorganização lógica dos gráficos de explicabilidade e evolução de métricas
 
 ## Próximos Passos
 - Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md`

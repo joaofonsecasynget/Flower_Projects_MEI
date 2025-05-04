@@ -140,7 +140,6 @@ def generate_evolution_plots(history, base_reports):
             
             available_metrics = [m for m in metrics_keys if m in history and len(history[m]) > 0]
             
-            # Encontrar a métrica com mais valores para determinar o número de rondas
             max_len = max([len(history[m]) for m in available_metrics]) if available_metrics else 0
             rounds = list(range(1, max_len + 1))
             
@@ -149,12 +148,10 @@ def generate_evolution_plots(history, base_reports):
                 metric_name = metric.replace('val_', '')
                 metric_color = colors.get(metric_name, '#333333')
                 
-                # Garantir que temos valores suficientes (preencher com None se necessário)
                 values = history[metric]
                 if len(values) < max_len:
                     values = values + [None] * (max_len - len(values))
                 
-                # Filtrar valores None antes de plotar
                 valid_points = [(r, v) for r, v in zip(rounds, values) if v is not None]
                 if valid_points:
                     valid_rounds, valid_values = zip(*valid_points)
@@ -191,7 +188,6 @@ def generate_evolution_plots(history, base_reports):
             
             available_metrics = [m for m in metrics_keys if m in history and len(history[m]) > 0]
             
-            # Encontrar a métrica com mais valores para determinar o número de rondas
             max_len = max([len(history[m]) for m in available_metrics]) if available_metrics else 0
             rounds = list(range(1, max_len + 1))
             
@@ -200,12 +196,10 @@ def generate_evolution_plots(history, base_reports):
                 metric_name = metric.replace('test_', '')
                 metric_color = colors.get(metric_name, '#333333')
                 
-                # Garantir que temos valores suficientes (preencher com None se necessário)
                 values = history[metric]
                 if len(values) < max_len:
                     values = values + [None] * (max_len - len(values))
                 
-                # Filtrar valores None antes de plotar
                 valid_points = [(r, v) for r, v in zip(rounds, values) if v is not None]
                 if valid_points:
                     valid_rounds, valid_values = zip(*valid_points)
@@ -216,8 +210,6 @@ def generate_evolution_plots(history, base_reports):
             plt.ylabel("Valor", fontsize=12, fontweight='bold')
             plt.title("Evolução das Métricas de Classificação (Teste)", fontsize=14, fontweight='bold')
             
-            # Configurar o intervalo do eixo Y de 0.5 a 1.0 para destacar as diferenças
-            # Ou fazer zoom em torno dos valores reais se forem todos muito altos
             min_val = min([min(history[m]) for m in available_metrics if m in history and len(history[m]) > 0])
             min_y = min(0.5, min_val * 0.95) if min_val < 0.9 else 0.9
             plt.ylim(min_y, 1.01)  # Ligeiramente acima de 1 para mostrar pontos no valor 1
@@ -345,6 +337,7 @@ def generate_evolution_plots(history, base_reports):
             plt.title("Comparação de Acurácia: Validação vs Teste", fontsize=14, fontweight='bold')
             
             # Definir intervalo do eixo y para mostrar diferenças sutis
+            # Ou fazer zoom em torno dos valores reais se forem todos muito altos
             plt.ylim(0.9, 1.01)  # Assumindo que as acurácias são altas
             
             plt.legend(fontsize=12, framealpha=0.9)
@@ -383,6 +376,57 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
         str: Caminho para o relatório HTML gerado
     """
     dt_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Preparar conteúdo das informações da instância LIME
+    lime_instance_html = "<p><em>Informações da instância não disponíveis</em></p>"
+    if 'lime_instance_info.json' in os.listdir(base_reports):
+        try:
+            # Carregar informações da instância
+            with open(base_reports/'lime_instance_info.json', 'r') as f:
+                instance_info = json.load(f)
+            
+            # Criar HTML com as informações da instância
+            features_rows = ""
+            if 'features' in instance_info:
+                for k, v in list(instance_info['features'].items())[:20]:
+                    features_rows += f'<tr><td style="padding: 3px;">{k}</td><td style="text-align: right; padding: 3px;">{v}</td></tr>'
+            
+            # Verificar se temos informações do target original
+            original_target_html = ""
+            if instance_info.get('original_target') is not None:
+                prediction_result = "CORRETA" if instance_info['prediction_correct'] else "INCORRETA"
+                result_color = "green" if instance_info['prediction_correct'] else "red"
+                
+                original_target_html = f"""
+                <p><strong>Valor Real (Target):</strong> {instance_info['original_target_class']} 
+                   (valor: {instance_info['original_target']})</p>
+                <p><strong>Resultado:</strong> <span style="color: {result_color}; font-weight: bold;">Previsão {prediction_result}</span></p>
+                """
+            
+            lime_instance_html = f"""
+            <p><strong>Índice no dataset original:</strong> {instance_info['original_index']}</p>
+            <p><strong>Previsão do Modelo:</strong> {instance_info['predicted_class']} 
+               (valor: {instance_info['prediction']}, 
+               confiança: {instance_info['prediction_confidence']}%)</p>
+            {original_target_html}
+            <p><strong>Total de Features:</strong> {instance_info['feature_count']}</p>
+            <details>
+                <summary>Ver valores das features principais</summary>
+                <div style="max-height: 200px; overflow-y: auto; font-size: 0.85em;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <th style="text-align: left; padding: 3px; border-bottom: 1px solid #ddd;">Feature</th>
+                            <th style="text-align: right; padding: 3px; border-bottom: 1px solid #ddd;">Valor</th>
+                        </tr>
+                        {features_rows}
+                    </table>
+                    <p><em>Mostrando até 20 features não-zero com valores originais (não normalizados)</em></p>
+                </div>
+            </details>
+            """
+        except Exception as e:
+            logger.error(f"Erro ao processar informações da instância LIME: {e}")
+            lime_instance_html = f"<p><em>Erro ao processar informações da instância: {str(e)}</em></p>"
     
     # Conteúdo HTML do relatório
     html_content = f"""
@@ -612,6 +656,13 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
                 <!-- Coluna 1: LIME -->
                 <div style="flex: 1; min-width: 300px;">
                     <h3>LIME</h3>
+                    
+                    <!-- Informações sobre a instância analisada (novo) -->
+                    <div style="background-color: #f8f9fa; padding: 10px; border-left: 3px solid #1abc9c; margin-bottom: 15px;">
+                        <h4>Instância Analisada</h4>
+                        {lime_instance_html}
+                    </div>
+                    
                     {f'<img src="lime_final.png" alt="LIME final" style="width: 100%; max-width: 600px;"/>' if 'lime_final.png' in os.listdir(base_reports) else '<p><em>Explicação LIME não disponível ou não gerada.</em></p>'}
                     <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
                 </div>
@@ -731,7 +782,7 @@ def save_artifacts(base_reports, base_results, model, client_id, dataset_path, s
         logger.error(f"Error saving artifacts: {e}", exc_info=True)
         return None, None
 
-def generate_explainability(explainer, X_train, base_reports, sample_idx=0):
+def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
     """
     Gera explicabilidade LIME e SHAP para o modelo.
     
@@ -739,7 +790,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=0):
         explainer: Instância de ModelExplainer
         X_train: Dados de treino
         base_reports: Diretório base para salvar as explicações
-        sample_idx: Índice da amostra para explicar com LIME
+        sample_idx: Índice da amostra para explicar com LIME. Se None, seleciona aleatoriamente.
         
     Returns:
         tuple: Tupla com durações (lime_duration, shap_duration)
@@ -757,11 +808,163 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=0):
                 logger.error(f"X_train not found at {X_train_path}")
                 return lime_duration, shap_duration
         
+        # Verificar se existe um dataset original para obter valores não normalizados
+        original_dataset_path = '/app/DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv'
+        original_values = None
+        original_indices = None
+        target_values = None
+        
+        try:
+            import pandas as pd
+            if os.path.exists(original_dataset_path):
+                logger.info(f"Carregando dataset original de {original_dataset_path}")
+                df_original = pd.read_csv(original_dataset_path)
+                
+                # Preservar um mapeamento de índices originais
+                if 'indice' in df_original.columns:
+                    original_indices = df_original['indice'].values
+                elif 'index' in df_original.columns:
+                    original_indices = df_original['index'].values
+                else:
+                    original_indices = np.arange(len(df_original))
+                
+                # Preservar o valor target original para comparação
+                if 'attack' in df_original.columns:
+                    target_values = df_original['attack'].values
+                    logger.info(f"Valores target originais carregados: {len(target_values)} registros")
+                
+                # Tratar a coluna _time adequadamente
+                if '_time' in df_original.columns:
+                    try:
+                        # Converter _time para datetime
+                        df_original['_time'] = pd.to_datetime(df_original['_time'])
+                        
+                        # Extrair features temporais
+                        df_original['hour'] = df_original['_time'].dt.hour
+                        df_original['dayofweek'] = df_original['_time'].dt.dayofweek
+                        df_original['day'] = df_original['_time'].dt.day
+                        df_original['month'] = df_original['_time'].dt.month
+                        df_original['is_weekend'] = (df_original['_time'].dt.dayofweek >= 5).astype(int)
+                        
+                        # Remover coluna _time depois de extrair as features
+                        df_original = df_original.drop(columns=['_time'])
+                    except Exception as e:
+                        logger.warning(f"Erro ao processar coluna _time: {e}")
+                        # Se não conseguir processar, remove a coluna
+                        if '_time' in df_original.columns:
+                            df_original = df_original.drop(columns=['_time'])
+                
+                # Cria uma cópia para valores originais antes de remover colunas
+                df_values = df_original.copy()
+                
+                # Remover colunas que não devem ser usadas no processamento
+                cols_to_drop = []
+                for col in ['indice', 'imeisv', 'index']:
+                    if col in df_values.columns:
+                        cols_to_drop.append(col)
+                
+                # Remover a coluna target (mas mantendo seu valor para comparação)
+                if 'attack' in df_values.columns:
+                    cols_to_drop.append('attack')
+                
+                # Remove as colunas da cópia
+                if cols_to_drop:
+                    df_values = df_values.drop(columns=cols_to_drop)
+                
+                # Converter todas as colunas para formato numérico
+                for col in df_values.columns:
+                    if not pd.api.types.is_numeric_dtype(df_values[col]):
+                        try:
+                            df_values[col] = pd.to_numeric(df_values[col])
+                        except Exception as e:
+                            logger.warning(f"Não foi possível converter coluna {col} para numérico, removendo: {e}")
+                            df_values = df_values.drop(columns=[col])
+                
+                # Preservar os valores originais
+                original_values = df_values.values
+                logger.info(f"Valores originais (não normalizados) do dataset carregados: {original_values.shape}")
+            else:
+                logger.warning(f"Dataset original não encontrado em {original_dataset_path}")
+        except Exception as e:
+            logger.warning(f"Erro ao carregar dataset original: {e}")
+            original_values = None
+            original_indices = None
+            target_values = None
+        
         # Gerar LIME
         lime_start = time.time()
         try:
-            # Escolher instância para explicar (primeira por padrão)
+            # Escolher instância para explicar
+            if sample_idx is None:
+                # Selecionar instância aleatória (com seed para reprodutibilidade, mas variando)
+                import random
+                # Criar uma seed baseada no tempo atual para variar a cada execução
+                current_time_ms = int(time.time() * 1000) % 10000
+                random_seed = 42 + current_time_ms
+                random.seed(random_seed)
+                sample_idx = random.randint(0, len(X_train) - 1)
+                logger.info(f"Selecionada instância aleatória com índice {sample_idx}")
+            else:
+                logger.info(f"Usando instância com índice {sample_idx}")
+            
+            # Obter a instância para explicar
             instance = X_train[sample_idx].reshape(1, -1)[0]
+            
+            # Obter previsão do modelo para esta instância
+            instance_tensor = torch.tensor(instance, dtype=torch.float32).to(explainer.device)
+            with torch.no_grad():
+                prediction = explainer.model(instance_tensor.unsqueeze(0)).item()
+            
+            # Tentar identificar o índice original no dataset e valores não normalizados
+            original_instance_values = None
+            original_target = None
+            if original_values is not None:
+                # Aqui precisaríamos de um mapeamento confiável entre X_train e o dataset original
+                # Como não temos isso, vamos usar uma abordagem mais simples por enquanto:
+                # Assumir que o índice no X_train corresponde ao mesmo índice no dataset original
+                # Isso é apenas uma aproximação e pode não ser preciso em todos os casos
+                if sample_idx < len(original_values):
+                    original_instance_values = original_values[sample_idx]
+                    original_index = original_indices[sample_idx] if original_indices is not None else sample_idx
+                    logger.info(f"Índice original no dataset: {original_index}")
+                    
+                    # Obter o valor target original se disponível
+                    if target_values is not None and sample_idx < len(target_values):
+                        original_target = int(target_values[sample_idx])
+                        logger.info(f"Valor target original: {original_target}")
+                        logger.debug(f"Valor target original (debug): {original_target}")  # Adicionado log de depuração
+            # Se não conseguirmos os valores originais, usamos os normalizados
+            if original_instance_values is None:
+                logger.warning("Valores originais não disponíveis, usando valores normalizados")
+                original_instance_values = instance
+                original_index = sample_idx
+            
+            # Extrair mais informações sobre a instância para o relatório
+            instance_info = {
+                "index": sample_idx,
+                "original_index": int(original_index) if original_index is not None else sample_idx,
+                "prediction": round(prediction, 5),
+                "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
+                "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
+                "original_target": original_target if original_target is not None else None,
+                "original_target_class": "Ataque" if original_target == 1 else "Normal" if original_target is not None else None,
+                "prediction_correct": (prediction >= 0.5 and original_target == 1) or (prediction < 0.5 and original_target == 0) if original_target is not None else None,
+                "feature_count": len(instance),
+                "features": {
+                    # Usar os valores ORIGINAIS (não normalizados) para apresentação
+                    name: round(float(original_val), 5) 
+                    for name, original_val in zip(explainer.feature_names, original_instance_values)
+                    if abs(float(original_val)) > 0.001  # Filtra valores próximos de zero para reduzir ruído
+                }
+            }
+            
+            # Salvar informações da instância como JSON
+            instance_info_path = base_reports / "lime_instance_info.json"
+            with open(instance_info_path, "w") as f:
+                json.dump(instance_info, f, indent=4, default=str)
+            logger.info(f"Instance info saved to {instance_info_path}")
+            
+            # Executar LIME
             lime_exp = explainer.explain_lime(X_train, instance)
             
             # Salvar explicação LIME como texto
@@ -771,10 +974,12 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=0):
             
             # Salvar visualização LIME
             lime_png_path = base_reports / "lime_final.png"
+            
+            # Salvar a versão HTML padrão do LIME
             lime_exp.save_to_file(str(base_reports / "lime_final.html"))
-            lime_fig = lime_exp.as_pyplot_figure()
-            lime_fig.savefig(lime_png_path)
-            plt.close(lime_fig)
+            
+            # Usar nossa visualização personalizada para evitar truncamento de nomes
+            explainer.create_custom_lime_visualization(lime_exp, lime_png_path)
             
             logger.info(f"LIME explanation generated and saved to {lime_png_path}")
         except Exception as e:

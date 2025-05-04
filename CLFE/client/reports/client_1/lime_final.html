@@ -37094,20 +37094,20 @@
         <script>
         var top_div = d3.select('#top_div5F4EQCPUIALO8VD').classed('lime top_div', true);
         
-        
-                    var pp_div = top_div.append('div')
-                                        .classed('lime predicted_value', true);
-                    var pp_svg = pp_div.append('svg').style('width', '100%');
-                    var pp = new lime.PredictedValue(pp_svg, 0.0009913509711623192, 0.0009913509711623192, 1.0);
-                    
-        var exp_div;
-            var exp = new lime.Explanation(["negative", "positive"]);
-        
-            exp_div = top_div.append('div').classed('lime explanation', true);
-            exp.show([["ul_total_bytes_non_incr_105 <= -0.74", -0.008002684836604818], ["ul_total_bytes_non_incr_88 <= -0.75", -0.0077718028395500635], ["ul_total_bytes_non_incr_62 <= -0.62", -0.007701284048569845], ["ul_bitrate_32 <= -0.62", -0.007489004290677128], ["ul_total_bytes_non_incr_72 <= -0.74", -0.006891020774681978], ["ul_bitrate_60 <= -0.62", -0.006577021076082481], ["-0.71 < ul_bitrate_109 <= -0.37", -0.005792962069722596], ["ul_total_bytes_non_incr_67 <= -0.74", -0.005593419262391469], ["dl_bitrate_81 > 0.24", -0.0051052807760215875], ["ul_total_bytes_non_incr_60 <= -0.74", -0.005047289292681095]], 1, exp_div);
+            var pp_div = top_div.append('div')
+                                .classed('lime predict_proba', true);
+            var pp_svg = pp_div.append('svg').style('width', '100%');
+            var pp = new lime.PredictProba(pp_svg, ["0", "1"], [0.996329594636336, 0.003670405363664031]);
             
+        
+        var exp_div;
+            var exp = new lime.Explanation(["0", "1"]);
+        
+                exp_div = top_div.append('div').classed('lime explanation', true);
+                exp.show([["-0.75 < ul_total_bytes_non_incr_90 <= -0.29", -0.008730809057125238], ["-0.63 < ul_bitrate_51 <= -0.18", -0.005956618217426421], ["-0.76 < dl_bitrate_43 <= -0.70", -0.0059523043710498075], ["-0.75 < ul_total_bytes_non_incr_102 <= -0.33", -0.0058388256055674406], ["-0.74 < ul_total_bytes_non_incr_71 <= -0.16", -0.005662523655672179], ["ul_total_bytes_non_incr_62 > 0.58", 0.005611102780320305], ["-0.71 < ul_bitrate_96 <= -0.57", -0.0053208824344131685], ["-0.77 < dl_bitrate_49 <= -0.69", -0.005300651218658582], ["-0.71 < ul_bitrate_109 <= -0.37", -0.005252248846627061], ["-0.71 < ul_bitrate_76 <= -0.32", -0.005111441859679497], ["-0.62 < dl_total_bytes_non_incr_95 <= 0.22", -0.00505942148050567], ["-0.74 < dl_total_bytes_non_incr_117 <= -0.65", -0.0049121930515668225], ["-0.66 < dl_total_bytes_non_incr_66 <= 0.27", -0.0046552103226387255], ["-0.71 < ul_bitrate_71 <= -0.19", -0.004626798672540629], ["-0.71 < ul_bitrate_84 <= -0.25", -0.004555950529809524], ["-0.21 < ul_bitrate_19 <= 0.46", -0.004312699868783962], ["-0.66 < dl_total_bytes_non_incr_120 <= 0.26", -0.0042136009693342], ["-0.69 < dl_bitrate_47 <= 0.36", -0.0040673880908802034], ["ul_total_bytes_non_incr_74 > 0.49", 0.003436387718673363], ["ul_total_bytes_non_incr_68 > 0.54", 0.00283521664074345]], 1, exp_div);
+                
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["ul_total_bytes_non_incr_105", "-0.74", -0.008002684836604818], ["ul_total_bytes_non_incr_88", "-0.75", -0.0077718028395500635], ["ul_total_bytes_non_incr_62", "-0.75", -0.007701284048569845], ["ul_bitrate_32", "-0.71", -0.007489004290677128], ["ul_total_bytes_non_incr_72", "-0.74", -0.006891020774681978], ["ul_bitrate_60", "-0.71", -0.006577021076082481], ["ul_bitrate_109", "-0.71", -0.005792962069722596], ["ul_total_bytes_non_incr_67", "-0.74", -0.005593419262391469], ["dl_bitrate_81", "1.05", -0.0051052807760215875], ["ul_total_bytes_non_incr_60", "-0.74", -0.005047289292681095]], 1, raw_div);
+            exp.show_raw_tabular([["ul_total_bytes_non_incr_90", "-0.57", -0.008730809057125238], ["ul_bitrate_51", "-0.26", -0.005956618217426421], ["dl_bitrate_43", "-0.71", -0.0059523043710498075], ["ul_total_bytes_non_incr_102", "-0.58", -0.0058388256055674406], ["ul_total_bytes_non_incr_71", "-0.57", -0.005662523655672179], ["ul_total_bytes_non_incr_62", "0.73", 0.005611102780320305], ["ul_bitrate_96", "-0.59", -0.0053208824344131685], ["dl_bitrate_49", "-0.72", -0.005300651218658582], ["ul_bitrate_109", "-0.57", -0.005252248846627061], ["ul_bitrate_76", "-0.38", -0.005111441859679497], ["dl_total_bytes_non_incr_95", "-0.29", -0.00505942148050567], ["dl_total_bytes_non_incr_117", "-0.72", -0.0049121930515668225], ["dl_total_bytes_non_incr_66", "-0.03", -0.0046552103226387255], ["ul_bitrate_71", "-0.59", -0.004626798672540629], ["ul_bitrate_84", "-0.50", -0.004555950529809524], ["ul_bitrate_19", "-0.20", -0.004312699868783962], ["dl_total_bytes_non_incr_120", "-0.37", -0.0042136009693342], ["dl_bitrate_47", "-0.09", -0.0040673880908802034], ["ul_total_bytes_non_incr_74", "0.72", 0.003436387718673363], ["ul_total_bytes_non_incr_68", "0.56", 0.00283521664074345]], 1, raw_div);
         
         </script>
         </body></html>
