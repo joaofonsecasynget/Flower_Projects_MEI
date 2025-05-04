@@ -25,7 +25,38 @@
             p em { color: #7f8c8d; font-size: 0.9em; text-align: center; display: block; margin-top: 20px; }
             .section { background-color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
             .plot-container img { margin-bottom: 25px; }
-            /* Estilos para a tabela de plots */
+            /* Estilos para o novo layout flexível dos gráficos de evolução */
+            .evolution-plots { 
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+            .plot-item { 
+                flex: 1 1 400px;
+                max-width: 100%;
+                background-color: #fff;
+                padding: 15px;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                border: 1px solid #eee;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .plot-item img { 
+                max-width: 100%;
+                height: auto;
+                margin: 10px auto;
+                display: block;
+            }
+            .plot-item h3 { 
+                margin-top: 0;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 5px;
+                margin-bottom: 10px;
+                color: #2c3e50;
+            }
+            /* Estilos para a tabela de plots - mantido para compatibilidade */
             .plot-table { width: 100%; border-collapse: separate; border-spacing: 15px; }
             .plot-table td { vertical-align: top; text-align: center; width: 33%; background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid #eee; }
             .plot-table img { max-width: 100%; height: auto; margin: 10px auto; display: block; }
@@ -86,10 +117,10 @@
 </thead>
 <tbody>
 <tr><td>1</td><td>0.1912</td><td>0.2905</td><td>0.08908228</td><td>0.9936</td><td>0.9286</td><td>1.0000</td><td>0.9630</td></tr>
-<tr><td>2</td><td>0.1512</td><td>0.2150</td><td>0.047137257</td><td>0.9936</td><td>0.9286</td><td>1.0000</td><td>0.9630</td></tr>
-<tr><td>3</td><td>0.0579</td><td>0.2116</td><td>0.046470176</td><td>0.9957</td><td>0.9512</td><td>1.0000</td><td>0.9750</td></tr>
-<tr><td>4</td><td>0.0546</td><td>0.2108</td><td>0.046388593</td><td>0.9979</td><td>0.9750</td><td>1.0000</td><td>0.9873</td></tr>
-<tr><td>5</td><td>0.0540</td><td>0.2096</td><td>0.046267264</td><td>0.9979</td><td>0.9750</td><td>1.0000</td><td>0.9873</td></tr>
+<tr><td>2</td><td>0.1512</td><td>0.2291</td><td>0.067744814</td><td>0.9957</td><td>0.9512</td><td>1.0000</td><td>0.9750</td></tr>
+<tr><td>3</td><td>0.1468</td><td>0.2258</td><td>0.06598545</td><td>0.9957</td><td>0.9512</td><td>1.0000</td><td>0.9750</td></tr>
+<tr><td>4</td><td>0.1442</td><td>0.2271</td><td>0.06595967</td><td>0.9957</td><td>0.9512</td><td>1.0000</td><td>0.9750</td></tr>
+<tr><td>5</td><td>0.1441</td><td>0.2241</td><td>0.065422945</td><td>0.9957</td><td>0.9512</td><td>1.0000</td><td>0.9750</td></tr>
 </tbody>
 </table>
 </div><h3>Tabela 2: Métricas de Teste</h3><div class="table-container">
@@ -99,10 +130,10 @@
 </thead>
 <tbody>
 <tr><td>1</td><td>0.0446</td><td>0.0729</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
-<tr><td>2</td><td>0.0152</td><td>0.0565</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
-<tr><td>3</td><td>0.0108</td><td>0.0529</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
-<tr><td>4</td><td>0.0160</td><td>0.0622</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
-<tr><td>5</td><td>0.0121</td><td>0.0594</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
+<tr><td>2</td><td>0.0182</td><td>0.0618</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
+<tr><td>3</td><td>0.0157</td><td>0.0622</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
+<tr><td>4</td><td>0.0196</td><td>0.0643</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
+<tr><td>5</td><td>0.0131</td><td>0.0611</td><td>0.9957</td><td>1.0000</td><td>0.9565</td><td>0.9778</td></tr>
 </tbody>
 </table>
 </div><h3>Tabela 3: Tempos de Processamento (segundos)</h3><div class="table-container">
@@ -111,30 +142,52 @@
 <tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>0.4391</td><td>0.0018</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>2</td><td>0.0698</td><td>0.0019</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>3</td><td>0.0716</td><td>0.0019</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>4</td><td>0.0723</td><td>0.0016</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>5</td><td>0.0720</td><td>0.0016</td><td>2.4370</td><td>11.5502</td></tr>
+<tr><td>1</td><td>0.4295</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>2</td><td>0.0626</td><td>0.0014</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>3</td><td>0.0742</td><td>0.0017</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>4</td><td>0.0613</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>5</td><td>0.0624</td><td>0.0015</td><td>1.8787</td><td>8.5301</td></tr>
 </tbody>
 </table>
 </div></div><div class="section plot-container">
 <h2>Plots de Evolução das Métricas</h2>
-<table class="plot-table">
-<tr>
-<td><h3>Train Loss</h3><img src="train_loss_evolution.png" alt="Evolução Train Loss" /></td>
-<td><h3>Val Loss</h3><img src="val_loss_evolution.png" alt="Evolução Val Loss" /></td>
-<td><h3>Test Loss</h3><img src="test_loss_evolution.png" alt="Evolução Test Loss" /></td>
-</tr>
-<tr>
-<td><h3>Val Rmse</h3><img src="val_rmse_evolution.png" alt="Evolução Val Rmse" /></td>
-<td><h3>Test Rmse</h3><img src="test_rmse_evolution.png" alt="Evolução Test Rmse" /></td>
-<td></td>
-</tr>
-</table>
+<div class="evolution-plots">
+<div class="plot-item">
+<h3>Losses</h3>
+<img src="losses_evolution.png" alt="Losses" />
+</div>
+<div class="plot-item">
+<h3>Rmse</h3>
+<img src="rmse_evolution.png" alt="Rmse" />
+</div>
+<div class="plot-item">
+<h3>Validation Metrics</h3>
+<img src="validation_metrics_evolution.png" alt="Validation Metrics" />
+</div>
+<div class="plot-item">
+<h3>Test Metrics</h3>
+<img src="test_metrics_evolution.png" alt="Test Metrics" />
+</div>
+<div class="plot-item">
+<h3>Processing Times</h3>
+<img src="processing_times_evolution.png" alt="Processing Times" />
+</div>
+<div class="plot-item">
+<h3>Accuracy Comparison</h3>
+<img src="accuracy_comparison.png" alt="Accuracy Comparison" />
+</div>
+<div class="plot-item">
+<h3>Comparação de Accuracy</h3>
+<img src="accuracy_comparison.png" alt="Comparação de Accuracy" />
+</div>
+</div>
 </div>
         <div class="section">
             <h2>Explicabilidade (Resultados Finais da Última Ronda)</h2>
+            
+            <!-- Adicionar gráfico de tempos de explicabilidade aqui -->
+            <h3>Tempos de Explicabilidade</h3><img src="explainability_times.png" alt="Tempos de Explicabilidade" style="max-width: 600px;"/>
+            
             <h3>LIME</h3>
             <img src="lime_final.png" alt="LIME final" style="max-width: 600px;"/>
             <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
@@ -189,7 +242,7 @@
             </ul>
         </div>
 
-        <p><em>Relatório gerado automaticamente em 2025-05-02 21:42:47</em></p>
+        <p><em>Relatório gerado automaticamente em 2025-05-04 07:23:52</em></p>
     </body>
     </html>
     

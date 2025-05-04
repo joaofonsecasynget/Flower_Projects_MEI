@@ -37098,16 +37098,16 @@
                     var pp_div = top_div.append('div')
                                         .classed('lime predicted_value', true);
                     var pp_svg = pp_div.append('svg').style('width', '100%');
-                    var pp = new lime.PredictedValue(pp_svg, 0.0001424530491931364, 0.0001424530491931364, 1.0);
+                    var pp = new lime.PredictedValue(pp_svg, 0.0002548783377278596, 0.0002548783377278596, 1.0);
                     
         var exp_div;
             var exp = new lime.Explanation(["negative", "positive"]);
         
             exp_div = top_div.append('div').classed('lime explanation', true);
-            exp.show([["ul_bitrate_92 <= -0.59", -0.004824993094814872], ["dl_total_bytes_non_incr_35 > 0.00", -0.004737376755186695], ["ul_bitrate_108 <= -0.60", -0.004703259169542202], ["ul_bitrate_79 <= -0.59", -0.0043765026561142055], ["dl_total_bytes_non_incr_28 > -0.01", -0.004328550065275672], ["ul_bitrate_94 <= -0.59", -0.0037136029736172505], ["ul_total_bytes_non_incr_97 <= -0.57", -0.0036677148291136123], ["ul_bitrate_89 <= -0.59", -0.0035990461947631265], ["ul_bitrate_117 <= -0.62", -0.0033057507612429897], ["ul_total_bytes_non_incr_62 <= -0.58", -0.0030948121887519504]], 1, exp_div);
+            exp.show([["dl_bitrate_112 > -0.00", -0.0034092056113833574], ["ul_total_bytes_non_incr_62 <= -0.58", -0.003118247332072329], ["ul_total_bytes_non_incr_120 <= -0.62", -0.0030410217761752613], ["ul_bitrate_92 <= -0.59", -0.0028259107084607055], ["dl_total_bytes_non_incr_28 > -0.01", -0.002597883593045646], ["ul_bitrate_89 <= -0.59", -0.002580210488516641], ["ul_total_bytes_non_incr_97 <= -0.57", -0.002556219695582166], ["ul_bitrate_117 <= -0.62", -0.0025328454410697265], ["dl_bitrate_118 > 0.11", -0.002508220194412545], ["dl_total_bytes_non_incr_82 > -0.18", -0.002407588029498077]], 1, exp_div);
             
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["ul_bitrate_92", "-0.70", -0.004824993094814872], ["dl_total_bytes_non_incr_35", "1.24", -0.004737376755186695], ["ul_bitrate_108", "-0.71", -0.004703259169542202], ["ul_bitrate_79", "-0.71", -0.0043765026561142055], ["dl_total_bytes_non_incr_28", "1.28", -0.004328550065275672], ["ul_bitrate_94", "-0.70", -0.0037136029736172505], ["ul_total_bytes_non_incr_97", "-0.74", -0.0036677148291136123], ["ul_bitrate_89", "-0.70", -0.0035990461947631265], ["ul_bitrate_117", "-0.70", -0.0033057507612429897], ["ul_total_bytes_non_incr_62", "-0.74", -0.0030948121887519504]], 1, raw_div);
+            exp.show_raw_tabular([["dl_bitrate_112", "1.47", -0.0034092056113833574], ["ul_total_bytes_non_incr_62", "-0.74", -0.003118247332072329], ["ul_total_bytes_non_incr_120", "-0.75", -0.0030410217761752613], ["ul_bitrate_92", "-0.70", -0.0028259107084607055], ["dl_total_bytes_non_incr_28", "1.28", -0.002597883593045646], ["ul_bitrate_89", "-0.70", -0.002580210488516641], ["ul_total_bytes_non_incr_97", "-0.74", -0.002556219695582166], ["ul_bitrate_117", "-0.70", -0.0025328454410697265], ["dl_bitrate_118", "1.94", -0.002508220194412545], ["dl_total_bytes_non_incr_82", "1.94", -0.002407588029498077]], 1, raw_div);
         
         </script>
         </body></html>

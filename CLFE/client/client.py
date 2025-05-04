@@ -58,6 +58,32 @@ base_results = Path("results") / f"client_{args.cid}"
 base_reports.mkdir(parents=True, exist_ok=True)
 base_results.mkdir(parents=True, exist_ok=True)
 
+# Limpar diretórios de relatórios e arquivos de histórico para evitar dados residuais
+def clean_previous_reports(directory):
+    """Limpa arquivos de relatórios anteriores para evitar histórico acumulado."""
+    if not directory.exists():
+        return
+    
+    logger.info(f"Limpando diretório de relatórios anteriores: {directory}")
+    
+    # Lista de padrões de arquivo para limpar
+    patterns_to_clean = [
+        "*.png",  # Todos os gráficos
+        "*.html",  # Relatórios HTML
+        "*.json",  # Arquivos JSON (incluindo histórico de métricas)
+        "*.txt",   # Arquivos de texto
+        "*.npy"    # Arrays numpy salvos
+    ]
+    
+    for pattern in patterns_to_clean:
+        for file_path in directory.glob(pattern):
+            if file_path.is_file():
+                file_path.unlink()
+                logger.info(f"Removido arquivo: {file_path}")
+
+# Limpar relatórios anteriores para evitar acumular histórico
+clean_previous_reports(base_reports)
+
 # Carregar dataset completo
 logger.info(f"Loading dataset from {args.dataset_path}")
 df = pd.read_csv(args.dataset_path)
@@ -175,32 +201,53 @@ class RLFEClient(fl.client.NumPyClient):
         self.epochs = epochs
         self.device = device
         
-        # Dicionário para armazenar histórico de métricas e tempos
-        self.history = {
-            "train_loss": [],
-            "val_loss": [],
-            "val_rmse": [],
-            "test_loss": [],
-            "test_rmse": [],
-            "fit_duration_seconds": [],
-            "evaluate_duration_seconds": [],
-            "lime_duration_seconds": [],
-            "shap_duration_seconds": [],
-            "val_accuracy": [],
-            "val_precision": [],
-            "val_recall": [],
-            "val_f1": [],
-            "test_accuracy": [],
-            "test_precision": [],
-            "test_recall": [],
-            "test_f1": [],
-        }
-        
-        # Criar diretórios para relatórios
+        # Criar diretórios para armazenar resultados
         self.base_reports = Path("reports") / f"client_{args.cid}"
         self.base_results = Path("results") / f"client_{args.cid}"
         self.base_reports.mkdir(parents=True, exist_ok=True)
         self.base_results.mkdir(parents=True, exist_ok=True)
+        
+        # Inicializar o dicionário de histórico para métricas
+        self.reset_history()
+        
+        # Track do tempo para fit/evaluate
+        self.fit_start_time = 0
+        self.eval_start_time = 0
+        
+        # Feature names para explicabilidade
+        self.feature_names = []
+        if 'X' in globals() and isinstance(X, pd.DataFrame):
+            self.feature_names = list(X.columns)
+            
+    def reset_history(self):
+        """Reinicializa o histórico de métricas."""
+        logger.info("Reinicializando histórico de métricas")
+        self.history = {
+            # Métricas de treino
+            "train_loss": [],
+            "fit_duration_seconds": [],
+            
+            # Métricas de validação
+            "val_loss": [],
+            "val_rmse": [],
+            "val_accuracy": [],
+            "val_precision": [],
+            "val_recall": [],
+            "val_f1": [],
+            
+            # Métricas de teste
+            "test_loss": [],
+            "test_rmse": [],
+            "test_accuracy": [],
+            "test_precision": [],
+            "test_recall": [],
+            "test_f1": [],
+            "evaluate_duration_seconds": [],
+            
+            # Métricas de explicabilidade
+            "lime_duration_seconds": [],
+            "shap_duration_seconds": []
+        }
         
     # Retorna os parâmetros do modelo como uma lista de arrays numpy.
     def get_parameters(self, config):
@@ -215,6 +262,12 @@ class RLFEClient(fl.client.NumPyClient):
     # Treina o modelo nos dados locais.
     def fit(self, parameters, config):
         """Treina o modelo nos dados locais."""
+        # Reinicia o histórico se for a primeira ronda
+        if config.get('round_number', 0) == 1:
+            self.reset_history()
+            # Também limpa os relatórios para garantir dados limpos
+            clean_previous_reports(self.base_reports)
+        
         start_time = time.time()
         logger.info(f"[CID: {args.cid}] Received training instructions: {config}")
         self.set_parameters(parameters)
@@ -275,10 +328,15 @@ class RLFEClient(fl.client.NumPyClient):
         # Adicionar métricas ao histórico
         self.history["val_loss"].append(val_loss)
         self.history["val_rmse"].append(val_rmse)
-        self.history["val_accuracy"].append(val_accuracy)
-        self.history["val_precision"].append(val_precision)
-        self.history["val_recall"].append(val_recall)
-        self.history["val_f1"].append(val_f1)
+        
+        # Verificar se estas métricas já não foram adicionadas nesta ronda (para prevenir duplicação)
+        current_round = config.get('round_number', 0)
+        if len(self.history["val_accuracy"]) < current_round:
+            self.history["val_accuracy"].append(val_accuracy)
+            self.history["val_precision"].append(val_precision)
+            self.history["val_recall"].append(val_recall)
+            self.history["val_f1"].append(val_f1)
+        
         self.history["evaluate_duration_seconds"].append(pure_eval_duration)
         
         # Calcular métricas de teste
@@ -287,10 +345,13 @@ class RLFEClient(fl.client.NumPyClient):
         # Adicionar métricas de teste ao histórico
         self.history["test_loss"].append(float(test_loss))
         self.history["test_rmse"].append(float(test_rmse))
-        self.history["test_accuracy"].append(test_accuracy)
-        self.history["test_precision"].append(test_precision)
-        self.history["test_recall"].append(test_recall)
-        self.history["test_f1"].append(test_f1)
+        
+        # Verificar se estas métricas já não foram adicionadas nesta ronda (para prevenir duplicação)
+        if len(self.history["test_accuracy"]) < current_round:
+            self.history["test_accuracy"].append(test_accuracy)
+            self.history["test_precision"].append(test_precision)
+            self.history["test_recall"].append(test_recall)
+            self.history["test_f1"].append(test_f1)
         
         # Inicializar durações para LIME/SHAP
         lime_duration = 0.0
