@@ -142,11 +142,11 @@
 <tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>0.4271</td><td>0.0016</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>2</td><td>0.0649</td><td>0.0016</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>3</td><td>0.0649</td><td>0.0016</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>4</td><td>0.0593</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
-<tr><td>5</td><td>0.0655</td><td>0.0016</td><td>1.8964</td><td>8.5454</td></tr>
+<tr><td>1</td><td>0.4293</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>2</td><td>0.0612</td><td>0.0014</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>3</td><td>0.0671</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>4</td><td>0.0672</td><td>0.0015</td><td>0.0000</td><td>0.0000</td></tr>
+<tr><td>5</td><td>0.0668</td><td>0.0018</td><td>1.9008</td><td>8.5239</td></tr>
 </tbody>
 </table>
 </div></div><div class="section plot-container">
@@ -184,13 +184,22 @@
             <!-- Adicionar gráfico de tempos de explicabilidade aqui -->
             <h3>Tempos de Explicabilidade</h3><img src="explainability_times.png" alt="Tempos de Explicabilidade" style="max-width: 600px;"/>
             
-            <h3>LIME</h3>
-            <img src="lime_final.png" alt="LIME final" style="max-width: 600px;"/>
-            <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
-            
-            <h3>SHAP</h3>
-            <img src="shap_final.png" alt="SHAP final" style="max-width: 600px;"/>
-            <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+            <!-- Layout de duas colunas para LIME e SHAP -->
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 20px;">
+                <!-- Coluna 1: LIME -->
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>LIME</h3>
+                    <img src="lime_final.png" alt="LIME final" style="width: 100%; max-width: 600px;"/>
+                    <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
+                </div>
+                
+                <!-- Coluna 2: SHAP -->
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>SHAP</h3>
+                    <img src="shap_final.png" alt="SHAP final" style="width: 100%; max-width: 600px;"/>
+                    <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+                </div>
+            </div>
             
             <h3>Explicabilidade Agregada</h3>
             
@@ -238,7 +247,7 @@
             </ul>
         </div>
 
-        <p><em>Relatório gerado automaticamente em 2025-05-04 07:34:16</em></p>
+        <p><em>Relatório gerado automaticamente em 2025-05-04 07:45:03</em></p>
     </body>
     </html>
     

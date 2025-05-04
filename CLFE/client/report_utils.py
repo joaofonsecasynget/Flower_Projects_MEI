@@ -607,13 +607,22 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             <!-- Adicionar gráfico de tempos de explicabilidade aqui -->
             {f'<h3>Tempos de Explicabilidade</h3><img src="explainability_times.png" alt="Tempos de Explicabilidade" style="max-width: 600px;"/>' if 'explainability_times.png' in os.listdir(base_reports) else ''}
             
-            <h3>LIME</h3>
-            {f'<img src="lime_final.png" alt="LIME final" style="max-width: 600px;"/>' if 'lime_final.png' in os.listdir(base_reports) else '<p><em>Explicação LIME não disponível ou não gerada.</em></p>'}
-            <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
-            
-            <h3>SHAP</h3>
-            {f'<img src="shap_final.png" alt="SHAP final" style="max-width: 600px;"/>' if 'shap_final.png' in os.listdir(base_reports) else '<p><em>Explicação SHAP não disponível ou não gerada.</em></p>'}
-            <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+            <!-- Layout de duas colunas para LIME e SHAP -->
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 20px;">
+                <!-- Coluna 1: LIME -->
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>LIME</h3>
+                    {f'<img src="lime_final.png" alt="LIME final" style="width: 100%; max-width: 600px;"/>' if 'lime_final.png' in os.listdir(base_reports) else '<p><em>Explicação LIME não disponível ou não gerada.</em></p>'}
+                    <p><a href="lime_final.html" target="_blank">Ver LIME interativo</a> | <a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
+                </div>
+                
+                <!-- Coluna 2: SHAP -->
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>SHAP</h3>
+                    {f'<img src="shap_final.png" alt="SHAP final" style="width: 100%; max-width: 600px;"/>' if 'shap_final.png' in os.listdir(base_reports) else '<p><em>Explicação SHAP não disponível ou não gerada.</em></p>'}
+                    <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+                </div>
+            </div>
             
             <h3>Explicabilidade Agregada</h3>
             
