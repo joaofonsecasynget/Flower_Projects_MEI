@@ -319,7 +319,8 @@ def generate_evolution_plots(history, base_reports):
                 plot_path = base_reports / plot_filename
                 plt.savefig(plot_path, dpi=120)
                 plt.close()
-                plot_files.append(plot_filename)
+                # Não adicionamos explainability_times.png à lista de plot_files
+                # para evitar que apareça na seção de evolução de métricas
                 logger.info(f"Generated plot: {plot_path}")
                 
         # 6. GRÁFICO DE COMPARAÇÃO VALIDAÇÃO vs TESTE (ACC)
@@ -587,21 +588,10 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
     if plot_files:
         html_content += '<div class="evolution-plots">\n'
         for plot_file in plot_files:
-            # Filtrar: não mostrar o explainability_times.png nesta seção
-            if plot_file == 'explainability_times.png':
-                continue
-                
             plot_title = plot_file.replace('_evolution.png','').replace('.png','').replace('_', ' ').title()
             html_content += f'<div class="plot-item">\n'
             html_content += f'<h3>{plot_title}</h3>\n'
             html_content += f'<img src="{plot_file}" alt="{plot_title}" />\n'
-            html_content += '</div>\n'
-            
-        # Adicionar accuracy_comparison.png explicitamente nesta seção se existir
-        if 'accuracy_comparison.png' in os.listdir(base_reports):
-            html_content += f'<div class="plot-item">\n'
-            html_content += f'<h3>Comparação de Accuracy</h3>\n'
-            html_content += f'<img src="accuracy_comparison.png" alt="Comparação de Accuracy" />\n'
             html_content += '</div>\n'
         html_content += '</div>\n'
     else:
