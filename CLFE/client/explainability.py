@@ -138,11 +138,114 @@ class ModelExplainer:
         return output_path
 
     def explain_shap(self, X_train, n_samples=100):
-        if self.shap_explainer is None:
-            background = shap.sample(X_train, n_samples, random_state=42) if X_train.shape[0] > n_samples else X_train
-            self.shap_explainer = shap.KernelExplainer(self.predict_fn, background)
+        self.shap_explainer = shap.KernelExplainer(self.predict_fn, X_train)
         self.shap_values = self.shap_explainer.shap_values(X_train)
         return self.shap_values
+
+    def create_custom_shap_visualization(self, shap_values, output_path):
+        """
+        Cria uma visualização SHAP personalizada com foco nas categorias específicas de features.
+        
+        Args:
+            shap_values: valores SHAP calculados
+            output_path: caminho para salvar a figura
+            
+        Returns:
+            caminho para a figura salva
+        """
+        import matplotlib.pyplot as plt
+        import matplotlib
+        
+        # Verificar os valores SHAP
+        if isinstance(shap_values, list):
+            # Se retornar uma lista de arrays (um por classe), usamos o da classe positiva (ataque)
+            values = shap_values[1]
+        else:
+            values = shap_values
+            
+        # Calcular a importância média das features (valor absoluto)
+        feature_importance = np.abs(values).mean(0)
+        
+        # Criar um DataFrame para facilitar a manipulação
+        importance_df = pd.DataFrame({
+            'feature': self.feature_names,
+            'importance': feature_importance
+        })
+        
+        # Adicionar categoria para cada feature
+        def categorize_feature(feature_name):
+            # Features temporais
+            if feature_name in ['hour', 'dayofweek', 'day', 'month', 'is_weekend']:
+                return 'time_features'
+                
+            # Procurar por prefixos das categorias específicas
+            for category in self.feature_categories:
+                if feature_name.startswith(category):
+                    return category
+                    
+            return 'other'
+            
+        importance_df['category'] = importance_df['feature'].apply(categorize_feature)
+        
+        # Agregar a importância por categoria
+        category_importance = importance_df.groupby('category')['importance'].sum().reset_index()
+        
+        # Ordenar por importância
+        category_importance = category_importance.sort_values('importance', ascending=False)
+        
+        # Definir nomes amigáveis para as categorias
+        category_names = {
+            'dl_bitrate': 'Taxa de Download',
+            'ul_bitrate': 'Taxa de Upload',
+            'cell_x_dl_retx': 'Retransmissões Download',
+            'cell_x_dl_tx': 'Transmissões Download',
+            'cell_x_ul_retx': 'Retransmissões Upload',
+            'cell_x_ul_tx': 'Transmissões Upload',
+            'ul_total_bytes_non_incr': 'Bytes Upload (não incr.)',
+            'dl_total_bytes_non_incr': 'Bytes Download (não incr.)',
+            'time_features': 'Features Temporais',
+            'other': 'Outras Features'
+        }
+        
+        category_importance['label'] = category_importance['category'].map(
+            lambda x: category_names.get(x, x)
+        )
+        
+        # Configurar o gráfico
+        plt.figure(figsize=(12, 8))
+        
+        # Criar uma paleta de cores personalizada
+        colors = plt.cm.viridis(np.linspace(0.1, 0.9, len(category_importance)))
+        
+        # Criar o gráfico de barras
+        bars = plt.barh(
+            category_importance['label'],
+            category_importance['importance'],
+            color=colors
+        )
+        
+        # Adicionar valores nas barras
+        for i, (bar, value) in enumerate(zip(bars, category_importance['importance'])):
+            plt.text(
+                value + max(category_importance['importance']) * 0.02,
+                bar.get_y() + bar.get_height() / 2,
+                f'{value:.4f}',
+                va='center',
+                fontsize=10
+            )
+        
+        # Adicionar rótulos e título
+        plt.xlabel('Importância SHAP (média do valor absoluto)', fontsize=12)
+        plt.ylabel('Categoria de Feature', fontsize=12)
+        plt.title('Importância das Categorias de Features (SHAP)', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.7, axis='x')
+        
+        # Ajustar o layout e salvar
+        plt.tight_layout()
+        plt.savefig(output_path, bbox_inches='tight', dpi=150)
+        plt.close()
+        
+        return output_path
     
     def _get_feature_type(self, feature_name):
         """Identifica o tipo de uma feature com base em seu nome"""
