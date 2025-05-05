@@ -100,36 +100,38 @@ class ModelExplainer:
         features = [item[0] for item in explanation]
         values = [item[1] for item in explanation]
         
-        # Definir cores com base no valor e na classe prevista
-        # valores NEGATIVOS contribuem para a classe "Normal" (0) - cor VERDE
-        # valores POSITIVOS contribuem para a classe "Ataque" (1) - cor VERMELDA
-        colors = ['green' if val < 0 else 'red' for val in values]
+        # Determinar as cores com base no valor
+        # Verde para valores negativos (mais provável ser normal)
+        # Vermelho para valores positivos (mais provável ser ataque)
+        colors = ['#4CAF50' if v < 0 else '#F44336' for v in values]
         
-        # Criar figura maior para acomodar nomes longos
+        # Criar gráfico
         plt.figure(figsize=(12, 8))
         
-        # Criar gráfico horizontal de barras
-        y_pos = range(len(features))
-        bars = plt.barh(y_pos, values, color=colors)
+        # Criar barras horizontais
+        bars = plt.barh(range(len(features)), values, color=colors, height=0.7)
         
         # Configurar eixos
-        plt.yticks(y_pos, features, fontsize=11)
+        plt.yticks(range(len(features)), features, fontsize=10)
         plt.xlabel('Contribuição', fontsize=12)
         plt.title('Explicação LIME - Top Features', fontsize=14)
         
-        # Adicionar linha zero para referência
+        # Adicionar linha vertical em x=0
         plt.axvline(x=0, color='black', linestyle='-', alpha=0.3)
         
-        # Adicionar uma legenda para clarificar o significado das cores
-        from matplotlib.patches import Patch
-        legend_elements = [
-            Patch(facecolor='green', label='Contribui para classificação como Normal'),
-            Patch(facecolor='red', label='Contribui para classificação como Ataque')
-        ]
-        plt.legend(handles=legend_elements, loc='best')
+        # Adicionar grid apenas no eixo x
+        plt.grid(axis='x', linestyle='--', alpha=0.3)
         
-        # Ajustar layout para evitar truncamento
+        # Adicionar legenda - Mover para fora do gráfico para evitar sobreposição
+        legend_elements = [
+            plt.Rectangle((0, 0), 1, 1, color='#4CAF50', label='Contribui para classificação como Normal'),
+            plt.Rectangle((0, 0), 1, 1, color='#F44336', label='Contribui para classificação como Ataque')
+        ]
+        plt.legend(handles=legend_elements, loc='lower right', bbox_to_anchor=(1.0, -0.15), ncol=2)
+        
+        # Ajustar layout para acomodar a legenda sem sobreposição
         plt.tight_layout()
+        plt.subplots_adjust(bottom=0.15)  # Adicionar espaço extra na parte inferior para a legenda
         
         # Salvar figura
         plt.savefig(output_path, dpi=150, bbox_inches='tight')
