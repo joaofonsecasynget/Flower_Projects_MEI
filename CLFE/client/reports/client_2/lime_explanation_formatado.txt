@@ -1,57 +1,52 @@
 # Explicação LIME
 
-## Amostra 15
+## Amostra 4
 
 ### Previsão do Modelo
-- **Classe Prevista:** ATAQUE
-- **Probabilidade:** 1.0000
+- **Classe Prevista:** NORMAL
+- **Probabilidade:** 0.0009
 
-
-### Taxa de Download (dl_bitrate)
-
-| Feature | Contribuição | Interpretação |
-|---------|-------------|---------------|
-| dl_bitrate_100 <= -0.77 | -0.001694 | Aumenta probabilidade de NORMAL |
-| dl_bitrate_58 <= -0.77 | -0.001428 | Aumenta probabilidade de NORMAL |
-| dl_bitrate_4 <= -0.77 | -0.001078 | Aumenta probabilidade de NORMAL |
 
 ### Taxa de Upload (ul_bitrate)
 
 | Feature | Contribuição | Interpretação |
 |---------|-------------|---------------|
-| ul_bitrate_116 > 0.46 | +0.001747 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_19 > 0.42 | +0.001606 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_114 > 0.38 | +0.001574 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_80 > 0.44 | +0.001524 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_12 > 0.50 | -0.001470 | Aumenta probabilidade de NORMAL |
-| ul_bitrate_118 > 0.49 | +0.001424 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_117 > 0.25 | +0.001278 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_115 > 0.53 | +0.001231 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_61 > 0.42 | +0.001203 | Aumenta probabilidade de ATAQUE |
-| ul_bitrate_91 > 0.40 | +0.001147 | Aumenta probabilidade de ATAQUE |
-
-### Bytes de Upload (não incrementais)
-
-| Feature | Contribuição | Interpretação |
-|---------|-------------|---------------|
-| ul_total_bytes_non_incr_70 > 0.54 | +0.001788 | Aumenta probabilidade de ATAQUE |
-| ul_total_bytes_non_incr_62 > 0.50 | +0.001707 | Aumenta probabilidade de ATAQUE |
-| ul_total_bytes_non_incr_90 > 0.52 | +0.001308 | Aumenta probabilidade de ATAQUE |
+| ul_bitrate_91 <= -0.59 | -0.002235 | Aumenta probabilidade de NORMAL |
+| ul_bitrate_46 <= -0.60 | -0.002003 | Aumenta probabilidade de NORMAL |
 
 ### Bytes de Download (não incrementais)
 
 | Feature | Contribuição | Interpretação |
 |---------|-------------|---------------|
-| dl_total_bytes_non_incr_33 <= -0.78 | -0.001860 | Aumenta probabilidade de NORMAL |
-| dl_total_bytes_non_incr_59 <= -0.78 | -0.001824 | Aumenta probabilidade de NORMAL |
-| dl_total_bytes_non_incr_27 <= -0.74 | -0.001584 | Aumenta probabilidade de NORMAL |
-| dl_total_bytes_non_incr_3 <= -0.75 | -0.001324 | Aumenta probabilidade de NORMAL |
+| dl_total_bytes_non_incr_28 > -0.01 | -0.002814 | Aumenta probabilidade de NORMAL |
+
+### Outras Features
+
+| Feature | Contribuição | Interpretação |
+|---------|-------------|---------------|
+| -0.72 < dl_bitrate_25 <= -0.21 | -0.003117 | Aumenta probabilidade de NORMAL |
+| 0.10 < ul_bitrate_67 <= 0.55 | -0.002849 | Aumenta probabilidade de NORMAL |
+| 0.13 < ul_total_bytes_non_incr_70 <= 0.54 | -0.002802 | Aumenta probabilidade de NORMAL |
+| -0.59 < ul_bitrate_19 <= 0.28 | -0.002756 | Aumenta probabilidade de NORMAL |
+| -0.68 < dl_total_bytes_non_incr_117 <= -0.34 | -0.002595 | Aumenta probabilidade de NORMAL |
+| -0.71 < dl_total_bytes_non_incr_14 <= -0.58 | -0.002535 | Aumenta probabilidade de NORMAL |
+| -0.57 < ul_total_bytes_non_incr_98 <= -0.27 | -0.002433 | Aumenta probabilidade de NORMAL |
+| -0.50 < dl_total_bytes_non_incr_22 <= 0.28 | -0.002427 | Aumenta probabilidade de NORMAL |
+| -0.76 < dl_bitrate_21 <= -0.68 | -0.002421 | Aumenta probabilidade de NORMAL |
+| -0.58 < ul_total_bytes_non_incr_15 <= -0.38 | -0.002364 | Aumenta probabilidade de NORMAL |
+| -0.68 < dl_bitrate_47 <= -0.02 | -0.002352 | Aumenta probabilidade de NORMAL |
+| -0.65 < dl_total_bytes_non_incr_9 <= 0.29 | -0.002327 | Aumenta probabilidade de NORMAL |
+| -0.68 < dl_bitrate_9 <= 0.26 | -0.002294 | Aumenta probabilidade de NORMAL |
+| -0.61 < ul_total_bytes_non_incr_109 <= 0.06 | -0.002166 | Aumenta probabilidade de NORMAL |
+| 0.19 < ul_bitrate_100 <= 0.61 | -0.002147 | Aumenta probabilidade de NORMAL |
+| -0.75 < dl_total_bytes_non_incr_75 <= -0.69 | -0.002105 | Aumenta probabilidade de NORMAL |
+| -0.68 < dl_total_bytes_non_incr_39 <= -0.34 | -0.002090 | Aumenta probabilidade de NORMAL |
 
 ## Estatísticas
 
 - **Total de Features:** 20
-- **Features que aumentam probabilidade de ATAQUE:** 12
-- **Features que aumentam probabilidade de NORMAL:** 8
+- **Features que aumentam probabilidade de ATAQUE:** 0
+- **Features que aumentam probabilidade de NORMAL:** 20
 
 ## Interpretação
 

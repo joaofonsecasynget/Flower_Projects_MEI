@@ -846,6 +846,19 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     # Se tivermos o índice original, usamos para buscar os valores originais
                     original_instance = df_original.iloc[sample_idx]
                     
+                    # Obter valor target original se disponível
+                    original_target = None
+                    original_target_class = None
+                    prediction_correct = None
+                    
+                    if 'attack' in df_original.columns:
+                        original_target = int(original_instance['attack'])
+                        original_target_class = "Ataque" if original_target == 1 else "Normal"
+                        # Determinar se a previsão está correta
+                        prediction_class_numeric = 1 if prediction >= 0.5 else 0
+                        prediction_correct = (prediction_class_numeric == original_target)
+                        logger.info(f"Valor target original: {original_target} ({original_target_class}), Previsão correta: {prediction_correct}")
+                    
                     # Remover colunas que não são features
                     cols_to_drop = []
                     for col in ['indice', 'imeisv', 'index', 'attack', '_time']:
@@ -862,10 +875,10 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                         "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
                         "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
                         "feature_count": len(instance),
-                        # Adicionando estes campos para compatibilidade com o relatório HTML
-                        "original_target": None,
-                        "original_target_class": None,
-                        "prediction_correct": None,
+                        # Adicionar informações sobre o target original
+                        "original_target": original_target,
+                        "original_target_class": original_target_class,
+                        "prediction_correct": prediction_correct,
                         "features": {
                             name: round(float(original_features.get(name, instance[i])), 5)
                             for i, name in enumerate(explainer.feature_names)
@@ -884,7 +897,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                         "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
                         "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
                         "feature_count": len(instance),
-                        # Adicionando estes campos para compatibilidade com o relatório HTML
+                        # Adicionar informações sobre o target original
                         "original_target": None,
                         "original_target_class": None,
                         "prediction_correct": None,
@@ -904,7 +917,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
                     "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
                     "feature_count": len(instance),
-                    # Adicionando estes campos para compatibilidade com o relatório HTML
+                    # Adicionar informações sobre o target original
                     "original_target": None,
                     "original_target_class": None,
                     "prediction_correct": None,
