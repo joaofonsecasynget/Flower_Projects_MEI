@@ -22,11 +22,11 @@ services:
       dockerfile: Dockerfile
     container_name: client_1
     volumes:
-      - ./client/reports:/app/client/reports
-      - ./client/results:/app/client/results
+      - ./client/reports:/app/reports
+      - ./client/results:/app/results
       - ./DatasetIOT:/app/DatasetIOT:ro
-    working_dir: /app/client
-    command: ["python", "client.py", "--cid", "1", "--num_clients", "2", "--num_total_clients", "6", "--server_address", "server:9091"]
+    working_dir: /app
+    command: ["python", "-m", "client.client", "--cid", "1", "--num_clients", "2", "--num_total_clients", "10", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
@@ -39,11 +39,11 @@ services:
       dockerfile: Dockerfile
     container_name: client_2
     volumes:
-      - ./client/reports:/app/client/reports
-      - ./client/results:/app/client/results
+      - ./client/reports:/app/reports
+      - ./client/results:/app/results
       - ./DatasetIOT:/app/DatasetIOT:ro
-    working_dir: /app/client
-    command: ["python", "client.py", "--cid", "2", "--num_clients", "2", "--num_total_clients", "6", "--server_address", "server:9091"]
+    working_dir: /app
+    command: ["python", "-m", "client.client", "--cid", "2", "--num_clients", "2", "--num_total_clients", "10", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:

@@ -5,8 +5,8 @@ import numpy as np
 from pathlib import Path
 import torch
 import time
-from utils import LinearClassificationModel, CustomDataset, train, evaluate
-from explainability import ModelExplainer
+from .utils import LinearClassificationModel, CustomDataset, train, evaluate
+from .explainability import ModelExplainer
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 import logging
@@ -14,7 +14,7 @@ import flwr as fl
 import json
 import matplotlib.pyplot as plt
 import sys
-from report_utils import generate_evolution_plots, generate_html_report, save_artifacts, generate_explainability
+from .report_utils import generate_evolution_plots, generate_html_report, save_artifacts, generate_explainability
 
 # Filtro para garantir que todas as mensagens de log tenham o campo 'cid'
 class AddClientIdFilter(logging.Filter):
@@ -42,7 +42,7 @@ parser = argparse.ArgumentParser(description="RLFE Federated Client")
 parser.add_argument('--cid', type=int, required=True, help='ID do cliente (1-indexed)')
 parser.add_argument('--num_clients', type=int, required=True, help='Número de clientes a executar neste teste')
 parser.add_argument('--num_total_clients', type=int, default=10, help='Número total de clientes para particionamento dos dados')
-parser.add_argument('--dataset_path', type=str, default="../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv", help="Path to dataset CSV")
+parser.add_argument('--dataset_path', type=str, default="DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv", help="Path to dataset CSV")
 parser.add_argument('--seed', type=int, default=42, help='Seed para reprodutibilidade')
 parser.add_argument('--epochs', type=int, default=5, help="Epochs per round")
 parser.add_argument('--server_address', type=str, default="server:9091", help="Endereço do servidor Flower")

@@ -12,6 +12,8 @@ COPY client/ ./client/
 COPY DatasetIOT/ ./DatasetIOT/
 COPY server/server.py ./server.py
 
+COPY explainability/ ./explainability/
+
 # Por omissão, entra na pasta client
 WORKDIR /app/client
 

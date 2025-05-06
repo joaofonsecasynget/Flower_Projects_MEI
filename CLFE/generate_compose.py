@@ -49,11 +49,11 @@ service_template = """
       dockerfile: Dockerfile
     container_name: client_{cid}
     volumes:
-      - ./client/reports:/app/client/reports
-      - ./client/results:/app/client/results
+      - ./client/reports:/app/reports
+      - ./client/results:/app/results
       - ./DatasetIOT:/app/DatasetIOT:ro
-    working_dir: /app/client
-    command: ["python", "client.py", "--cid", "{cid}", "--num_clients", "{num_clients}", "--num_total_clients", "{num_total_clients}", "--server_address", "server:9091"]
+    working_dir: /app
+    command: ["python", "-m", "client.client", "--cid", "{cid}", "--num_clients", "{num_clients}", "--num_total_clients", "{num_total_clients}", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
