@@ -1,0 +1,59 @@
+# Explicação LIME
+
+## Amostra 22
+
+### Previsão do Modelo
+- **Classe Prevista:** NORMAL
+- **Probabilidade:** 0.0006
+
+
+### Taxa de Upload (ul_bitrate)
+
+| Feature | Contribuição | Interpretação |
+|---------|-------------|---------------|
+| ul_bitrate_67 > 0.43 | +0.005206 | Aumenta probabilidade de ATAQUE |
+| ul_bitrate_120 > 0.42 | +0.004990 | Aumenta probabilidade de ATAQUE |
+
+### Bytes de Upload (não incrementais)
+
+| Feature | Contribuição | Interpretação |
+|---------|-------------|---------------|
+| ul_total_bytes_non_incr_54 > 0.46 | +0.003920 | Aumenta probabilidade de ATAQUE |
+
+### Bytes de Download (não incrementais)
+
+| Feature | Contribuição | Interpretação |
+|---------|-------------|---------------|
+| dl_total_bytes_non_incr_62 <= -0.74 | -0.006905 | Aumenta probabilidade de NORMAL |
+
+### Outras Features
+
+| Feature | Contribuição | Interpretação |
+|---------|-------------|---------------|
+| -0.75 < ul_total_bytes_non_incr_90 <= -0.29 | -0.008918 | Aumenta probabilidade de NORMAL |
+| -0.42 < ul_total_bytes_non_incr_114 <= 0.39 | -0.007935 | Aumenta probabilidade de NORMAL |
+| -0.55 < dl_total_bytes_non_incr_115 <= 0.31 | -0.006418 | Aumenta probabilidade de NORMAL |
+| 0.17 < ul_total_bytes_non_incr_28 <= 0.52 | -0.006371 | Aumenta probabilidade de NORMAL |
+| -0.74 < dl_total_bytes_non_incr_64 <= -0.59 | -0.006204 | Aumenta probabilidade de NORMAL |
+| -0.75 < ul_total_bytes_non_incr_102 <= -0.33 | -0.006015 | Aumenta probabilidade de NORMAL |
+| -0.03 < ul_bitrate_85 <= 0.46 | -0.005693 | Aumenta probabilidade de NORMAL |
+| -0.63 < ul_bitrate_51 <= -0.18 | -0.005631 | Aumenta probabilidade de NORMAL |
+| -0.74 < ul_total_bytes_non_incr_71 <= -0.16 | -0.005598 | Aumenta probabilidade de NORMAL |
+| -0.76 < dl_bitrate_43 <= -0.70 | -0.005524 | Aumenta probabilidade de NORMAL |
+| -0.74 < ul_total_bytes_non_incr_20 <= -0.05 | -0.004806 | Aumenta probabilidade de NORMAL |
+| -0.71 < ul_bitrate_96 <= -0.57 | -0.004764 | Aumenta probabilidade de NORMAL |
+| -0.62 < ul_bitrate_33 <= -0.08 | -0.004608 | Aumenta probabilidade de NORMAL |
+| -0.71 < ul_bitrate_69 <= -0.15 | -0.004602 | Aumenta probabilidade de NORMAL |
+| -0.77 < dl_bitrate_49 <= -0.69 | -0.004548 | Aumenta probabilidade de NORMAL |
+| -0.63 < ul_total_bytes_non_incr_19 <= -0.17 | -0.004425 | Aumenta probabilidade de NORMAL |
+
+## Estatísticas
+
+- **Total de Features:** 20
+- **Features que aumentam probabilidade de ATAQUE:** 3
+- **Features que aumentam probabilidade de NORMAL:** 17
+
+## Interpretação
+
+- **Contribuições positivas (em vermelho):** Aumentam a probabilidade de ser classificado como ataque
+- **Contribuições negativas (em verde):** Aumentam a probabilidade de ser classificado como normal
