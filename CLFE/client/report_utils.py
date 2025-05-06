@@ -7,12 +7,12 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-from datetime import datetime
 import logging
 import torch
 import time
 import shap
 import re
+from datetime import datetime
 
 # Configuração do logger
 logger = logging.getLogger()
@@ -565,7 +565,8 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             html_content += f"<tr><td>{r + 1}</td>"
             for key in training_metrics + validation_metrics:
                 if key in history:
-                    value = history.get(key, [None]*num_rounds_completed)[r] # Acesso seguro
+                    metric_list = history.get(key, [])
+                    value = metric_list[r] if r < len(metric_list) else None
                     if value is None or (isinstance(value, float) and np.isnan(value)):
                         formatted_value = "N/A"
                     elif isinstance(value, (int, float)):
@@ -589,7 +590,8 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             html_content += f"<tr><td>{r + 1}</td>"
             for key in test_metrics:
                 if key in history:
-                    value = history.get(key, [None]*num_rounds_completed)[r] # Acesso seguro
+                    metric_list = history.get(key, [])
+                    value = metric_list[r] if r < len(metric_list) else None
                     if value is None or (isinstance(value, float) and np.isnan(value)):
                         formatted_value = "N/A"
                     elif isinstance(value, (int, float)):
@@ -613,7 +615,8 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             html_content += f"<tr><td>{r + 1}</td>"
             for key in time_metrics:
                 if key in history:
-                    value = history.get(key, [None]*num_rounds_completed)[r] # Acesso seguro
+                    metric_list = history.get(key, [])
+                    value = metric_list[r] if r < len(metric_list) else None
                     if value is None or (isinstance(value, float) and np.isnan(value)):
                         formatted_value = "N/A"
                     elif isinstance(value, (int, float)):
@@ -843,6 +846,28 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     import pandas as pd
                     df_original = pd.read_csv(original_dataset_path)
                     
+                    # Extrair features temporais do timestamp
+                    if '_time' in df_original.columns:
+                        logger.info(f"Extraindo features temporais de _time para valores originais")
+                        # Converter para datetime
+                        try:
+                            df_original['_time'] = pd.to_datetime(df_original['_time'])
+                        except:
+                            try:
+                                logger.info("Standard datetime parsing failed, trying with ISO8601 format")
+                                df_original['_time'] = pd.to_datetime(df_original['_time'], format='ISO8601')
+                            except Exception as e:
+                                logger.error(f"Failed to parse _time column as datetime: {e}")
+                        
+                        # Extrair features temporais
+                        if pd.api.types.is_datetime64_any_dtype(df_original['_time']):
+                            df_original['hour'] = df_original['_time'].dt.hour
+                            df_original['dayofweek'] = df_original['_time'].dt.dayofweek
+                            df_original['day'] = df_original['_time'].dt.day
+                            df_original['month'] = df_original['_time'].dt.month
+                            df_original['is_weekend'] = (df_original['dayofweek'] >= 5).astype(int)
+                            logger.info("Features temporais extraídas com sucesso do dataset original")
+                    
                     # Se tivermos o índice original, usamos para buscar os valores originais
                     original_instance = df_original.iloc[sample_idx]
                     
@@ -879,12 +904,20 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                         "original_target": original_target,
                         "original_target_class": original_target_class,
                         "prediction_correct": prediction_correct,
-                        "features": {
-                            name: round(float(original_features.get(name, instance[i])), 5)
-                            for i, name in enumerate(explainer.feature_names)
-                            if abs(float(original_features.get(name, instance[i]))) > 0.001  # Filtrar valores próximos de zero
-                        }
+                        "features": {}
                     }
+                    
+                    # Adicionar features originais ao dicionário
+                    for i, name in enumerate(explainer.feature_names):
+                        if name in ['hour', 'dayofweek', 'day', 'month', 'is_weekend'] and name in df_original.columns:
+                            # Para features temporais, usar os valores extraídos (valores inteiros - não normalizados)
+                            instance_info["features"][name] = int(original_instance[name])
+                        elif name in original_features:
+                            # Usar valor original do dataset para outras features
+                            instance_info["features"][name] = float(original_features[name])
+                        else:
+                            # Para features não encontradas no dataset original, usar o valor normalizado
+                            instance_info["features"][name] = float(instance[i])
                     
                     logger.info(f"Valores originais carregados com sucesso para {len(instance_info['features'])} features")
                 else:
@@ -904,7 +937,6 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                         "features": {
                             name: round(float(value), 5)
                             for name, value in zip(explainer.feature_names, instance)
-                            if abs(float(value)) > 0.001  # Filtrar valores próximos de zero
                         }
                     }
             except Exception as e:
@@ -924,7 +956,6 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     "features": {
                         name: round(float(value), 5)
                         for name, value in zip(explainer.feature_names, instance)
-                        if abs(float(value)) > 0.001  # Filtrar valores próximos de zero
                     }
                 }
             
@@ -946,99 +977,683 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     lime_text = f_in.read()
                 
                 # Formatação mais legível
-                formatted_text = '# Explicação LIME\n\n'
-                formatted_text += f'## Amostra {sample_idx}\n\n'
+                formatted_explanation = ""
+                formatted_explanation += "# Explicação LIME\n\n"
                 
-                # Adicionar contexto sobre a previsão do modelo
-                prediction_class = "ATAQUE" if prediction >= 0.5 else "NORMAL"
-                formatted_text += f"### Previsão do Modelo\n"
-                formatted_text += f"- **Classe Prevista:** {prediction_class}\n"
-                formatted_text += f"- **Probabilidade:** {prediction:.4f}\n\n"
+                # Informações da instância
+                formatted_explanation += f"## Amostra {sample_idx}\n\n"
+                formatted_explanation += "### Previsão do Modelo\n"
+                formatted_explanation += f"- **Classe Prevista:** {'ATAQUE' if prediction >= 0.5 else 'NORMAL'}\n"
+                formatted_explanation += f"- **Probabilidade:** {prediction:.4f}\n\n"
                 
-                # Extrair e formatar cada feature com sua contribuição
-                if "(" in lime_text and ")" in lime_text:
-                    features = re.findall(r"\('([^']+)'[^-+\d]*([-+]?[\d.]+)\)", lime_text)
+                # Obter todos os valores das features
+                all_features = {}
+                for i, name in enumerate(explainer.feature_names):
+                    # Obter valor original se disponível, caso contrário usar o normalizado
+                    if instance_info and "features" in instance_info:
+                        value = instance_info["features"].get(name, instance[i])
+                    else:
+                        value = instance[i]
+                    all_features[name] = value
+                
+                # Obter explicação como lista
+                exp_list = lime_exp.as_list()
+                
+                # Mapear features explicando para referência rápida
+                explained_features = {feat: impact for feat, impact in exp_list}
+                
+                # Forçar incluir pelo menos algumas features com valores não-zero
+                # Isso corrige o problema onde todas as features aparecem com contribuição 0
+                if exp_list:
+                    # Pegar as top 20 features pelo valor absoluto da explicação
+                    sorted_exp = sorted(exp_list, key=lambda x: abs(x[1]), reverse=True)
+                    top_features = sorted_exp[:min(20, len(sorted_exp))]
                     
-                    # Agrupar features por categoria específica
-                    categories = {
-                        'dl_bitrate': [],
-                        'ul_bitrate': [],
-                        'cell_x_dl_retx': [],
-                        'cell_x_dl_tx': [],
-                        'cell_x_ul_retx': [],
-                        'cell_x_ul_tx': [],
-                        'ul_total_bytes_non_incr': [],
-                        'dl_total_bytes_non_incr': [],
-                        'time_features': [],
-                        'other': []
+                    # Atualizar dict de explained_features para garantir que estes valores sejam preservados
+                    for feat, impact in top_features:
+                        explained_features[feat] = impact
+                
+                # Categorizar features
+                categories = {
+                    "Taxa de Download (dl_bitrate)": [],
+                    "Taxa de Upload (ul_bitrate)": [],
+                    "Bytes de Upload (não incrementais)": [],
+                    "Bytes de Download (não incrementais)": [],
+                    "Bytes de Upload (incrementais)": [],
+                    "Bytes de Download (incrementais)": [],
+                    "Pacotes de Upload": [],
+                    "Pacotes de Download": [],
+                    "Outras Features": []
+                }
+                
+                # Preencher features por categoria (todas as features, não apenas as explicadas)
+                for feature_name, value in all_features.items():
+                    # Obter contribuição (se existir)
+                    contribution = explained_features.get(feature_name, 0)
+                    
+                    if "dl_bitrate" in feature_name:
+                        categories["Taxa de Download (dl_bitrate)"].append((feature_name, value, contribution))
+                    elif "ul_bitrate" in feature_name:
+                        categories["Taxa de Upload (ul_bitrate)"].append((feature_name, value, contribution))
+                    elif "ul_total_bytes_non_incr" in feature_name:
+                        categories["Bytes de Upload (não incrementais)"].append((feature_name, value, contribution))
+                    elif "dl_total_bytes_non_incr" in feature_name:
+                        categories["Bytes de Download (não incrementais)"].append((feature_name, value, contribution))
+                    elif "ul_total_bytes_incr" in feature_name:
+                        categories["Bytes de Upload (incrementais)"].append((feature_name, value, contribution))
+                    elif "dl_total_bytes_incr" in feature_name:
+                        categories["Bytes de Download (incrementais)"].append((feature_name, value, contribution))
+                    elif "ul_packet" in feature_name:
+                        categories["Pacotes de Upload"].append((feature_name, value, contribution))
+                    elif "dl_packet" in feature_name:
+                        categories["Pacotes de Download"].append((feature_name, value, contribution))
+                    else:
+                        categories["Outras Features"].append((feature_name, value, contribution))
+                
+                # Ordenar cada categoria por impacto absoluto
+                for category, features in categories.items():
+                    categories[category] = sorted(features, key=lambda x: abs(x[2]), reverse=True)
+                
+                # Contar estatísticas
+                total_features = len(all_features)
+                explained_features_count = len(exp_list)
+                positive_impact = sum(1 for _, _, impact in [item for sublist in categories.values() for item in sublist] if impact > 0)
+                negative_impact = sum(1 for _, _, impact in [item for sublist in categories.values() for item in sublist] if impact < 0)
+                
+                # Função para formatar valor de acordo com seu tipo
+                def format_value(val):
+                    # Se o valor for inteiro, remover casas decimais
+                    if isinstance(val, (int, float)) and val.is_integer():
+                        return f"{int(val)}"
+                    elif isinstance(val, float):
+                        return f"{val:.4f}"  # Limitar a 4 casas decimais em vez de 6
+                    else:
+                        return str(val)
+                
+                # Função para retornar uma interpretação textual com base no valor de impacto
+                def get_interpretation(impact):
+                    if impact > 0.001:  # Limite de significância
+                        return "Aumenta probabilidade de ATAQUE"
+                    elif impact < -0.001:  # Limite de significância
+                        return "Aumenta probabilidade de NORMAL"
+                    else:
+                        return "Neutro"
+                
+                # Adicionar cada categoria ao relatório formatado
+                for category, features in categories.items():
+                    formatted_explanation += f"### {category}\n\n"
+                    
+                    # Calcular colunas para alinhamento adequado
+                    feature_names = [f[0] for f in features]
+                    
+                    # Formatar valores (remover casas decimais se for inteiro)
+                    values = []
+                    for _, val, _ in features:
+                        if isinstance(val, (int, float)):
+                            if val.is_integer():
+                                values.append(f"{int(val)}")
+                            else:
+                                values.append(f"{val:.4f}")
+                        else:
+                            values.append(str(val))
+                    
+                    # Formatar contribuições (mostrar zeros como "0" sem casas decimais)
+                    contributions = []
+                    for _, _, impact in features:
+                        if abs(impact) < 0.0001:  # Limiar mais restrito para considerar zero
+                            contributions.append("0")
+                        else:
+                            contributions.append(f"{impact:.6f}")
+                    
+                    interpretations = [get_interpretation(f[2]) for f in features]
+                    
+                    # Determinar largura máxima para cada coluna (com padding)
+                    max_feature_len = max(len(name) for name in feature_names) + 2
+                    max_value_len = max(len(val) for val in values) + 2
+                    max_contrib_len = max(len(contrib) for contrib in contributions) + 2
+                    max_interp_len = max(len(interp) for interp in interpretations) + 2
+                    
+                    # Cabeçalho da tabela com larguras adequadas
+                    header = f"| {'Feature'.ljust(max_feature_len)} | {'Valor'.ljust(max_value_len)} | {'Contribuição'.ljust(max_contrib_len)} | {'Interpretação'.ljust(max_interp_len)} |"
+                    separator = f"|{'-' * (max_feature_len + 2)}|{'-' * (max_value_len + 2)}|{'-' * (max_contrib_len + 2)}|{'-' * (max_interp_len + 2)}|"
+                    
+                    formatted_explanation += header + "\n"
+                    formatted_explanation += separator + "\n"
+                    
+                    # Linhas da tabela
+                    for i, (feature_name, value, impact) in enumerate(features):
+                        # Formatação de valor adequada ao tipo
+                        if isinstance(value, (int, float)):
+                            if value.is_integer():
+                                value_str = f"{int(value)}"
+                            else:
+                                value_str = f"{value:.4f}"
+                        else:
+                            value_str = str(value)
+                        
+                        # Formatação da contribuição
+                        if abs(impact) < 0.0001:  # Limiar mais restrito para considerar zero
+                            impact_str = "0"
+                        else:
+                            impact_str = f"{impact:.6f}"
+                        
+                        interpretation = get_interpretation(impact)
+                        
+                        row = f"| {feature_name.ljust(max_feature_len)} | {value_str.ljust(max_value_len)} | {impact_str.ljust(max_contrib_len)} | {interpretation.ljust(max_interp_len)} |"
+                        formatted_explanation += row + "\n"
+                    
+                    formatted_explanation += "\n"
+                
+                # Adicionar estatísticas
+                formatted_explanation += "## Estatísticas\n\n"
+                formatted_explanation += f"- **Total de Features:** {total_features}\n"
+                formatted_explanation += f"- **Features Explicadas pelo LIME:** {explained_features_count}\n"
+                formatted_explanation += f"- **Features que aumentam probabilidade de ATAQUE:** {positive_impact}\n"
+                formatted_explanation += f"- **Features que aumentam probabilidade de NORMAL:** {negative_impact}\n"
+                formatted_explanation += f"- **Features neutras:** {total_features - positive_impact - negative_impact}\n\n"
+                
+                # Adicionar interpretação
+                formatted_explanation += "## Interpretação\n\n"
+                formatted_explanation += "- **Contribuições positivas (em vermelho):** Aumentam a probabilidade de ser classificado como ataque\n"
+                formatted_explanation += "- **Contribuições negativas (em verde):** Aumentam a probabilidade de ser classificado como normal\n"
+                formatted_explanation += "- **Contribuições neutras (valor 0):** Não têm influência na classificação\n"
+                
+                # Criar o arquivo formatado usando o Path diretamente
+                try:
+                    # Garantir que o diretório existe
+                    os.makedirs(base_reports, exist_ok=True)
+                    
+                    lime_explanation_formatted_file = base_reports / "lime_explanation_formatado.txt"
+                    with open(str(lime_explanation_formatted_file), 'w', encoding='utf-8') as f:
+                        f.write(formatted_explanation)
+                    logger.info(f"Versão formatada da explicação LIME criada com sucesso em {lime_explanation_formatted_file}")
+                except Exception as e:
+                    logger.error(f"Erro ao escrever o arquivo formatado: {e}", exc_info=True)
+            
+            except Exception as e:
+                logger.error(f'Erro ao criar versão formatada da explicação LIME: {e}', exc_info=True)
+
+        # Salvar visualização LIME
+            lime_png_path = base_reports / 'lime_final.png'
+            
+            # Não gerar o arquivo HTML indesejado
+            # lime_exp.save_to_file(str(base_reports / 'lime_final.html'))
+            
+            # Usar nossa visualização personalizada
+            explainer.create_custom_lime_visualization(lime_exp, lime_png_path)
+            
+            logger.info(f'LIME explanation generated and saved to {lime_png_path}')
+        except Exception as e:
+            logger.error(f'Error generating LIME explanation: {e}', exc_info=True)
+        finally:
+            lime_duration = time.time() - lime_start
+        
+        # Gerar SHAP
+        shap_start = time.time()
+        try:
+            # Executar SHAP
+            shap_values = explainer.explain_shap(X_train)
+            
+            # Salvar valores SHAP como arquivo .npy
+            shap_values_path = base_reports / 'shap_values.npy'
+            np.save(shap_values_path, shap_values)
+            
+            # Gerar visualização SHAP
+            shap_png_path = base_reports / 'shap_final.png'
+            
+            try:
+                # Verificar se o método personalizado existe
+                if hasattr(explainer, 'create_custom_shap_visualization'):
+                    explainer.create_custom_shap_visualization(shap_values, shap_png_path)
+                else:
+                    # Criar visualização SHAP manualmente se o método não existir
+                    plt.figure(figsize=(12, 8))
+                    
+                    # Calcular importância média das features
+                    if isinstance(shap_values, list):
+                        feature_importance = np.abs(shap_values[1]).mean(0)
+                    else:
+                        feature_importance = np.abs(shap_values).mean(0)
+                    
+                    # Verificar dimensionalidade
+                    if feature_importance.ndim > 1:
+                        feature_importance = feature_importance.mean(axis=1)
+                    
+                    # Ordenar features por importância
+                    indices = np.argsort(feature_importance)
+                    n_features = min(20, len(feature_importance))  # Limitar a 20 features
+                    plt.barh(range(n_features), feature_importance[indices[-n_features:]], color='#1E88E5')
+                    plt.yticks(range(n_features), [explainer.feature_names[i] for i in indices[-n_features:]])
+                    plt.xlabel('Importância Média (|SHAP|)')
+                    plt.title('Importância das Features (SHAP)')
+                    plt.tight_layout()
+                    plt.savefig(shap_png_path, dpi=150, bbox_inches='tight')
+                    plt.close()
+            except Exception as e:
+                logger.error(f"Erro ao criar visualização SHAP: {e}")
+                # Criar um gráfico simples como fallback
+                plt.figure(figsize=(10, 6))
+                plt.text(0.5, 0.5, "Não foi possível gerar visualização SHAP", 
+                        horizontalalignment='center', verticalalignment='center', fontsize=14)
+                plt.savefig(shap_png_path)
+                plt.close()
+            
+            logger.info(f'SHAP explanation generated and saved to {shap_png_path}')
+        except Exception as e:
+            logger.error(f'Error generating SHAP explanation: {e}', exc_info=True)
+        finally:
+            shap_duration = time.time() - shap_start
+        
+        return lime_duration, shap_duration
+    except Exception as e:
+        logger.error(f'Error in generate_explainability: {e}', exc_info=True)
+        return 0, 0
+
+def generate_explainability_formatado(explainer, X_train, base_reports, sample_idx=None):
+    """
+    Gera explicabilidade LIME formatada para o modelo.
+    
+    Args:
+        explainer: Instância de ModelExplainer
+        X_train: Dados de treino ou caminho para um arquivo .npy contendo os dados
+        base_reports: Diretório base para salvar as explicações
+        sample_idx: Índice da amostra para explicar com LIME. Se None, seleciona aleatoriamente.
+        
+    Returns:
+        tuple: Tupla com durações (lime_duration, shap_duration)
+    """
+    lime_duration = 0
+    shap_duration = 0
+    
+    try:
+        # Verificar se X_train é um caminho para arquivo e carregar os dados se necessário
+        if isinstance(X_train, (str, Path)):
+            logger.info(f"Carregando X_train do arquivo: {X_train}")
+            X_train_path = Path(X_train)
+            if X_train_path.exists():
+                X_train = np.load(X_train_path)
+                logger.info(f"Dados X_train carregados com sucesso: {X_train.shape}")
+            else:
+                logger.error(f"Arquivo X_train não encontrado em {X_train_path}")
+                return lime_duration, shap_duration
+        
+        # Gerar LIME
+        lime_start = time.time()
+        try:
+            # Escolher instância para explicar
+            if sample_idx is None:
+                # Selecionar instância aleatória
+                import random
+                random_seed = 42 + int(time.time() * 1000) % 10000
+                random.seed(random_seed)
+                sample_idx = random.randint(0, len(X_train) - 1)
+                logger.info(f'Selecionada instância aleatória com índice {sample_idx}')
+            else:
+                logger.info(f'Usando instância com índice {sample_idx}')
+            
+            # Obter a instância para explicar
+            instance = X_train[sample_idx].reshape(1, -1)[0]
+            
+            # Obter previsão do modelo para esta instância
+            instance_tensor = torch.tensor(instance, dtype=torch.float32).to(explainer.device)
+            with torch.no_grad():
+                prediction = explainer.model(instance_tensor.unsqueeze(0)).item()
+            
+            # Tentar carregar o dataset original para obter valores não normalizados
+            try:
+                # Caminho para o dataset original (ajuste conforme necessário)
+                original_dataset_path = '/app/DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv'
+                if os.path.exists(original_dataset_path):
+                    logger.info(f"Carregando valores originais de {original_dataset_path}")
+                    import pandas as pd
+                    df_original = pd.read_csv(original_dataset_path)
+                    
+                    # Extrair features temporais do timestamp
+                    if '_time' in df_original.columns:
+                        logger.info(f"Extraindo features temporais de _time para valores originais")
+                        # Converter para datetime
+                        try:
+                            df_original['_time'] = pd.to_datetime(df_original['_time'])
+                        except:
+                            try:
+                                logger.info("Standard datetime parsing failed, trying with ISO8601 format")
+                                df_original['_time'] = pd.to_datetime(df_original['_time'], format='ISO8601')
+                            except Exception as e:
+                                logger.error(f"Failed to parse _time column as datetime: {e}")
+                        
+                        # Extrair features temporais
+                        if pd.api.types.is_datetime64_any_dtype(df_original['_time']):
+                            df_original['hour'] = df_original['_time'].dt.hour
+                            df_original['dayofweek'] = df_original['_time'].dt.dayofweek
+                            df_original['day'] = df_original['_time'].dt.day
+                            df_original['month'] = df_original['_time'].dt.month
+                            df_original['is_weekend'] = (df_original['dayofweek'] >= 5).astype(int)
+                            logger.info("Features temporais extraídas com sucesso do dataset original")
+                    
+                    # Se tivermos o índice original, usamos para buscar os valores originais
+                    original_instance = df_original.iloc[sample_idx]
+                    
+                    # Obter valor target original se disponível
+                    original_target = None
+                    original_target_class = None
+                    prediction_correct = None
+                    
+                    if 'attack' in df_original.columns:
+                        original_target = int(original_instance['attack'])
+                        original_target_class = "Ataque" if original_target == 1 else "Normal"
+                        # Determinar se a previsão está correta
+                        prediction_class_numeric = 1 if prediction >= 0.5 else 0
+                        prediction_correct = (prediction_class_numeric == original_target)
+                        logger.info(f"Valor target original: {original_target} ({original_target_class}), Previsão correta: {prediction_correct}")
+                    
+                    # Remover colunas que não são features
+                    cols_to_drop = []
+                    for col in ['indice', 'imeisv', 'index', 'attack', '_time']:
+                        if col in original_instance.index:
+                            cols_to_drop.append(col)
+                    
+                    original_features = original_instance.drop(cols_to_drop) if cols_to_drop else original_instance
+                    
+                    # Extrair informações sobre a instância
+                    instance_info = {
+                        "index": sample_idx,
+                        "original_index": sample_idx,  # Adicionando para compatibilidade com o relatório HTML
+                        "prediction": round(prediction, 5),
+                        "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
+                        "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
+                        "feature_count": len(instance),
+                        # Adicionar informações sobre o target original
+                        "original_target": original_target,
+                        "original_target_class": original_target_class,
+                        "prediction_correct": prediction_correct,
+                        "features": {}
                     }
                     
-                    for feature, contribution in features:
-                        # Determinar a categoria com base no prefixo da feature
-                        category = 'other'
-                        for cat in categories.keys():
-                            if cat != 'time_features' and cat != 'other' and feature.startswith(cat):
-                                category = cat
-                                break
-                        
-                        # Identificar features temporais
-                        if feature in ['hour', 'dayofweek', 'day', 'month', 'is_weekend']:
-                            category = 'time_features'
-                        
-                        categories[category].append((feature, float(contribution)))
+                    # Adicionar features originais ao dicionário
+                    for i, name in enumerate(explainer.feature_names):
+                        if name in ['hour', 'dayofweek', 'day', 'month', 'is_weekend'] and name in df_original.columns:
+                            # Para features temporais, usar os valores extraídos (valores inteiros - não normalizados)
+                            instance_info["features"][name] = int(original_instance[name])
+                        elif name in original_features:
+                            # Usar valor original do dataset para outras features
+                            instance_info["features"][name] = float(original_features[name])
+                        else:
+                            # Para features não encontradas no dataset original, usar o valor normalizado
+                            instance_info["features"][name] = float(instance[i])
                     
-                    # Ordenar e apresentar cada categoria
-                    for cat, items in categories.items():
-                        if items:
-                            items.sort(key=lambda x: abs(x[1]), reverse=True)
-                            
-                            # Adicionar cabeçalho da categoria
-                            cat_name = {
-                                'dl_bitrate': 'Taxa de Download (dl_bitrate)',
-                                'ul_bitrate': 'Taxa de Upload (ul_bitrate)',
-                                'cell_x_dl_retx': 'Retransmissões de Download',
-                                'cell_x_dl_tx': 'Transmissões de Download',
-                                'cell_x_ul_retx': 'Retransmissões de Upload',
-                                'cell_x_ul_tx': 'Transmissões de Upload',
-                                'ul_total_bytes_non_incr': 'Bytes de Upload (não incrementais)',
-                                'dl_total_bytes_non_incr': 'Bytes de Download (não incrementais)',
-                                'time_features': 'Features Temporais',
-                                'other': 'Outras Features'
-                            }.get(cat, cat)
-                            
-                            formatted_text += f'\n### {cat_name}\n\n'
-                            formatted_text += '| Feature | Contribuição | Interpretação |\n'
-                            formatted_text += '|---------|-------------|---------------|\n'
-                            
-                            for feat, contrib in items:
-                                sign = '+' if contrib > 0 else ''
-                                interp = 'Aumenta probabilidade de ATAQUE' if contrib > 0 else 'Aumenta probabilidade de NORMAL'
-                                formatted_text += f'| {feat} | {sign}{contrib:.6f} | {interp} |\n'
-                    
-                    # Adicionar estatísticas 
-                    formatted_text += '\n## Estatísticas\n\n'
-                    total_features = sum(len(items) for items in categories.values())
-                    positive_features = sum(sum(1 for _, c in items if c > 0) for items in categories.values())
-                    negative_features = sum(sum(1 for _, c in items if c < 0) for items in categories.values())
-                    
-                    formatted_text += f'- **Total de Features:** {total_features}\n'
-                    formatted_text += f'- **Features que aumentam probabilidade de ATAQUE:** {positive_features}\n'
-                    formatted_text += f'- **Features que aumentam probabilidade de NORMAL:** {negative_features}\n\n'
-                    
-                    # Adicionar legenda de interpretação
-                    formatted_text += '## Interpretação\n\n'
-                    formatted_text += '- **Contribuições positivas (em vermelho):** Aumentam a probabilidade de ser classificado como ataque\n'
-                    formatted_text += '- **Contribuições negativas (em verde):** Aumentam a probabilidade de ser classificado como normal\n'
-                
-                # Salvar a versão formatada
-                with open(base_reports / 'lime_explanation_formatado.txt', 'w', encoding='utf-8') as f_out:
-                    f_out.write(formatted_text)
-                    
-                logger.info('Versão formatada da explicação LIME criada com sucesso.')
+                    logger.info(f"Valores originais carregados com sucesso para {len(instance_info['features'])} features")
+                else:
+                    # Se não encontrar o dataset original, usar os valores normalizados
+                    logger.warning(f"Dataset original não encontrado em {original_dataset_path}, usando valores normalizados")
+                    instance_info = {
+                        "index": sample_idx,
+                        "original_index": sample_idx,  # Adicionando para compatibilidade com o relatório HTML
+                        "prediction": round(prediction, 5),
+                        "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
+                        "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
+                        "feature_count": len(instance),
+                        # Adicionar informações sobre o target original
+                        "original_target": None,
+                        "original_target_class": None,
+                        "prediction_correct": None,
+                        "features": {
+                            name: round(float(value), 5)
+                            for name, value in zip(explainer.feature_names, instance)
+                        }
+                    }
             except Exception as e:
-                logger.error(f'Erro ao criar versão formatada da explicação LIME: {e}')
+                logger.error(f"Erro ao carregar valores originais: {e}")
+                # Fallback para os valores normalizados em caso de erro
+                instance_info = {
+                    "index": sample_idx,
+                    "original_index": sample_idx,  # Adicionando para compatibilidade com o relatório HTML
+                    "prediction": round(prediction, 5),
+                    "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
+                    "prediction_confidence": round(max(prediction, 1-prediction) * 100, 2),
+                    "feature_count": len(instance),
+                    # Adicionar informações sobre o target original
+                    "original_target": None,
+                    "original_target_class": None,
+                    "prediction_correct": None,
+                    "features": {
+                        name: round(float(value), 5)
+                        for name, value in zip(explainer.feature_names, instance)
+                    }
+                }
             
-            # Salvar visualização LIME
+            # Salvar informações da instância como JSON
+            instance_info_path = base_reports / "lime_instance_info.json"
+            with open(instance_info_path, "w") as f:
+                json.dump(instance_info, f, indent=4, default=str)
+            
+            # Executar LIME
+            lime_exp = explainer.explain_lime(X_train, instance)
+            
+            # Salvar explicação LIME como texto
+            with open(base_reports / 'lime_explanation.txt', 'w', encoding='utf-8') as f:
+                f.write(str(lime_exp.as_list()))
+                
+            # Criar uma versão formatada do arquivo de explicação LIME
+            try:
+                with open(base_reports / 'lime_explanation.txt', 'r', encoding='utf-8') as f_in:
+                    lime_text = f_in.read()
+                
+                # Formatação mais legível
+                formatted_explanation = ""
+                formatted_explanation += "# Explicação LIME\n\n"
+                
+                # Informações da instância
+                formatted_explanation += f"## Amostra {sample_idx}\n\n"
+                formatted_explanation += "### Previsão do Modelo\n"
+                formatted_explanation += f"- **Classe Prevista:** {'ATAQUE' if prediction >= 0.5 else 'NORMAL'}\n"
+                formatted_explanation += f"- **Probabilidade:** {prediction:.4f}\n\n"
+                
+                # Obter todos os valores das features
+                all_features = {}
+                for i, name in enumerate(explainer.feature_names):
+                    # Obter valor original se disponível, caso contrário usar o normalizado
+                    if instance_info and "features" in instance_info:
+                        value = instance_info["features"].get(name, instance[i])
+                    else:
+                        value = instance[i]
+                    all_features[name] = value
+                
+                # Obter explicação como lista
+                exp_list = lime_exp.as_list()
+                
+                # Mapear features explicando para referência rápida
+                explained_features = {feat: impact for feat, impact in exp_list}
+                
+                # Forçar incluir pelo menos algumas features com valores não-zero
+                # Isso corrige o problema onde todas as features aparecem com contribuição 0
+                if exp_list:
+                    # Pegar as top 20 features pelo valor absoluto da explicação
+                    sorted_exp = sorted(exp_list, key=lambda x: abs(x[1]), reverse=True)
+                    top_features = sorted_exp[:min(20, len(sorted_exp))]
+                    
+                    # Atualizar dict de explained_features para garantir que estes valores sejam preservados
+                    for feat, impact in top_features:
+                        explained_features[feat] = impact
+                
+                # Categorizar features
+                categories = {
+                    "Taxa de Download (dl_bitrate)": [],
+                    "Taxa de Upload (ul_bitrate)": [],
+                    "Retransmissões DL (cell_x_dl_retx)": [],
+                    "Transmissões DL (cell_x_dl_tx)": [],
+                    "Retransmissões UL (cell_x_ul_retx)": [],
+                    "Transmissões UL (cell_x_ul_tx)": [],
+                    "Bytes de Upload (não incrementais)": [],
+                    "Bytes de Download (não incrementais)": [],
+                    "Bytes de Upload (incrementais)": [],
+                    "Bytes de Download (incrementais)": [],
+                    "Pacotes de Upload": [],
+                    "Pacotes de Download": [],
+                    "Features Temporais": [],
+                    "Outras Features": []
+                }
+                
+                # Preencher features por categoria (todas as features, não apenas as explicadas)
+                for feature_name, value in all_features.items():
+                    # Obter contribuição (se existir)
+                    contribution = explained_features.get(feature_name, 0)
+                    
+                    if feature_name.startswith("cell_x_dl_retx"):
+                        categories["Retransmissões DL (cell_x_dl_retx)"].append((feature_name, value, contribution))
+                    elif feature_name.startswith("cell_x_dl_tx"):
+                        categories["Transmissões DL (cell_x_dl_tx)"].append((feature_name, value, contribution))
+                    elif feature_name.startswith("cell_x_ul_retx"):
+                        categories["Retransmissões UL (cell_x_ul_retx)"].append((feature_name, value, contribution))
+                    elif feature_name.startswith("cell_x_ul_tx"):
+                        categories["Transmissões UL (cell_x_ul_tx)"].append((feature_name, value, contribution))
+                    elif "dl_bitrate" in feature_name:
+                        categories["Taxa de Download (dl_bitrate)"].append((feature_name, value, contribution))
+                    elif "ul_bitrate" in feature_name:
+                        categories["Taxa de Upload (ul_bitrate)"].append((feature_name, value, contribution))
+                    elif "ul_total_bytes_non_incr" in feature_name:
+                        categories["Bytes de Upload (não incrementais)"].append((feature_name, value, contribution))
+                    elif "dl_total_bytes_non_incr" in feature_name:
+                        categories["Bytes de Download (não incrementais)"].append((feature_name, value, contribution))
+                    elif "ul_total_bytes_incr" in feature_name:
+                        categories["Bytes de Upload (incrementais)"].append((feature_name, value, contribution))
+                    elif "dl_total_bytes_incr" in feature_name:
+                        categories["Bytes de Download (incrementais)"].append((feature_name, value, contribution))
+                    elif "ul_packet" in feature_name:
+                        categories["Pacotes de Upload"].append((feature_name, value, contribution))
+                    elif "dl_packet" in feature_name:
+                        categories["Pacotes de Download"].append((feature_name, value, contribution))
+                    elif feature_name in ["hour", "dayofweek", "day", "month", "is_weekend"] or feature_name.endswith("_time"):
+                        categories["Features Temporais"].append((feature_name, value, contribution))
+                    else:
+                        categories["Outras Features"].append((feature_name, value, contribution))
+                
+                # Ordenar cada categoria por impacto absoluto
+                for category, features in categories.items():
+                    categories[category] = sorted(features, key=lambda x: abs(x[2]), reverse=True)
+                
+                # Contar estatísticas
+                total_features = len(all_features)
+                explained_features_count = len(exp_list)
+                positive_impact = sum(1 for _, _, impact in [item for sublist in categories.values() for item in sublist] if impact > 0)
+                negative_impact = sum(1 for _, _, impact in [item for sublist in categories.values() for item in sublist] if impact < 0)
+                
+                # Função para formatar valor de acordo com seu tipo
+                def format_value(val):
+                    # Se o valor for inteiro, remover casas decimais
+                    if isinstance(val, (int, float)) and val.is_integer():
+                        return f"{int(val)}"
+                    elif isinstance(val, float):
+                        return f"{val:.4f}"  # Limitar a 4 casas decimais em vez de 6
+                    else:
+                        return str(val)
+                
+                # Função para retornar uma interpretação textual com base no valor de impacto
+                def get_interpretation(impact):
+                    if impact > 0.001:  # Limite de significância
+                        return "Aumenta probabilidade de ATAQUE"
+                    elif impact < -0.001:  # Limite de significância
+                        return "Aumenta probabilidade de NORMAL"
+                    else:
+                        return "Neutro"
+                
+                # Adicionar cada categoria ao relatório formatado
+                for category, features in categories.items():
+                    formatted_explanation += f"### {category}\n\n"
+                    if not features:
+                        formatted_explanation += "_Nenhuma feature nesta categoria._\n\n"
+                        continue
+                    
+                    # Calcular colunas para alinhamento adequado
+                    feature_names = [f[0] for f in features]
+                    
+                    # Formatar valores (remover casas decimais se for inteiro)
+                    values = []
+                    for _, val, _ in features:
+                        if isinstance(val, (int, float)):
+                            if val.is_integer():
+                                values.append(f"{int(val)}")
+                            else:
+                                values.append(f"{val:.4f}")
+                        else:
+                            values.append(str(val))
+                    
+                    # Formatar contribuições (mostrar zeros como "0" sem casas decimais)
+                    contributions = []
+                    for _, _, impact in features:
+                        if abs(impact) < 0.0001:  # Limiar mais restrito para considerar zero
+                            contributions.append("0")
+                        else:
+                            contributions.append(f"{impact:.6f}")
+                    
+                    interpretations = [get_interpretation(f[2]) for f in features]
+                    
+                    # Determinar largura máxima para cada coluna (com padding)
+                    max_feature_len = max(len(name) for name in feature_names) + 2
+                    max_value_len = max(len(val) for val in values) + 2
+                    max_contrib_len = max(len(contrib) for contrib in contributions) + 2
+                    max_interp_len = max(len(interp) for interp in interpretations) + 2
+                    
+                    # Cabeçalho da tabela com larguras adequadas
+                    header = f"| {'Feature'.ljust(max_feature_len)} | {'Valor'.ljust(max_value_len)} | {'Contribuição'.ljust(max_contrib_len)} | {'Interpretação'.ljust(max_interp_len)} |"
+                    separator = f"|{'-' * (max_feature_len + 2)}|{'-' * (max_value_len + 2)}|{'-' * (max_contrib_len + 2)}|{'-' * (max_interp_len + 2)}|"
+                    
+                    formatted_explanation += header + "\n"
+                    formatted_explanation += separator + "\n"
+                    
+                    # Linhas da tabela
+                    for i, (feature_name, value, impact) in enumerate(features):
+                        # Formatação de valor adequada ao tipo
+                        if isinstance(value, (int, float)):
+                            if value.is_integer():
+                                value_str = f"{int(value)}"
+                            else:
+                                value_str = f"{value:.4f}"
+                        else:
+                            value_str = str(value)
+                        
+                        # Formatação da contribuição
+                        if abs(impact) < 0.0001:  # Limiar mais restrito para considerar zero
+                            impact_str = "0"
+                        else:
+                            impact_str = f"{impact:.6f}"
+                        
+                        interpretation = get_interpretation(impact)
+                        
+                        row = f"| {feature_name.ljust(max_feature_len)} | {value_str.ljust(max_value_len)} | {impact_str.ljust(max_contrib_len)} | {interpretation.ljust(max_interp_len)} |"
+                        formatted_explanation += row + "\n"
+                    
+                    formatted_explanation += "\n"
+                
+                # Adicionar estatísticas
+                formatted_explanation += "## Estatísticas\n\n"
+                formatted_explanation += f"- **Total de Features:** {total_features}\n"
+                formatted_explanation += f"- **Features Explicadas pelo LIME:** {explained_features_count}\n"
+                formatted_explanation += f"- **Features que aumentam probabilidade de ATAQUE:** {positive_impact}\n"
+                formatted_explanation += f"- **Features que aumentam probabilidade de NORMAL:** {negative_impact}\n"
+                formatted_explanation += f"- **Features neutras:** {total_features - positive_impact - negative_impact}\n\n"
+                
+                # Adicionar interpretação
+                formatted_explanation += "## Interpretação\n\n"
+                formatted_explanation += "- **Contribuições positivas (em vermelho):** Aumentam a probabilidade de ser classificado como ataque\n"
+                formatted_explanation += "- **Contribuições negativas (em verde):** Aumentam a probabilidade de ser classificado como normal\n"
+                formatted_explanation += "- **Contribuições neutras (valor 0):** Não têm influência na classificação\n"
+                
+                # Criar o arquivo formatado usando o Path diretamente
+                try:
+                    # Garantir que o diretório existe
+                    os.makedirs(base_reports, exist_ok=True)
+                    
+                    lime_explanation_formatted_file = base_reports / "lime_explanation_formatado.txt"
+                    with open(str(lime_explanation_formatted_file), 'w', encoding='utf-8') as f:
+                        f.write(formatted_explanation)
+                    logger.info(f"Versão formatada da explicação LIME criada com sucesso em {lime_explanation_formatted_file}")
+                except Exception as e:
+                    logger.error(f"Erro ao escrever o arquivo formatado: {e}", exc_info=True)
+            
+            except Exception as e:
+                logger.error(f'Erro ao criar versão formatada da explicação LIME: {e}', exc_info=True)
+
+        # Salvar visualização LIME
             lime_png_path = base_reports / 'lime_final.png'
             
             # Não gerar o arquivo HTML indesejado

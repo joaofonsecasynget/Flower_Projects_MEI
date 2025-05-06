@@ -370,12 +370,31 @@ class RLFEClient(fl.client.NumPyClient):
                 # Agora gerar explicabilidade
                 explainer = ModelExplainer(self.model, feature_names=list(X.columns), device=self.device)
                 lime_duration, shap_duration = generate_explainability(explainer, X_train_path, self.base_reports)
+                
+                # Gerar versão formatada do arquivo LIME para melhor leitura
+                try:
+                    import importlib.util
+                    # Verificar se o script generate_lime_formatado.py existe
+                    lime_formatado_path = Path(__file__).parent / "generate_lime_formatado.py"
+                    if lime_formatado_path.exists():
+                        # Importar e executar dinamicamente
+                        spec = importlib.util.spec_from_file_location("generate_lime_formatado", lime_formatado_path)
+                        lime_formatado_module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(lime_formatado_module)
+                        # Extrair client_id do diretório base_reports
+                        client_id = int(self.base_reports.stem.split('_')[-1])
+                        lime_formatado_module.generate_lime_formatado(client_id)
+                        logger.info(f"Arquivo lime_explanation_formatado.txt gerado com sucesso para cliente {client_id}")
+                    else:
+                        logger.warning(f"Script generate_lime_formatado.py não encontrado em {lime_formatado_path}")
+                except Exception as e:
+                    logger.error(f"Erro ao gerar arquivo formatado LIME: {e}", exc_info=True)
+                
+                # Adicionar durações à história
+                self.history["lime_duration_seconds"].append(lime_duration)
+                self.history["shap_duration_seconds"].append(shap_duration)
             except Exception as e:
                 logger.error(f"Error during explainability generation: {e}", exc_info=True)
-        
-        # Adicionar durações ao histórico
-        self.history["lime_duration_seconds"].append(lime_duration)
-        self.history["shap_duration_seconds"].append(shap_duration)
         
         # --- Geração de Gráficos e Relatório ---
         # Gerar apenas se já tivermos dados (pelo menos uma ronda completa)
@@ -391,16 +410,21 @@ class RLFEClient(fl.client.NumPyClient):
                 logger.info(f"Metrics history saved to {history_path}")
                 
                 # Gerar relatório HTML final
-                generate_html_report(
-                    self.history, 
-                    plot_files, 
-                    self.base_reports, 
-                    args.cid, 
-                    args.dataset_path, 
-                    args.seed, 
-                    args.epochs, 
-                    args.server_address
-                )
+                try:
+                    logger.info(f"Iniciando geração do relatório HTML para cliente {args.cid}")
+                    generate_html_report(
+                        self.history, 
+                        plot_files, 
+                        self.base_reports, 
+                        args.cid, 
+                        args.dataset_path, 
+                        args.seed, 
+                        args.epochs, 
+                        args.server_address
+                    )
+                    logger.info(f"Relatório HTML gerado com sucesso para cliente {args.cid}")
+                except Exception as e:
+                    logger.error(f"Erro específico ao gerar relatório HTML: {e}", exc_info=True)
                 
                 # Salvar artefatos (info.txt e modelo)
                 save_artifacts(

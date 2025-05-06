@@ -6,6 +6,8 @@ import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import time
+import logging
 
 class ModelExplainer:
     def __init__(self, model, feature_names, device="cpu"):
@@ -27,6 +29,8 @@ class ModelExplainer:
             'ul_total_bytes_non_incr',
             'dl_total_bytes_non_incr'
         ]
+        
+        self.logger = logging.getLogger(__name__)
 
     def predict_fn(self, x):
         self.model.eval()
@@ -53,23 +57,47 @@ class ModelExplainer:
                 return preds
 
     def explain_lime(self, X_train, instance):
-        if self.lime_explainer is None:
-            self.lime_explainer = lime.lime_tabular.LimeTabularExplainer(
+        """
+        Gera explicação LIME para uma instância.
+        
+        Args:
+            X_train: Dados de treinamento
+            instance: Instância a ser explicada
+            
+        Returns:
+            Explicação LIME
+        """
+        try:
+            # Usar mais samples e maior complexidade para capturar relações mais sutis
+            start_time = time.time()
+            
+            # Configurações mais robustas para LIME
+            explainer = lime.lime_tabular.LimeTabularExplainer(
                 X_train,
                 feature_names=self.feature_names,
-                mode="classification"  # Mudando para 'classification' em vez de 'regression'
+                class_names=['Normal', 'Ataque'],
+                mode='regression',
+                random_state=42
             )
-        # Gerar explicação LIME para a instância
-        exp = self.lime_explainer.explain_instance(
-            instance, 
-            self.predict_fn, 
-            num_features=20,  # Aumentado de 10 para 20 para mostrar mais features
-            num_samples=5000  # Aumentando o número de amostras para melhorar a precisão
-        )
-        
-        # Personalizar a forma como o gráfico é gerado para evitar truncamento
-        # e aplicar o esquema de cores correto (verde para normal, vermelho para ataque)
-        return exp
+            
+            # Configurar para mostrar mais features na explicação (aumentar de 10 para 30)
+            if isinstance(instance, np.ndarray) and instance.ndim > 1:
+                # Se for uma matriz 2D, extrair a primeira linha
+                instance = instance[0]
+                
+            # Explicar a instância com parâmetros melhorados para capturar mais relações
+            exp = explainer.explain_instance(
+                instance,
+                self.predict_fn,
+                num_features=30,  # Aumentar o número de features mostradas
+                num_samples=5000  # Aumentar o número de amostras para explicação mais precisa
+            )
+            
+            self.logger.info(f"LIME explanation generated in {time.time() - start_time:.2f} seconds")
+            return exp
+        except Exception as e:
+            self.logger.error(f"Error in LIME explanation: {e}", exc_info=True)
+            raise e
     
     def create_custom_lime_visualization(self, exp, output_path):
         """
@@ -540,7 +568,7 @@ class ModelExplainer:
         }
         
         if not aggregated_importance:
-            logger.warning("No temporal indices found in features")
+            self.logger.warning("No temporal indices found in features")
             # Criar um arquivo de placeholder
             plt.figure(figsize=(10, 6))
             plt.text(0.5, 0.5, "Nenhum índice temporal encontrado nas features", 
@@ -613,7 +641,7 @@ class ModelExplainer:
                     has_timestamp_features = True
         
         if not has_timestamp_features:
-            logger.warning("No timestamp features found")
+            self.logger.warning("No timestamp features found")
             # Criar um arquivo de placeholder
             plt.figure(figsize=(10, 6))
             plt.text(0.5, 0.5, "Nenhuma feature de timestamp encontrada", 

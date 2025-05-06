@@ -9,6 +9,7 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 - **CLFE/**: Nova implementação principal, totalmente containerizada com Docker e Docker Compose.
 - **DatasetIOT/**: Contém o dataset IoT real utilizado (`transformed_dataset_imeisv_8642840401612300.csv`).
 - **reports/** e **results/**: Volumes persistentes para outputs e artefactos de cada cliente.
+- **export_utils.py**: Módulo central para salvar artefatos (JSON, NPY, LIME/SHAP, árvores) de forma consistente.
 
 ## Abordagens
 - **ADF**: Árvore de Decisão Federada (DecisionTreeRegressor, scikit-learn)
@@ -21,6 +22,7 @@ Este projeto implementa estratégias avançadas de aprendizagem federada (Federa
 - Particionamento estratificado dos dados preservando a distribuição do target em cada cliente
 - Código modular e organizado com funções auxiliares para explicabilidade e geração de relatórios
 - Relatórios de explicabilidade interativos com formatação inteligente e acesso a todos os valores da instância explicada
+- Módulo **export_utils.py** garante formatação consistente de artefatos em CLFE e ADF
 
 ## Instruções de Execução
 
@@ -37,13 +39,13 @@ Esta abordagem utiliza Docker e Docker Compose para orquestrar um servidor Flowe
     ```
 
 2.  **Gerar o Ficheiro Docker Compose:**
-    Execute o script Python para gerar o ficheiro `docker-compose.generated.yml`. Este script configura os serviços do servidor e o número desejado de clientes e rondas.
+    Execute o script Python para gerar o ficheiro `docker-compose.generated.yml`. Este script configura os serviços do servidor, o número de clientes *a executar* e o número **total** de clientes considerados no particionamento do dataset.
     ```sh
-    python generate_compose.py <NUM_CLIENTES> <NUM_ROUNDS>
+    python generate_compose.py <NUM_CLIENTES> <NUM_TOTAL_CLIENTES>
     ```
     *   `<NUM_CLIENTES>`: Substitua pelo número de clientes que deseja simular (e.g., `2`).
-    *   `<NUM_ROUNDS>`: Substitua pelo número de rondas de treino federado (e.g., `5`).
-    *   **Exemplo:** `python generate_compose.py 2 5` irá configurar 1 servidor e 2 clientes para 5 rondas.
+    *   `<NUM_TOTAL_CLIENTES>`: Substitua pelo número total de partições desejadas no dataset (e.g., `10`).
+    *   **Exemplo:** `python generate_compose.py 2 10` irá configurar 1 servidor e 2 clientes, onde o dataset foi previamente dividido em 10 partes estratificadas.
 
 3.  **Iniciar os Serviços Federados:**
     Utilize o Docker Compose para construir as imagens (se necessário) e iniciar os contentores do servidor e dos clientes em modo 'detached' (background).
@@ -130,6 +132,7 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - **NOVO:** Correção de gráficos para mostrar o número correto de rondas (5 em vez de 10)
 - **NOVO:** Interface de relatório melhorada com apresentação lado a lado de LIME/SHAP
 - **NOVO:** Reorganização lógica dos gráficos de explicabilidade e evolução de métricas
+- **NOVO:** Integração do `export_utils.py` em scripts de cliente para exportar `meta.json`, modelos, explicações
 
 ## Próximos Passos
 - Executar simulações com diferentes números de clientes/rondas para popular a `COMPARACAO_FORMAL.md`
