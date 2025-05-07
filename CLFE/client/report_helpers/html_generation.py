@@ -92,7 +92,7 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             {original_target_html}
             <p><strong>Total de Features:</strong> {instance_info['feature_count']}</p>
             <details>
-                <summary>Ver valores das features principais</summary>
+                <summary>Ver valores das features iniciais</summary>
                 <div style="max-height: 200px; overflow-y: auto; font-size: 0.85em;">
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
@@ -102,7 +102,7 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
                         </tr>
                         {features_rows}
                     </table>
-                    <p><em>Mostrando até 20 features não-zero com valores originais (não normalizados)</em></p>
+                    <p><em>Amostra com as 20 features iniciais com valores originais e normalizados</em></p>
                 </div>
             </details>
             """
