@@ -134,130 +134,206 @@ def generate_evolution_plots(history: Dict[str, List[Any]], base_reports: Path) 
             logger.info(f"Generated plot: {plot_path}")
         
         # 3. GRÁFICO DE MÉTRICAS DE CLASSIFICAÇÃO (ACC, PREC, REC, F1) - Validação
-        val_metrics_keys = ['val_accuracy', 'val_precision', 'val_recall', 'val_f1']
-        if any(key in history and history[key] for key in val_metrics_keys):
-            plt.figure(figsize=(12, 7))
-            rounds = list(range(1, len(history.get(val_metrics_keys[0], [])) + 1))
-            if not rounds: # safety check if the primary key for rounds is empty
-                for key in val_metrics_keys:
-                    if key in history and history[key]:
-                        rounds = list(range(1, len(history[key]) + 1))
-                        break
+        val_metric_keys = ['val_accuracy', 'val_precision', 'val_recall', 'val_f1']
+        if any(key in history and history[key] for key in val_metric_keys):
+            plt.figure(figsize=(10, 6))  # Tamanho similar ao original
             
-            if rounds: # Proceed only if rounds could be determined
-                if 'val_accuracy' in history and history['val_accuracy']:
-                    plt.plot(rounds, history['val_accuracy'], marker='o', color=colors['accuracy'], 
-                            linestyle='-', linewidth=2, label='Acurácia (Val)')
-                if 'val_precision' in history and history['val_precision']:
-                    plt.plot(rounds, history['val_precision'], marker='s', color=colors['precision'], 
-                            linestyle='-', linewidth=2, label='Precisão (Val)')
-                if 'val_recall' in history and history['val_recall']:
-                    plt.plot(rounds, history['val_recall'], marker='^', color=colors['recall'], 
-                            linestyle='-', linewidth=2, label='Recall (Val)')
-                if 'val_f1' in history and history['val_f1']:
-                    plt.plot(rounds, history['val_f1'], marker='d', color=colors['f1'], 
-                            linestyle='-', linewidth=2, label='F1-Score (Val)')
-                
-                plt.xlabel("Ronda", fontsize=12, fontweight='bold')
-                plt.ylabel("Métrica", fontsize=12, fontweight='bold')
-                plt.title("Evolução das Métricas de Classificação (Validação)", fontsize=14, fontweight='bold')
-                plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5), framealpha=0.9)
-                plt.xticks(rounds, fontsize=10)
-                plt.yticks(fontsize=10)
-                plt.ylim(0, 1.05) # Métricas de classificação geralmente entre 0 e 1
-                plt.grid(True, linestyle='--', alpha=0.7)
-                
-                plt.tight_layout(rect=[0, 0, 0.85, 1]) # Ajustar layout para legenda externa
-                plot_filename = "val_classification_metrics_evolution.png"
-                plot_path = base_reports / plot_filename
-                plt.savefig(plot_path, dpi=120)
-                plt.close()
-                plot_files.append(plot_filename)
-                logger.info(f"Generated plot: {plot_path}")
-
-        # 4. GRÁFICO DE MÉTRICAS DE CLASSIFICAÇÃO (ACC, PREC, REC, F1) - Teste
-        test_metrics_keys = ['test_accuracy', 'test_precision', 'test_recall', 'test_f1']
-        if any(key in history and history[key] for key in test_metrics_keys):
-            plt.figure(figsize=(12, 7))
-            rounds = list(range(1, len(history.get(test_metrics_keys[0], [])) + 1))
-            if not rounds:
-                for key in test_metrics_keys:
-                    if key in history and history[key]:
-                        rounds = list(range(1, len(history[key]) + 1))
-                        break
-
-            if rounds: # Proceed only if rounds could be determined
-                if 'test_accuracy' in history and history['test_accuracy']:
-                    plt.plot(rounds, history['test_accuracy'], marker='o', color=colors['accuracy'], 
-                            linestyle='--', linewidth=2, label='Acurácia (Teste)')
-                if 'test_precision' in history and history['test_precision']:
-                    plt.plot(rounds, history['test_precision'], marker='s', color=colors['precision'], 
-                            linestyle='--', linewidth=2, label='Precisão (Teste)')
-                if 'test_recall' in history and history['test_recall']:
-                    plt.plot(rounds, history['test_recall'], marker='^', color=colors['recall'], 
-                            linestyle='--', linewidth=2, label='Recall (Teste)')
-                if 'test_f1' in history and history['test_f1']:
-                    plt.plot(rounds, history['test_f1'], marker='d', color=colors['f1'], 
-                            linestyle='--', linewidth=2, label='F1-Score (Teste)')
-                
-                plt.xlabel("Ronda", fontsize=12, fontweight='bold')
-                plt.ylabel("Métrica", fontsize=12, fontweight='bold')
-                plt.title("Evolução das Métricas de Classificação (Teste)", fontsize=14, fontweight='bold')
-                plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5), framealpha=0.9)
-                plt.xticks(rounds, fontsize=10)
-                plt.yticks(fontsize=10)
-                plt.ylim(0, 1.05)
-                plt.grid(True, linestyle='--', alpha=0.7)
-                
-                plt.tight_layout(rect=[0, 0, 0.85, 1])
-                plot_filename = "test_classification_metrics_evolution.png"
-                plot_path = base_reports / plot_filename
-                plt.savefig(plot_path, dpi=120)
-                plt.close()
-                plot_files.append(plot_filename)
-                logger.info(f"Generated plot: {plot_path}")
-
-        # 5. GRÁFICO DE TEMPO POR RONDA - Comparativo fit, evaluate, LIME, SHAP
-        time_keys = ['fit_time', 'evaluate_time', 'lime_time', 'shap_time']
-        if any(key in history and history[key] for key in time_keys):
-            plt.figure(figsize=(12, 7))
-            rounds = list(range(1, len(history.get(time_keys[0], [])) + 1))
-            if not rounds:
-                 for key in time_keys:
-                    if key in history and history[key]:
-                        rounds = list(range(1, len(history[key]) + 1))
-                        break           
+            # Identificar métricas disponíveis
+            available_metrics = [m for m in val_metric_keys if m in history and len(history[m]) > 0]
             
-            if rounds: # Proceed only if rounds could be determined
-                if 'fit_time' in history and history['fit_time']:
-                    plt.plot(rounds, history['fit_time'], marker='o', color=colors['fit'], 
-                            linestyle='-', linewidth=2, label='Tempo de Fit')
-                if 'evaluate_time' in history and history['evaluate_time']:
-                    plt.plot(rounds, history['evaluate_time'], marker='s', color=colors['evaluate'], 
-                            linestyle='-', linewidth=2, label='Tempo de Evaluate')
-                if 'lime_time' in history and history['lime_time']:
-                    plt.plot(rounds, history['lime_time'], marker='^', color=colors['lime'], 
-                            linestyle='-', linewidth=2, label='Tempo de LIME')
-                if 'shap_time' in history and history['shap_time']:
-                    plt.plot(rounds, history['shap_time'], marker='d', color=colors['shap'], 
-                            linestyle='-', linewidth=2, label='Tempo de SHAP')
+            # Encontrar o máximo de rondas
+            max_len = max([len(history[m]) for m in available_metrics]) if available_metrics else 0
+            rounds = list(range(1, max_len + 1))
+            
+            for metric in available_metrics:
+                # Extrair a parte principal do nome da métrica (sem 'val_')
+                metric_name = metric.replace('val_', '')
+                metric_color = colors.get(metric_name, '#333333')
                 
-                plt.xlabel("Ronda", fontsize=12, fontweight='bold')
-                plt.ylabel("Tempo (segundos)", fontsize=12, fontweight='bold')
-                plt.title("Evolução do Tempo de Execução por Ronda", fontsize=14, fontweight='bold')
-                plt.legend(fontsize=12, loc='center left', bbox_to_anchor=(1, 0.5), framealpha=0.9)
-                plt.xticks(rounds, fontsize=10)
-                plt.yticks(fontsize=10)
-                plt.grid(True, linestyle='--', alpha=0.7)
-                plt.yscale('log') # Usar escala logarítmica se os tempos variarem muito
+                # Obter valores e lidar com comprimentos diferentes
+                values = history[metric]
+                if len(values) < max_len:
+                    values = values + [None] * (max_len - len(values))
                 
-                plt.tight_layout(rect=[0, 0, 0.85, 1])
-                plot_filename = "time_evolution.png"
-                plot_path = base_reports / plot_filename
-                plt.savefig(plot_path, dpi=120)
-                plt.close()
-                plot_files.append(plot_filename)
-                logger.info(f"Generated plot: {plot_path}")
+                # Filtrar pontos válidos (não-None)
+                valid_points = [(r, v) for r, v in zip(rounds, values) if v is not None]
+                if valid_points:
+                    valid_rounds, valid_values = zip(*valid_points)
+                    plt.plot(valid_rounds, valid_values, marker='o', color=metric_color, 
+                           linestyle='-', linewidth=2, label=f"{metric_name.title()} (Validação)")
+            
+            plt.xlabel("Ronda", fontsize=12, fontweight='bold')
+            plt.ylabel("Valor", fontsize=12, fontweight='bold')
+            plt.title("Evolução das Métricas de Classificação (Validação)", fontsize=14, fontweight='bold')
+            
+            # Ajustar limites de Y como no original
+            min_val = min([min(history[m]) for m in available_metrics if m in history and len(history[m]) > 0])
+            min_y = min(0.5, min_val * 0.95) if min_val < 0.9 else 0.9
+            plt.ylim(min_y, 1.01)  # Ligeiramente acima de 1 para mostrar pontos no valor 1
+            
+            plt.legend(fontsize=12, framealpha=0.9)  # Simples, sem bbox_to_anchor
+            plt.xticks(rounds, fontsize=10)
+            plt.yticks(fontsize=10)
+            plt.grid(True, linestyle='--', alpha=0.7)
+            
+            plt.tight_layout()  # Sem ajuste rect
+            plot_filename = "validation_metrics_evolution.png"
+            plot_path = base_reports / plot_filename
+            plt.savefig(plot_path, dpi=120)
+            plt.close()
+            plot_files.append(plot_filename)
+            logger.info(f"Generated plot: {plot_path}")
+
+        # 4. GRÁFICO DE MÉTRICAS DE TESTE - accuracy, precision, recall, f1
+        test_metric_keys = ['test_accuracy', 'test_precision', 'test_recall', 'test_f1']
+        if any(key in history and history[key] for key in test_metric_keys):
+            plt.figure(figsize=(10, 6))  # Tamanho similar ao original
+            
+            # Identificar métricas disponíveis
+            available_metrics = [m for m in test_metric_keys if m in history and len(history[m]) > 0]
+            
+            # Encontrar o máximo de rondas
+            max_len = max([len(history[m]) for m in available_metrics]) if available_metrics else 0
+            rounds = list(range(1, max_len + 1))
+            
+            for metric in available_metrics:
+                # Extrair a parte principal do nome da métrica (sem 'test_')
+                metric_name = metric.replace('test_', '')
+                metric_color = colors.get(metric_name, '#333333')
+                
+                # Obter valores e lidar com comprimentos diferentes
+                values = history[metric]
+                if len(values) < max_len:
+                    values = values + [None] * (max_len - len(values))
+                
+                # Filtrar pontos válidos (não-None)
+                valid_points = [(r, v) for r, v in zip(rounds, values) if v is not None]
+                if valid_points:
+                    valid_rounds, valid_values = zip(*valid_points)
+                    plt.plot(valid_rounds, valid_values, marker='o', color=metric_color, 
+                           linestyle='-', linewidth=2, label=f"{metric_name.title()} (Teste)")
+            
+            plt.xlabel("Ronda", fontsize=12, fontweight='bold')
+            plt.ylabel("Valor", fontsize=12, fontweight='bold')
+            plt.title("Evolução das Métricas de Classificação (Teste)", fontsize=14, fontweight='bold')
+            
+            # Ajustar limites de Y como no original
+            min_val = min([min(history[m]) for m in available_metrics if m in history and len(history[m]) > 0])
+            min_y = min(0.5, min_val * 0.95) if min_val < 0.9 else 0.9
+            plt.ylim(min_y, 1.01)  # Ligeiramente acima de 1 para mostrar pontos no valor 1
+            
+            plt.legend(fontsize=12, framealpha=0.9)  # Simples, sem bbox_to_anchor
+            plt.xticks(rounds, fontsize=10)
+            plt.yticks(fontsize=10)
+            plt.grid(True, linestyle='--', alpha=0.7)
+            
+            plt.tight_layout()  # Sem ajuste rect
+            plot_filename = "test_metrics_evolution.png"
+            plot_path = base_reports / plot_filename
+            plt.savefig(plot_path, dpi=120)
+            plt.close()
+            plot_files.append(plot_filename)
+            logger.info(f"Generated plot: {plot_path}")
+
+        # 5. GRÁFICO DE TEMPO POR RONDA - Apenas Fit e Evaluate (sem LIME e SHAP)
+        # Mapeamento de nomes de chaves para compatibilidade com versões antigas
+        time_key_mapping = {
+            'fit_duration_seconds': 'fit_time',
+            'evaluate_duration_seconds': 'evaluate_time' 
+            # Removidos lime_duration_seconds e shap_duration_seconds pois não queremos no gráfico
+        }
+        
+        # Cria dicionário temporário com as duas versões das chaves
+        combined_history = history.copy()
+        for old_key, new_key in time_key_mapping.items():
+            if old_key in history:
+                combined_history[new_key] = history[old_key]
+        
+        # Usar nova lista de chaves apenas com fit e evaluate
+        time_keys = ['fit_time', 'evaluate_time', 'fit_duration_seconds', 'evaluate_duration_seconds']
+        
+        if any(key in combined_history and combined_history[key] for key in time_keys):
+            plt.figure(figsize=(10, 6))  # Mesmo tamanho dos gráficos originais
+            
+            # Encontrar rounds com base nas chaves disponíveis
+            available_keys = [k for k in time_keys if k in combined_history and combined_history[k]]
+            if not available_keys:
+                logger.warning("Não foram encontradas chaves de tempo para gerar o gráfico de tempos")
+                return plot_files
+                
+            max_len = max([len(combined_history[k]) for k in available_keys])
+            rounds = list(range(1, max_len + 1))
+            
+            # Plotar apenas fit_time e evaluate_time
+            for metric, label in [('fit_time', 'Tempo de Fit'), ('evaluate_time', 'Tempo de Evaluate')]:
+                
+                # Obter valores da métrica (seja com nome novo ou antigo)
+                values = None
+                if metric in combined_history and combined_history[metric]:
+                    values = combined_history[metric]
+                    
+                if values:
+                    # Garantir que o comprimento é compatível
+                    if len(values) < max_len:
+                        values = values + [None] * (max_len - len(values))
+                    
+                        # Filtrar pontos válidos
+                    valid_points = [(r, v) for r, v in zip(rounds, values) if v is not None]
+                    if valid_points:
+                        valid_rounds, valid_values = zip(*valid_points)
+                        metric_name = metric.split('_')[0]  # 'fit', 'evaluate', etc.
+                        plt.plot(valid_rounds, valid_values, marker='o', color=colors[metric_name],
+                                linestyle='-', linewidth=2, label=label)
+            
+            # Configurar o gráfico (fora do loop de métricas)
+            plt.xlabel("Ronda", fontsize=12, fontweight='bold')
+            plt.ylabel("Tempo (segundos)", fontsize=12, fontweight='bold')
+            plt.title("Evolução do Tempo de Treino e Avaliação", fontsize=14, fontweight='bold')
+            plt.legend(fontsize=12, framealpha=0.9)  # Legenda interna como no original
+            plt.xticks(rounds, fontsize=10)
+            plt.yticks(fontsize=10)
+            plt.grid(True, linestyle='--', alpha=0.7)
+            
+            plt.tight_layout()
+            plot_filename = "processing_times_evolution.png"
+            plot_path = base_reports / plot_filename
+            plt.savefig(plot_path, dpi=120)
+            plt.close()
+            plot_files.append(plot_filename)
+            logger.info(f"Generated plot: {plot_path}")
+
+        # 6. GRÁFICO DE COMPARAÇÃO DE ACURÁCIA - Treino, Validação e Teste
+        if all(key in history for key in ['val_accuracy', 'test_accuracy']):
+            plt.figure(figsize=(10, 6))
+            
+            # Eixo X compartilhado para todas as séries
+            rounds = list(range(1, len(history['val_accuracy']) + 1))
+            
+            # Plotar cada série
+            plt.plot(rounds, history['val_accuracy'], marker='s', color=colors['val'], 
+                    linestyle='-', linewidth=2, label='Validação')
+            
+            if 'test_accuracy' in history and history['test_accuracy']:
+                plt.plot(rounds, history['test_accuracy'], marker='^', color=colors['test'], 
+                        linestyle='-', linewidth=2, label='Teste')
+            
+            # Configurar gráfico
+            plt.xlabel("Ronda", fontsize=12, fontweight='bold')
+            plt.ylabel("Acurácia", fontsize=12, fontweight='bold')
+            plt.title("Comparação de Acurácia por Ronda", fontsize=14, fontweight='bold')
+            plt.legend(fontsize=12, framealpha=0.9)
+            plt.xticks(rounds, fontsize=10)
+            plt.yticks(fontsize=10)
+            plt.grid(True, linestyle='--', alpha=0.7)
+            plt.ylim(0.5, 1.05)  # Acurácia geralmente entre 0.5 e 1
+            
+            plt.tight_layout()
+            plot_filename = "accuracy_comparison.png"
+            plot_path = base_reports / plot_filename
+            plt.savefig(plot_path, dpi=120)
+            plt.close()
+            plot_files.append(plot_filename)
+            logger.info(f"Generated plot: {plot_path}")
 
     except Exception as e:
         logger.error(f"Erro ao gerar gráficos de evolução: {e}", exc_info=True)

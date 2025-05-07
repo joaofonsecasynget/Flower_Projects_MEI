@@ -51,17 +51,40 @@
         <div class="section">
             <h2>Evolução Detalhada das Métricas e Tempos por Ronda</h2>
             <h3>Tabela 1: Métricas de Treino e Validação</h3>
-            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Train Loss</th><th>Val Loss</th><th>Val Rmse</th><th>Val Accuracy</th><th>Val Precision</th><th>Val Recall</th><th>Val F1</th></tr></thead><tbody><tr><td>1</td><td>0.2557</td><td>0.6285</td><td>0.0941</td><td>0.9943</td><td>0.8889</td><td>1</td><td>0.9412</td></tr><tr><td>2</td><td>0.2008</td><td>0.5865</td><td>0.0763</td><td>0.9943</td><td>0.8889</td><td>1</td><td>0.9412</td></tr><tr><td>3</td><td>0.1934</td><td>0.5806</td><td>0.0756</td><td>0.9943</td><td>0.8889</td><td>1</td><td>0.9412</td></tr><tr><td>4</td><td>0.1908</td><td>0.5791</td><td>0.0755</td><td>0.9943</td><td>0.8889</td><td>1</td><td>0.9412</td></tr><tr><td>5</td><td>0.1902</td><td>0.5784</td><td>0.0755</td><td>0.9943</td><td>0.8889</td><td>1</td><td>0.9412</td></tr></tbody></table></div>
+            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Train Loss</th><th>Val Loss</th><th>Val Rmse</th><th>Val Accuracy</th><th>Val Precision</th><th>Val Recall</th><th>Val F1</th></tr></thead><tbody><tr><td>1</td><td>0.2713</td><td>0.1694</td><td>0.058977413922548294</td><td>0.9957</td><td>0.9492</td><td>1</td><td>0.9739</td></tr><tr><td>2</td><td>0.1713</td><td>0.1568</td><td>0.05350692197680473</td><td>0.9972</td><td>0.9655</td><td>1</td><td>0.9825</td></tr><tr><td>3</td><td>0.1292</td><td>0.1578</td><td>0.05341508239507675</td><td>0.9972</td><td>0.9655</td><td>1</td><td>0.9825</td></tr><tr><td>4</td><td>0.1280</td><td>0.1550</td><td>0.05334523320198059</td><td>0.9972</td><td>0.9655</td><td>1</td><td>0.9825</td></tr><tr><td>5</td><td>0.1274</td><td>0.1532</td><td>0.05332903191447258</td><td>0.9972</td><td>0.9655</td><td>1</td><td>0.9825</td></tr></tbody></table></div>
             <h3>Tabela 2: Métricas de Teste</h3>
-            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Test Loss</th><th>Test Rmse</th><th>Test Accuracy</th><th>Test Precision</th><th>Test Recall</th><th>Test F1</th></tr></thead><tbody><tr><td>1</td><td>0.8995</td><td>0.1067</td><td>0.9915</td><td>0.9318</td><td>1</td><td>0.9647</td></tr><tr><td>2</td><td>0.8606</td><td>0.0929</td><td>0.9915</td><td>0.9318</td><td>1</td><td>0.9647</td></tr><tr><td>3</td><td>0.8552</td><td>0.0924</td><td>0.9915</td><td>0.9318</td><td>1</td><td>0.9647</td></tr><tr><td>4</td><td>0.8538</td><td>0.0923</td><td>0.9915</td><td>0.9318</td><td>1</td><td>0.9647</td></tr><tr><td>5</td><td>0.8532</td><td>0.0923</td><td>0.9915</td><td>0.9318</td><td>1</td><td>0.9647</td></tr></tbody></table></div>
+            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Test Loss</th><th>Test Rmse</th><th>Test Accuracy</th><th>Test Precision</th><th>Test Recall</th><th>Test F1</th></tr></thead><tbody><tr><td>1</td><td>0.3171</td><td>0.0786</td><td>0.9929</td><td>0.9184</td><td>0.9783</td><td>0.9474</td></tr><tr><td>2</td><td>0.1690</td><td>0.0649</td><td>0.9957</td><td>0.9388</td><td>1</td><td>0.9684</td></tr><tr><td>3</td><td>0.1490</td><td>0.0559</td><td>0.9957</td><td>0.9388</td><td>1</td><td>0.9684</td></tr><tr><td>4</td><td>0.1453</td><td>0.0476</td><td>0.9972</td><td>0.9583</td><td>1</td><td>0.9787</td></tr><tr><td>5</td><td>0.1437</td><td>0.0415</td><td>0.9986</td><td>0.9787</td><td>1</td><td>0.9892</td></tr></tbody></table></div>
             <h3>Tabela 3: Tempos de Processamento (segundos)</h3>
-            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr></thead><tbody><tr><td>1</td><td>0.4200</td><td>0.0013</td><td>-</td><td>-</td></tr><tr><td>2</td><td>0.0507</td><td>0.0013</td><td>-</td><td>-</td></tr><tr><td>3</td><td>0.0557</td><td>0.0013</td><td>-</td><td>-</td></tr><tr><td>4</td><td>0.0518</td><td>0.0013</td><td>-</td><td>-</td></tr><tr><td>5</td><td>0.0483</td><td>0.0012</td><td>0.6460</td><td>11.2096</td></tr></tbody></table></div>
+            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr></thead><tbody><tr><td>1</td><td>0.5112</td><td>0.0022</td><td>-</td><td>-</td></tr><tr><td>2</td><td>0.1013</td><td>0.0023</td><td>-</td><td>-</td></tr><tr><td>3</td><td>0.1057</td><td>0.0023</td><td>-</td><td>-</td></tr><tr><td>4</td><td>0.1065</td><td>0.0034</td><td>-</td><td>-</td></tr><tr><td>5</td><td>0.1028</td><td>0.0023</td><td>0.8926</td><td>12.7947</td></tr></tbody></table></div>
         </div>
 
         <div class="section plot-container">
-            <h2>Plots de Evolução das Métricas</h2>
+            <h2 style="text-align: left;">Plots de Evolução das Métricas</h2>
             <div class="evolution-plots">
-                <div class="plot-item"><h3>Losses Evolution</h3><img src="losses_evolution.png" alt="losses_evolution.png" /></div><div class="plot-item"><h3>Rmse Evolution</h3><img src="rmse_evolution.png" alt="rmse_evolution.png" /></div><div class="plot-item"><h3>Val Classification Metrics Evolution</h3><img src="val_classification_metrics_evolution.png" alt="val_classification_metrics_evolution.png" /></div><div class="plot-item"><h3>Test Classification Metrics Evolution</h3><img src="test_classification_metrics_evolution.png" alt="test_classification_metrics_evolution.png" /></div>
+                <div class="plot-item">
+                    <h3>Loss Evolution</h3>
+                    <img src="losses_evolution.png" alt="Loss Evolution" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>RMSE Evolution</h3>
+                    <img src="rmse_evolution.png" alt="RMSE Evolution" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Validation Metrics</h3>
+                    <img src="validation_metrics_evolution.png" alt="Validation Metrics" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Test Metrics</h3>
+                    <img src="test_metrics_evolution.png" alt="Test Metrics" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Processing Times</h3>
+                    <img src="processing_times_evolution.png" alt="Processing Times" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Accuracy Comparison</h3>
+                    <img src="accuracy_comparison.png" alt="Accuracy Comparison" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
             </div>
         </div>
         
@@ -106,7 +129,7 @@
         </div>
         
         <div class="footer">
-            <p><em>Relatório gerado automaticamente em 2025-05-06 14:12:19</em></p>
+            <p><em>Relatório gerado automaticamente em 2025-05-07 08:15:51</em></p>
         </div>
     </body>
     </html>

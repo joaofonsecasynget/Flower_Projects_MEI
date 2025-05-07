@@ -253,9 +253,32 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
         </div>
 
         <div class="section plot-container">
-            <h2>Plots de Evolução das Métricas</h2>
+            <h2 style="text-align: left;">Plots de Evolução das Métricas</h2>
             <div class="evolution-plots">
-                {''.join([f'<div class="plot-item"><h3>{pf.replace("_"," ").replace(".png","").title()}</h3><img src="{pf}" alt="{pf}" /></div>' for pf in plot_files if pf.lower().endswith('.png') and 'explainability' not in pf.lower()])}
+                <div class="plot-item">
+                    <h3>Loss Evolution</h3>
+                    <img src="losses_evolution.png" alt="Loss Evolution" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>RMSE Evolution</h3>
+                    <img src="rmse_evolution.png" alt="RMSE Evolution" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Validation Metrics</h3>
+                    <img src="validation_metrics_evolution.png" alt="Validation Metrics" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Test Metrics</h3>
+                    <img src="test_metrics_evolution.png" alt="Test Metrics" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Processing Times</h3>
+                    <img src="processing_times_evolution.png" alt="Processing Times" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
+                <div class="plot-item">
+                    <h3>Accuracy Comparison</h3>
+                    <img src="accuracy_comparison.png" alt="Accuracy Comparison" style="width:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Gráfico não disponível</em></p>';">
+                </div>
             </div>
         </div>
         
@@ -313,13 +336,15 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
 
     try:
         # Encontrar padrões específicos de RMSE e formatá-los
-        pattern = r'<td>(0\.\d{5,})</td>'
+        # Padrão mais específico para valores de RMSE na tabela
+        pattern = r'<td>(Val RMSE|Test RMSE)</td>\s*<td>(0\.\d+)</td>'
         
         # Função para formatar o valor
         def format_rmse(match):
             try:
-                val = float(match.group(1))
-                return f'<td>{val:.4f}</td>'
+                metric_name = match.group(1)
+                val = float(match.group(2))
+                return f'<td>{metric_name}</td><td>{val:.4f}</td>'
             except:
                 # Se a conversão falhar, manter o original
                 return match.group(0)
