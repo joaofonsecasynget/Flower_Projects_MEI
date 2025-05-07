@@ -29,10 +29,10 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
     
     # Preparar conteúdo das informações da instância LIME
     lime_instance_html = "<p><em>Informações da instância não disponíveis</em></p>"
-    if 'lime_instance_info.json' in os.listdir(base_reports):
+    if 'explained_instance_info.json' in os.listdir(base_reports):
         try:
             # Carregar informações da instância
-            with open(base_reports/'lime_instance_info.json', 'r') as f:
+            with open(base_reports/'explained_instance_info.json', 'r') as f:
                 instance_info = json.load(f)
             
             # Criar HTML com as informações da instância
@@ -284,14 +284,18 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
         
         <div class="section">
             <h2>Explicabilidade (Resultados Finais da Última Ronda)</h2>
+            
+            <h3>Instância Analisada</h3>
+            <div style="background-color:#f8f9fa; padding:15px; border-left:3px solid #1abc9c; margin-bottom:20px;">
+                {lime_instance_html}
+            </div>
+            
             <h3>Tempos de Explicabilidade</h3>
             <img src="explainability_times.png" alt="Tempos de Explicabilidade" style="max-width: 600px;" onerror="this.style.display='none';"/>
+            
             <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 20px;">
                 <div style="flex:1; min-width:300px;">
                     <h3>LIME</h3>
-                    <div style="background-color:#f8f9fa; padding:10px; border-left:3px solid #1abc9c; margin-bottom:15px;">
-                        {lime_instance_html}
-                    </div>
                     <img src="lime_final.png" alt="LIME final" style="width:100%; max-width:600px;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Visualização LIME não disponível.</em></p>';"><p><a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p><p><a href="lime_explanation_formatado.txt" target="_blank">Ver LIME (formatado)</a></p>
                 </div>
                 <div style="flex:1; min-width:300px;">

@@ -106,6 +106,7 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - **Plots de Evolução:** `reports/client_X/<metrica>_evolution.png` (treino/validação/teste) e **gráficos de tempos**:
     - `reports/client_X/processing_times_evolution.png` (tempo de treino/avaliação por ronda)
     - `reports/client_X/explainability_times.png` (tempo LIME/SHAP – apenas última ronda)
+    - `reports/client_X/explained_instance_info.json` (informações detalhadas da instância analisada)
 - **Explicabilidade LIME:**
     - `reports/client_X/lime_final.png` (Top 10 Features)
     - `reports/client_X/lime_final.html` (Explicação Completa)
@@ -118,7 +119,7 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
     - `reports/client_X/shap_temporal_heatmap.png` (Mapa de calor temporal)
     - `reports/client_X/shap_temporal_index_importance.png` (Importância por índice temporal)
     - `reports/client_X/shap_timestamp_features_importance.png` (Importância das features derivadas de timestamp)
-- **Relatório HTML Consolidado:** `reports/client_X/final_report.html` (métricas, gráficos de evolução e tempos, LIME Top-10, SHAP, tabelas detalhadas)
+- **Relatório HTML Consolidado:** `reports/client_X/final_report.html` (métricas, gráficos de evolução e tempos, seção "Instância Analisada", LIME Top-10, SHAP, tabelas detalhadas)
 - **Ferramenta de Explicabilidade Interativa:** `explain_instance.py` (permite selecionar e explicar qualquer instância individual)
 
 ## Estado Atual
@@ -131,6 +132,7 @@ O dataset é particionado usando `StratifiedKFold` para preservar a proporção 
 - Explicabilidade (LIME/SHAP) gerando visualizações categorizadas por tipo de feature
 - Relatórios HTML finais detalhados com múltiplos gráficos e visualizações
 - Implementação do sistema de metadados para rastreabilidade completa das features
+- **NOVO:** Relatório HTML melhorado com seção dedicada "Instância Analisada" mostrando detalhes da previsão
 - **NOVO:** Gráficos de tempos criados (`processing_times_evolution.png`, `explainability_times.png`)
 - **NOVO:** Correção de gráficos para mostrar o número correto de rondas (5 em vez de 10)
 - **NOVO:** Interface de relatório melhorada com apresentação lado a lado de LIME/SHAP

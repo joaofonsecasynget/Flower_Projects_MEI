@@ -55,7 +55,7 @@
             <h3>Tabela 2: Métricas de Teste</h3>
             <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Test Loss</th><th>Test Rmse</th><th>Test Accuracy</th><th>Test Precision</th><th>Test Recall</th><th>Test F1</th></tr></thead><tbody><tr><td>1</td><td>0.3192</td><td>0.0867</td><td>0.9900</td><td>0.8776</td><td>0.9773</td><td>0.9247</td></tr><tr><td>2</td><td>0.3027</td><td>0.0758</td><td>0.9943</td><td>0.9167</td><td>1</td><td>0.9565</td></tr><tr><td>3</td><td>0.3039</td><td>0.0754</td><td>0.9943</td><td>0.9167</td><td>1</td><td>0.9565</td></tr><tr><td>4</td><td>0.2997</td><td>0.0752</td><td>0.9943</td><td>0.9167</td><td>1</td><td>0.9565</td></tr><tr><td>5</td><td>0.2966</td><td>0.0749</td><td>0.9943</td><td>0.9167</td><td>1</td><td>0.9565</td></tr></tbody></table></div>
             <h3>Tabela 3: Tempos de Processamento (segundos)</h3>
-            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr></thead><tbody><tr><td>1</td><td>0.7091</td><td>0.0023</td><td>-</td><td>-</td></tr><tr><td>2</td><td>0.0990</td><td>0.0023</td><td>-</td><td>-</td></tr><tr><td>3</td><td>0.1015</td><td>0.0024</td><td>-</td><td>-</td></tr><tr><td>4</td><td>0.1074</td><td>0.0026</td><td>-</td><td>-</td></tr><tr><td>5</td><td>0.1018</td><td>0.0023</td><td>0.7313</td><td>12.1510</td></tr></tbody></table></div>
+            <div class="table-container"><table class="metrics-table"><thead><tr><th>Ronda</th><th>Fit</th><th>Evaluate</th><th>Lime</th><th>Shap</th></tr></thead><tbody><tr><td>1</td><td>0.4890</td><td>0.0021</td><td>-</td><td>-</td></tr><tr><td>2</td><td>0.0963</td><td>0.0028</td><td>-</td><td>-</td></tr><tr><td>3</td><td>0.1036</td><td>0.0022</td><td>-</td><td>-</td></tr><tr><td>4</td><td>0.0938</td><td>0.0022</td><td>-</td><td>-</td></tr><tr><td>5</td><td>0.1083</td><td>0.0024</td><td>0.6935</td><td>11.6991</td></tr></tbody></table></div>
         </div>
 
         <div class="section plot-container">
@@ -90,14 +90,18 @@
         
         <div class="section">
             <h2>Explicabilidade (Resultados Finais da Última Ronda)</h2>
+            
+            <h3>Instância Analisada</h3>
+            <div style="background-color:#f8f9fa; padding:15px; border-left:3px solid #1abc9c; margin-bottom:20px;">
+                <p><em>Informações da instância não disponíveis</em></p>
+            </div>
+            
             <h3>Tempos de Explicabilidade</h3>
             <img src="explainability_times.png" alt="Tempos de Explicabilidade" style="max-width: 600px;" onerror="this.style.display='none';"/>
+            
             <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 20px;">
                 <div style="flex:1; min-width:300px;">
                     <h3>LIME</h3>
-                    <div style="background-color:#f8f9fa; padding:10px; border-left:3px solid #1abc9c; margin-bottom:15px;">
-                        <p><em>Informações da instância não disponíveis</em></p>
-                    </div>
                     <img src="lime_final.png" alt="LIME final" style="width:100%; max-width:600px;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Visualização LIME não disponível.</em></p>';"><p><a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p><p><a href="lime_explanation_formatado.txt" target="_blank">Ver LIME (formatado)</a></p>
                 </div>
                 <div style="flex:1; min-width:300px;">
@@ -129,7 +133,7 @@
         </div>
         
         <div class="footer">
-            <p><em>Relatório gerado automaticamente em 2025-05-07 08:24:04</em></p>
+            <p><em>Relatório gerado automaticamente em 2025-05-07 08:54:53</em></p>
         </div>
     </body>
     </html>

@@ -161,6 +161,47 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                 with open(lime_explainer_path, 'w') as f:
                     json.dump(explanation_data_to_save, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating, Path, datetime)) else repr(o))
                 logger.info(f"LIME explainer com payload salvo em {lime_explainer_path}")
+                
+                # NOVO: Salvar explained_instance_info.json para o relatório HTML
+                instance_info_path = base_reports / "explained_instance_info.json"
+                try:
+                    # Extrair os valores das principais features para exibição
+                    features_dict = {}
+                    if lime_exp.as_list() and original_values_dict:
+                        # Pegar até 20 features com maior impacto
+                        for feature_idx, _ in sorted(lime_exp.as_list(), key=lambda x: abs(x[1]), reverse=True)[:20]:
+                            feature_name = explainer.feature_names[feature_idx]
+                            # Usar valor original quando disponível
+                            if feature_name in original_values_dict:
+                                features_dict[feature_name] = original_values_dict[feature_name]
+                            # Caso contrário usar valor normalizado
+                            else:
+                                features_dict[feature_name] = float(instance[feature_idx])
+                    
+                    # Determinar a classe predita
+                    predicted_class = "Ataque" if prediction > 0.5 else "Normal"
+                    prediction_confidence = round((prediction if prediction > 0.5 else 1 - prediction) * 100, 2)
+                    
+                    # Criar dicionário completo de informações da instância
+                    instance_info = {
+                        'original_index': sample_idx,
+                        'prediction': round(float(prediction), 5),
+                        'predicted_class': predicted_class,
+                        'prediction_confidence': prediction_confidence,
+                        'original_target': original_target,
+                        'original_target_class': original_target_class,
+                        'prediction_correct': prediction_correct,
+                        'feature_count': len(explainer.feature_names),
+                        'features': features_dict
+                    }
+                    
+                    # Salvar as informações
+                    with open(instance_info_path, 'w') as f:
+                        json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                    
+                    logger.info(f"Informações da instância salvas em {instance_info_path}")
+                except Exception as e:
+                    logger.error(f"Erro ao salvar explained_instance_info.json: {e}", exc_info=True)
             except Exception as e:
                 logger.error(f"Erro ao salvar LIME explainer com payload: {e}", exc_info=True)
 

@@ -1,0 +1,56 @@
+Não, **nem LIME nem SHAP funcionam “sem partir de uma instância”** quando queres gerar explicações.
+
+Ambos os métodos são desenhados para fornecer **explicações locais**, ou seja, explicações centradas numa instância concreta do teu dataset (ou seja, de um ponto específico de teste).
+Portanto:
+
+✅ **LIME:**
+
+* Sempre precisa de **uma instância** para gerar as perturbações à volta dela e criar uma explicação local.
+* Não funciona se não especificares um ponto concreto.
+
+✅ **SHAP:**
+
+* Também precisa de **uma instância** para calcular os valores de Shapley e dizer quanto cada feature contribuiu para a previsão **daquela instância**.
+* No entanto, o SHAP consegue **agregar as explicações individuais** de várias instâncias (por exemplo, todo o conjunto de teste) para dar uma visão mais **global** do comportamento do modelo.
+  Ou seja:
+
+  * local → explica um ponto;
+  * global → agregas as explicações locais.
+
+---
+
+### 📌 Sobre “explicabilidade global”
+
+Se o teu objetivo é dar **uma visão global do modelo**, tens estas abordagens:
+
+a) **SHAP summary plots (resumo global)** →
+Calculas os valores de SHAP para **várias instâncias** (tipicamente o conjunto de teste inteiro) e depois geras gráficos agregados (ex.: `summary_plot` do SHAP), mostrando:
+
+* quais as features mais importantes em média,
+* como elas afetam o output globalmente.
+
+b) **LIME (versão global não existe “oficialmente”)** →
+Podes calcular explicações para várias instâncias e tentar sumarizar, mas o LIME não foi pensado para explicação global; tens de combinar manualmente as explicações locais.
+
+---
+
+### ⚠️ Conclusão prática
+
+✔ Sim → precisas de uma instância para correr LIME ou SHAP.
+✔ Não → não consegues gerar explicações “do nada” ou só a partir do modelo sem selecionar instâncias.
+✔ Sim → com SHAP podes construir uma explicação global **a partir de várias explicações locais agregadas**.
+
+---
+
+### 💡 Recomendação para o teu caso
+
+No final do treino do modelo:
+
+1. Seleciona **algumas instâncias relevantes** (ex.: casos típicos, outliers, exemplos bem e mal classificados).
+2. Aplica LIME e SHAP para essas instâncias.
+3. Se usares SHAP, gera também os gráficos globais (`summary_plot`, `dependence_plot`).
+4. Mostra no relatório:
+
+   * exemplos locais (para interpretabilidade),
+   * insights globais (para impacto geral).
+
