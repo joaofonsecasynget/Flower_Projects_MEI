@@ -29,17 +29,48 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
     
     # Preparar conteúdo das informações da instância LIME
     lime_instance_html = "<p><em>Informações da instância não disponíveis</em></p>"
-    if 'explained_instance_info.json' in os.listdir(base_reports):
+    
+    # Verificar primeiro o novo arquivo instance_info.json, depois o anterior explained_instance_info.json
+    instance_info = None
+    
+    if 'instance_info.json' in os.listdir(base_reports):
         try:
-            # Carregar informações da instância
+            # Carregar informações do novo arquivo com todos os valores de features
+            with open(base_reports/'instance_info.json', 'r') as f:
+                instance_info = json.load(f)
+                logger.info(f"Arquivo instance_info.json carregado com sucesso para o relatório")
+        except Exception as e:
+            logger.error(f"Erro ao carregar instance_info.json: {e}")
+    
+    # Se não encontrou o novo arquivo, tenta o antigo
+    if instance_info is None and 'explained_instance_info.json' in os.listdir(base_reports):
+        try:
+            # Carregar informações da instância anterior
             with open(base_reports/'explained_instance_info.json', 'r') as f:
                 instance_info = json.load(f)
-            
+                logger.info(f"Arquivo explained_instance_info.json carregado com sucesso para o relatório")
+        except Exception as e:
+            logger.error(f"Erro ao carregar explained_instance_info.json: {e}")
+    
+    # Se qualquer um dos arquivos foi carregado com sucesso    
+    if instance_info:
+        try:
             # Criar HTML com as informações da instância
             features_rows = ""
             if 'features' in instance_info:
+                # Nova estrutura com 'original' e 'normalized'
                 for k, v in list(instance_info['features'].items())[:20]:
-                    features_rows += f'<tr><td style="padding: 3px;">{k}</td><td style="text-align: right; padding: 3px;">{v}</td></tr>'
+                    # Verificar se estamos usando a nova estrutura com 'original' e 'normalized'
+                    if isinstance(v, dict) and ('original' in v or 'normalized' in v):
+                        # Pegar valor original se disponível, senão usar normalizado
+                        orig_val = v.get('original', 'N/A')
+                        norm_val = v.get('normalized', 'N/A')
+                        
+                        # Adicionar linha mostrando ambos os valores
+                        features_rows += f'<tr><td style="padding: 3px;">{k}</td><td style="text-align: right; padding: 3px;">{orig_val}</td><td style="text-align: right; padding: 3px; color: #777;"><em>{norm_val}</em></td></tr>'
+                    else:
+                        # Compatibilidade com formato antigo
+                        features_rows += f'<tr><td style="padding: 3px;">{k}</td><td style="text-align: right; padding: 3px;">{v}</td><td></td></tr>'
             
             # Verificar se temos informações do target original
             original_target_html = ""
@@ -66,7 +97,8 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr>
                             <th style="text-align: left; padding: 3px; border-bottom: 1px solid #ddd;">Feature</th>
-                            <th style="text-align: right; padding: 3px; border-bottom: 1px solid #ddd;">Valor</th>
+                            <th style="text-align: right; padding: 3px; border-bottom: 1px solid #ddd;">Valor Original</th>
+                            <th style="text-align: right; padding: 3px; border-bottom: 1px solid #ddd; color: #777;">Valor Normalizado</th>
                         </tr>
                         {features_rows}
                     </table>

@@ -1,0 +1,3875 @@
+{
+    "original_index": 7,
+    "prediction": 1.0,
+    "predicted_class": "Ataque",
+    "prediction_confidence": 100.0,
+    "original_target": 0,
+    "original_target_class": "Normal",
+    "prediction_correct": "np.False_",
+    "feature_count": 966,
+    "features": {
+        "dl_bitrate_1": {
+            "original": 5676.0,
+            "normalized": -0.93261
+        },
+        "ul_bitrate_1": {
+            "original": 2228.0,
+            "normalized": 4.4091
+        },
+        "cell_x_dl_retx_1": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_1": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_1": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_1": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_1": {
+            "original": 420.0,
+            "normalized": 4.46376
+        },
+        "dl_total_bytes_non_incr_1": {
+            "original": 420.0,
+            "normalized": -0.97339
+        },
+        "dl_bitrate_2": {
+            "original": 6365.0,
+            "normalized": -0.92865
+        },
+        "ul_bitrate_2": {
+            "original": 2637.0,
+            "normalized": 4.39922
+        },
+        "cell_x_dl_retx_2": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_2": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_2": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_2": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_2": {
+            "original": 504.0,
+            "normalized": 4.46744
+        },
+        "dl_total_bytes_non_incr_2": {
+            "original": 504.0,
+            "normalized": -0.96616
+        },
+        "dl_bitrate_3": {
+            "original": 5545.0,
+            "normalized": -0.92686
+        },
+        "ul_bitrate_3": {
+            "original": 2201.0,
+            "normalized": 4.39981
+        },
+        "cell_x_dl_retx_3": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_3": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_3": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_3": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_3": {
+            "original": 420.0,
+            "normalized": 4.41506
+        },
+        "dl_total_bytes_non_incr_3": {
+            "original": 420.0,
+            "normalized": -0.95578
+        },
+        "dl_bitrate_4": {
+            "original": 5549.0,
+            "normalized": -0.922
+        },
+        "ul_bitrate_4": {
+            "original": 2211.0,
+            "normalized": 4.4088
+        },
+        "cell_x_dl_retx_4": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_4": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_4": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_4": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_4": {
+            "original": 420.0,
+            "normalized": 4.52283
+        },
+        "dl_total_bytes_non_incr_4": {
+            "original": 420.0,
+            "normalized": -0.95383
+        },
+        "dl_bitrate_5": {
+            "original": 6050.0,
+            "normalized": -0.92171
+        },
+        "ul_bitrate_5": {
+            "original": 2199.0,
+            "normalized": 4.39368
+        },
+        "cell_x_dl_retx_5": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_5": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_5": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_5": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_5": {
+            "original": 420.0,
+            "normalized": 4.41604
+        },
+        "dl_total_bytes_non_incr_5": {
+            "original": 420.0,
+            "normalized": -0.95605
+        },
+        "dl_bitrate_6": {
+            "original": 5546.0,
+            "normalized": -0.92871
+        },
+        "ul_bitrate_6": {
+            "original": 2190.0,
+            "normalized": 4.38537
+        },
+        "cell_x_dl_retx_6": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_6": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_6": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_6": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_6": {
+            "original": 420.0,
+            "normalized": 4.37431
+        },
+        "dl_total_bytes_non_incr_6": {
+            "original": 420.0,
+            "normalized": -0.96876
+        },
+        "dl_bitrate_7": {
+            "original": 5722.0,
+            "normalized": -0.92732
+        },
+        "ul_bitrate_7": {
+            "original": 2202.0,
+            "normalized": 4.41064
+        },
+        "cell_x_dl_retx_7": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_7": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_7": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_7": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_7": {
+            "original": 420.0,
+            "normalized": 4.39837
+        },
+        "dl_total_bytes_non_incr_7": {
+            "original": 420.0,
+            "normalized": -0.96075
+        },
+        "dl_bitrate_8": {
+            "original": 5300.0,
+            "normalized": -0.932
+        },
+        "ul_bitrate_8": {
+            "original": 2283.0,
+            "normalized": 4.42365
+        },
+        "cell_x_dl_retx_8": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_8": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_8": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_8": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_8": {
+            "original": 420.0,
+            "normalized": 4.4689
+        },
+        "dl_total_bytes_non_incr_8": {
+            "original": 420.0,
+            "normalized": -0.96725
+        },
+        "dl_bitrate_9": {
+            "original": 5756.0,
+            "normalized": -0.93014
+        },
+        "ul_bitrate_9": {
+            "original": 2196.0,
+            "normalized": 4.40795
+        },
+        "cell_x_dl_retx_9": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_9": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_9": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_9": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_9": {
+            "original": 420.0,
+            "normalized": 4.45698
+        },
+        "dl_total_bytes_non_incr_9": {
+            "original": 420.0,
+            "normalized": -0.96265
+        },
+        "dl_bitrate_10": {
+            "original": 6211.0,
+            "normalized": -0.92184
+        },
+        "ul_bitrate_10": {
+            "original": 2660.0,
+            "normalized": 4.41969
+        },
+        "cell_x_dl_retx_10": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_10": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_10": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_10": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_10": {
+            "original": 504.0,
+            "normalized": 4.52749
+        },
+        "dl_total_bytes_non_incr_10": {
+            "original": 504.0,
+            "normalized": -0.95363
+        },
+        "dl_bitrate_11": {
+            "original": 5741.0,
+            "normalized": -0.92759
+        },
+        "ul_bitrate_11": {
+            "original": 2217.0,
+            "normalized": 4.41181
+        },
+        "cell_x_dl_retx_11": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_11": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_11": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_11": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_11": {
+            "original": 420.0,
+            "normalized": 4.44224
+        },
+        "dl_total_bytes_non_incr_11": {
+            "original": 420.0,
+            "normalized": -0.96069
+        },
+        "dl_bitrate_12": {
+            "original": 5710.0,
+            "normalized": -0.92521
+        },
+        "ul_bitrate_12": {
+            "original": 2198.0,
+            "normalized": 4.38725
+        },
+        "cell_x_dl_retx_12": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_12": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_12": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_12": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_12": {
+            "original": 420.0,
+            "normalized": 4.41186
+        },
+        "dl_total_bytes_non_incr_12": {
+            "original": 420.0,
+            "normalized": -0.95732
+        },
+        "dl_bitrate_13": {
+            "original": 5847.0,
+            "normalized": -0.93123
+        },
+        "ul_bitrate_13": {
+            "original": 2214.0,
+            "normalized": 4.42371
+        },
+        "cell_x_dl_retx_13": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_13": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_13": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_13": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_13": {
+            "original": 420.0,
+            "normalized": 4.52593
+        },
+        "dl_total_bytes_non_incr_13": {
+            "original": 420.0,
+            "normalized": -0.96789
+        },
+        "dl_bitrate_14": {
+            "original": 5583.0,
+            "normalized": -0.93172
+        },
+        "ul_bitrate_14": {
+            "original": 2204.0,
+            "normalized": 4.40766
+        },
+        "cell_x_dl_retx_14": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_14": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_14": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_14": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_14": {
+            "original": 420.0,
+            "normalized": 4.4979
+        },
+        "dl_total_bytes_non_incr_14": {
+            "original": 420.0,
+            "normalized": -0.96174
+        },
+        "dl_bitrate_15": {
+            "original": 5669.0,
+            "normalized": -0.93289
+        },
+        "ul_bitrate_15": {
+            "original": 2203.0,
+            "normalized": 4.41434
+        },
+        "cell_x_dl_retx_15": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_15": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_15": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_15": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_15": {
+            "original": 420.0,
+            "normalized": 4.47172
+        },
+        "dl_total_bytes_non_incr_15": {
+            "original": 420.0,
+            "normalized": -0.96696
+        },
+        "dl_bitrate_16": {
+            "original": 5684.0,
+            "normalized": -0.92845
+        },
+        "ul_bitrate_16": {
+            "original": 2287.0,
+            "normalized": 4.43951
+        },
+        "cell_x_dl_retx_16": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_16": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_16": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_16": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_16": {
+            "original": 420.0,
+            "normalized": 4.48188
+        },
+        "dl_total_bytes_non_incr_16": {
+            "original": 420.0,
+            "normalized": -0.95697
+        },
+        "dl_bitrate_17": {
+            "original": 5857.0,
+            "normalized": -0.92671
+        },
+        "ul_bitrate_17": {
+            "original": 2197.0,
+            "normalized": 4.4064
+        },
+        "cell_x_dl_retx_17": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_17": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_17": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_17": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_17": {
+            "original": 420.0,
+            "normalized": 4.43633
+        },
+        "dl_total_bytes_non_incr_17": {
+            "original": 420.0,
+            "normalized": -0.96459
+        },
+        "dl_bitrate_18": {
+            "original": 5978.0,
+            "normalized": -0.92817
+        },
+        "ul_bitrate_18": {
+            "original": 2649.0,
+            "normalized": 4.41411
+        },
+        "cell_x_dl_retx_18": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_18": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_18": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_18": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_18": {
+            "original": 504.0,
+            "normalized": 4.46535
+        },
+        "dl_total_bytes_non_incr_18": {
+            "original": 504.0,
+            "normalized": -0.95876
+        },
+        "dl_bitrate_19": {
+            "original": 5759.0,
+            "normalized": -0.92687
+        },
+        "ul_bitrate_19": {
+            "original": 2202.0,
+            "normalized": 4.41479
+        },
+        "cell_x_dl_retx_19": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_19": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_19": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_19": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_19": {
+            "original": 420.0,
+            "normalized": 4.44814
+        },
+        "dl_total_bytes_non_incr_19": {
+            "original": 420.0,
+            "normalized": -0.95697
+        },
+        "dl_bitrate_20": {
+            "original": 5747.0,
+            "normalized": -0.93649
+        },
+        "ul_bitrate_20": {
+            "original": 2223.0,
+            "normalized": 4.42156
+        },
+        "cell_x_dl_retx_20": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_20": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_20": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_20": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_20": {
+            "original": 420.0,
+            "normalized": 4.4502
+        },
+        "dl_total_bytes_non_incr_20": {
+            "original": 420.0,
+            "normalized": -0.96828
+        },
+        "dl_bitrate_21": {
+            "original": 5877.0,
+            "normalized": -0.92973
+        },
+        "ul_bitrate_21": {
+            "original": 2233.0,
+            "normalized": 4.42335
+        },
+        "cell_x_dl_retx_21": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_21": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_21": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_21": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_21": {
+            "original": 420.0,
+            "normalized": 4.41728
+        },
+        "dl_total_bytes_non_incr_21": {
+            "original": 420.0,
+            "normalized": -0.96098
+        },
+        "dl_bitrate_22": {
+            "original": 5517.0,
+            "normalized": -0.93712
+        },
+        "ul_bitrate_22": {
+            "original": 2212.0,
+            "normalized": 4.38572
+        },
+        "cell_x_dl_retx_22": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_22": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_22": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_22": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_22": {
+            "original": 420.0,
+            "normalized": 4.43529
+        },
+        "dl_total_bytes_non_incr_22": {
+            "original": 420.0,
+            "normalized": -0.969
+        },
+        "dl_bitrate_23": {
+            "original": 5552.0,
+            "normalized": -0.92545
+        },
+        "ul_bitrate_23": {
+            "original": 2216.0,
+            "normalized": 4.40833
+        },
+        "cell_x_dl_retx_23": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_23": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_23": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_23": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_23": {
+            "original": 420.0,
+            "normalized": 4.48416
+        },
+        "dl_total_bytes_non_incr_23": {
+            "original": 420.0,
+            "normalized": -0.96131
+        },
+        "dl_bitrate_24": {
+            "original": 5655.0,
+            "normalized": -0.9355
+        },
+        "ul_bitrate_24": {
+            "original": 2196.0,
+            "normalized": 4.41196
+        },
+        "cell_x_dl_retx_24": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_24": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_24": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_24": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_24": {
+            "original": 420.0,
+            "normalized": 4.44866
+        },
+        "dl_total_bytes_non_incr_24": {
+            "original": 420.0,
+            "normalized": -0.96555
+        },
+        "dl_bitrate_25": {
+            "original": 6661.0,
+            "normalized": -0.92692
+        },
+        "ul_bitrate_25": {
+            "original": 2415.0,
+            "normalized": 4.3939
+        },
+        "cell_x_dl_retx_25": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_25": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_25": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_25": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_25": {
+            "original": 100.0,
+            "normalized": 4.50066
+        },
+        "dl_total_bytes_non_incr_25": {
+            "original": 92.0,
+            "normalized": -0.96121
+        },
+        "dl_bitrate_26": {
+            "original": 6137.0,
+            "normalized": -0.93204
+        },
+        "ul_bitrate_26": {
+            "original": 2642.0,
+            "normalized": 4.37248
+        },
+        "cell_x_dl_retx_26": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_26": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_26": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_26": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_26": {
+            "original": 504.0,
+            "normalized": 4.42642
+        },
+        "dl_total_bytes_non_incr_26": {
+            "original": 504.0,
+            "normalized": -0.96237
+        },
+        "dl_bitrate_27": {
+            "original": 5821.0,
+            "normalized": -0.93892
+        },
+        "ul_bitrate_27": {
+            "original": 2217.0,
+            "normalized": 4.37147
+        },
+        "cell_x_dl_retx_27": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_27": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_27": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_27": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_27": {
+            "original": 420.0,
+            "normalized": 4.39318
+        },
+        "dl_total_bytes_non_incr_27": {
+            "original": 420.0,
+            "normalized": -0.96801
+        },
+        "dl_bitrate_28": {
+            "original": 5477.0,
+            "normalized": -0.93091
+        },
+        "ul_bitrate_28": {
+            "original": 2214.0,
+            "normalized": 4.34865
+        },
+        "cell_x_dl_retx_28": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_28": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_28": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_28": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_28": {
+            "original": 420.0,
+            "normalized": 4.37693
+        },
+        "dl_total_bytes_non_incr_28": {
+            "original": 420.0,
+            "normalized": -0.96076
+        },
+        "dl_bitrate_29": {
+            "original": 6216.0,
+            "normalized": -0.93084
+        },
+        "ul_bitrate_29": {
+            "original": 2218.0,
+            "normalized": 4.35988
+        },
+        "cell_x_dl_retx_29": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_29": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_29": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_29": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_29": {
+            "original": 420.0,
+            "normalized": 4.35933
+        },
+        "dl_total_bytes_non_incr_29": {
+            "original": 420.0,
+            "normalized": -0.96284
+        },
+        "dl_bitrate_30": {
+            "original": 5662.0,
+            "normalized": -0.9281
+        },
+        "ul_bitrate_30": {
+            "original": 2217.0,
+            "normalized": 4.36565
+        },
+        "cell_x_dl_retx_30": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_30": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_30": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_30": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_30": {
+            "original": 420.0,
+            "normalized": 4.35011
+        },
+        "dl_total_bytes_non_incr_30": {
+            "original": 420.0,
+            "normalized": -0.95938
+        },
+        "dl_bitrate_31": {
+            "original": 5802.0,
+            "normalized": -0.93122
+        },
+        "ul_bitrate_31": {
+            "original": 2185.0,
+            "normalized": 4.37083
+        },
+        "cell_x_dl_retx_31": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_31": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_31": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_31": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_31": {
+            "original": 420.0,
+            "normalized": 4.40379
+        },
+        "dl_total_bytes_non_incr_31": {
+            "original": 420.0,
+            "normalized": -0.96956
+        },
+        "dl_bitrate_32": {
+            "original": 7089.0,
+            "normalized": -0.92966
+        },
+        "ul_bitrate_32": {
+            "original": 3100.0,
+            "normalized": 4.34577
+        },
+        "cell_x_dl_retx_32": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_32": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_32": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_32": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_32": {
+            "original": 588.0,
+            "normalized": 4.32542
+        },
+        "dl_total_bytes_non_incr_32": {
+            "original": 588.0,
+            "normalized": -0.96124
+        },
+        "dl_bitrate_33": {
+            "original": 6888.0,
+            "normalized": -0.93828
+        },
+        "ul_bitrate_33": {
+            "original": 3083.0,
+            "normalized": 4.36276
+        },
+        "cell_x_dl_retx_33": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_33": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_33": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_33": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_33": {
+            "original": 588.0,
+            "normalized": 4.42045
+        },
+        "dl_total_bytes_non_incr_33": {
+            "original": 504.0,
+            "normalized": -0.97254
+        },
+        "dl_bitrate_34": {
+            "original": 5683.0,
+            "normalized": -0.93526
+        },
+        "ul_bitrate_34": {
+            "original": 2197.0,
+            "normalized": 4.32359
+        },
+        "cell_x_dl_retx_34": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_34": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_34": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_34": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_34": {
+            "original": 420.0,
+            "normalized": 4.39586
+        },
+        "dl_total_bytes_non_incr_34": {
+            "original": 504.0,
+            "normalized": -0.9653
+        },
+        "dl_bitrate_35": {
+            "original": 5763.0,
+            "normalized": -0.93903
+        },
+        "ul_bitrate_35": {
+            "original": 2228.0,
+            "normalized": 4.35994
+        },
+        "cell_x_dl_retx_35": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_35": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_35": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_35": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_35": {
+            "original": 420.0,
+            "normalized": 4.40086
+        },
+        "dl_total_bytes_non_incr_35": {
+            "original": 420.0,
+            "normalized": -0.9654
+        },
+        "dl_bitrate_36": {
+            "original": 5719.0,
+            "normalized": -0.92834
+        },
+        "ul_bitrate_36": {
+            "original": 2222.0,
+            "normalized": 4.36861
+        },
+        "cell_x_dl_retx_36": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_36": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_36": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_36": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_36": {
+            "original": 420.0,
+            "normalized": 4.40563
+        },
+        "dl_total_bytes_non_incr_36": {
+            "original": 420.0,
+            "normalized": -0.96867
+        },
+        "dl_bitrate_37": {
+            "original": 6044.0,
+            "normalized": -0.93825
+        },
+        "ul_bitrate_37": {
+            "original": 2178.0,
+            "normalized": 4.36506
+        },
+        "cell_x_dl_retx_37": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_37": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_37": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_37": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_37": {
+            "original": 420.0,
+            "normalized": 4.41964
+        },
+        "dl_total_bytes_non_incr_37": {
+            "original": 420.0,
+            "normalized": -0.96809
+        },
+        "dl_bitrate_38": {
+            "original": 8218285.0,
+            "normalized": -0.93274
+        },
+        "ul_bitrate_38": {
+            "original": 38157.0,
+            "normalized": 4.34952
+        },
+        "cell_x_dl_retx_38": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_38": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_38": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_38": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_38": {
+            "original": 100.0,
+            "normalized": -0.70937
+        },
+        "dl_total_bytes_non_incr_38": {
+            "original": 92.0,
+            "normalized": -1.10823
+        },
+        "dl_bitrate_39": {
+            "original": 12024222.0,
+            "normalized": -0.93101
+        },
+        "ul_bitrate_39": {
+            "original": 56535.0,
+            "normalized": 4.41074
+        },
+        "cell_x_dl_retx_39": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_39": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_39": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_39": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_39": {
+            "original": 420.0,
+            "normalized": 4.46879
+        },
+        "dl_total_bytes_non_incr_39": {
+            "original": 7660901.0,
+            "normalized": -0.96119
+        },
+        "dl_bitrate_40": {
+            "original": 13902793.0,
+            "normalized": -0.94018
+        },
+        "ul_bitrate_40": {
+            "original": 55006.0,
+            "normalized": 4.3687
+        },
+        "cell_x_dl_retx_40": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_40": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_40": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_40": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_40": {
+            "original": 420.0,
+            "normalized": 4.34669
+        },
+        "dl_total_bytes_non_incr_40": {
+            "original": 8781106.0,
+            "normalized": -0.97141
+        },
+        "dl_bitrate_41": {
+            "original": 14000227.0,
+            "normalized": -0.93077
+        },
+        "ul_bitrate_41": {
+            "original": 55989.0,
+            "normalized": 4.38034
+        },
+        "cell_x_dl_retx_41": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_41": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_41": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_41": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_41": {
+            "original": 504.0,
+            "normalized": 4.4122
+        },
+        "dl_total_bytes_non_incr_41": {
+            "original": 8852133.0,
+            "normalized": -0.95753
+        },
+        "dl_bitrate_42": {
+            "original": 12034645.0,
+            "normalized": -0.93512
+        },
+        "ul_bitrate_42": {
+            "original": 56185.0,
+            "normalized": 4.41383
+        },
+        "cell_x_dl_retx_42": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_42": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_42": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_42": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_42": {
+            "original": 420.0,
+            "normalized": 4.44113
+        },
+        "dl_total_bytes_non_incr_42": {
+            "original": 7153924.0,
+            "normalized": -0.96383
+        },
+        "dl_bitrate_43": {
+            "original": 14802775.0,
+            "normalized": -0.9342
+        },
+        "ul_bitrate_43": {
+            "original": 55788.0,
+            "normalized": 4.39488
+        },
+        "cell_x_dl_retx_43": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_43": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_43": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_43": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_43": {
+            "original": 420.0,
+            "normalized": 4.48025
+        },
+        "dl_total_bytes_non_incr_43": {
+            "original": 9828373.0,
+            "normalized": -0.96267
+        },
+        "dl_bitrate_44": {
+            "original": 14035687.0,
+            "normalized": -0.93676
+        },
+        "ul_bitrate_44": {
+            "original": 56336.0,
+            "normalized": 4.39791
+        },
+        "cell_x_dl_retx_44": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_44": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_44": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_44": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_44": {
+            "original": 420.0,
+            "normalized": 4.45912
+        },
+        "dl_total_bytes_non_incr_44": {
+            "original": 8878559.0,
+            "normalized": -0.96763
+        },
+        "dl_bitrate_45": {
+            "original": 14146233.0,
+            "normalized": -0.93561
+        },
+        "ul_bitrate_45": {
+            "original": 56115.0,
+            "normalized": 4.43002
+        },
+        "cell_x_dl_retx_45": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_45": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_45": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_45": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_45": {
+            "original": 420.0,
+            "normalized": 4.46995
+        },
+        "dl_total_bytes_non_incr_45": {
+            "original": 8936615.0,
+            "normalized": -0.96419
+        },
+        "dl_bitrate_46": {
+            "original": 11842914.0,
+            "normalized": -0.93672
+        },
+        "ul_bitrate_46": {
+            "original": 55657.0,
+            "normalized": 4.39085
+        },
+        "cell_x_dl_retx_46": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_46": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_46": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_46": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_46": {
+            "original": 420.0,
+            "normalized": 4.46521
+        },
+        "dl_total_bytes_non_incr_46": {
+            "original": 7265561.0,
+            "normalized": -0.96809
+        },
+        "dl_bitrate_47": {
+            "original": 14593287.0,
+            "normalized": -0.9328
+        },
+        "ul_bitrate_47": {
+            "original": 56226.0,
+            "normalized": 4.37636
+        },
+        "cell_x_dl_retx_47": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_47": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_47": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_47": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_47": {
+            "original": 420.0,
+            "normalized": 4.40475
+        },
+        "dl_total_bytes_non_incr_47": {
+            "original": 9442806.0,
+            "normalized": -0.96217
+        },
+        "dl_bitrate_48": {
+            "original": 13936038.0,
+            "normalized": -0.9319
+        },
+        "ul_bitrate_48": {
+            "original": 55850.0,
+            "normalized": 4.33478
+        },
+        "cell_x_dl_retx_48": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_48": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_48": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_48": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_48": {
+            "original": 420.0,
+            "normalized": -0.72341
+        },
+        "dl_total_bytes_non_incr_48": {
+            "original": 8800295.0,
+            "normalized": -1.11536
+        },
+        "dl_bitrate_49": {
+            "original": 13967683.0,
+            "normalized": -0.93549
+        },
+        "ul_bitrate_49": {
+            "original": 56126.0,
+            "normalized": 4.3594
+        },
+        "cell_x_dl_retx_49": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_49": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_49": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_49": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_49": {
+            "original": 504.0,
+            "normalized": 4.39044
+        },
+        "dl_total_bytes_non_incr_49": {
+            "original": 8842274.0,
+            "normalized": -0.96783
+        },
+        "dl_bitrate_50": {
+            "original": 11283039.0,
+            "normalized": -0.93544
+        },
+        "ul_bitrate_50": {
+            "original": 55457.0,
+            "normalized": 4.39079
+        },
+        "cell_x_dl_retx_50": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_50": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_50": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_50": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_50": {
+            "original": 420.0,
+            "normalized": 4.42924
+        },
+        "dl_total_bytes_non_incr_50": {
+            "original": 7125498.0,
+            "normalized": -0.9673
+        },
+        "dl_bitrate_51": {
+            "original": 15444804.0,
+            "normalized": -0.93767
+        },
+        "ul_bitrate_51": {
+            "original": 55408.0,
+            "normalized": 4.35045
+        },
+        "cell_x_dl_retx_51": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_51": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_51": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_51": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_51": {
+            "original": 420.0,
+            "normalized": 4.47396
+        },
+        "dl_total_bytes_non_incr_51": {
+            "original": 9757364.0,
+            "normalized": -0.96595
+        },
+        "dl_bitrate_52": {
+            "original": 14021581.0,
+            "normalized": -0.94343
+        },
+        "ul_bitrate_52": {
+            "original": 55413.0,
+            "normalized": 4.37082
+        },
+        "cell_x_dl_retx_52": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_52": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_52": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_52": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_52": {
+            "original": 420.0,
+            "normalized": 4.44744
+        },
+        "dl_total_bytes_non_incr_52": {
+            "original": 8826090.0,
+            "normalized": -0.97418
+        },
+        "dl_bitrate_53": {
+            "original": 13542393.0,
+            "normalized": -0.93037
+        },
+        "ul_bitrate_53": {
+            "original": 54297.0,
+            "normalized": 4.39021
+        },
+        "cell_x_dl_retx_53": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_53": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_53": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_53": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_53": {
+            "original": 420.0,
+            "normalized": 4.42849
+        },
+        "dl_total_bytes_non_incr_53": {
+            "original": 8562068.0,
+            "normalized": -0.95702
+        },
+        "dl_bitrate_54": {
+            "original": 11183421.0,
+            "normalized": -0.93742
+        },
+        "ul_bitrate_54": {
+            "original": 56091.0,
+            "normalized": 4.41539
+        },
+        "cell_x_dl_retx_54": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_54": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_54": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_54": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_54": {
+            "original": 420.0,
+            "normalized": 4.52624
+        },
+        "dl_total_bytes_non_incr_54": {
+            "original": 7065002.0,
+            "normalized": -0.96834
+        },
+        "dl_bitrate_55": {
+            "original": 15127535.0,
+            "normalized": -0.93725
+        },
+        "ul_bitrate_55": {
+            "original": 53288.0,
+            "normalized": 4.37181
+        },
+        "cell_x_dl_retx_55": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_55": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_55": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_55": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_55": {
+            "original": 420.0,
+            "normalized": 4.37819
+        },
+        "dl_total_bytes_non_incr_55": {
+            "original": 9566729.0,
+            "normalized": -0.96897
+        },
+        "dl_bitrate_56": {
+            "original": 12751173.0,
+            "normalized": -0.93098
+        },
+        "ul_bitrate_56": {
+            "original": 55128.0,
+            "normalized": 4.36374
+        },
+        "cell_x_dl_retx_56": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_56": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_56": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_56": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_56": {
+            "original": 420.0,
+            "normalized": 4.45867
+        },
+        "dl_total_bytes_non_incr_56": {
+            "original": 8029570.0,
+            "normalized": -0.96569
+        },
+        "dl_bitrate_57": {
+            "original": 14151982.0,
+            "normalized": -0.94263
+        },
+        "ul_bitrate_57": {
+            "original": 56612.0,
+            "normalized": 4.36718
+        },
+        "cell_x_dl_retx_57": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_57": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_57": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_57": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_57": {
+            "original": 504.0,
+            "normalized": 4.41174
+        },
+        "dl_total_bytes_non_incr_57": {
+            "original": 8879664.0,
+            "normalized": -0.97594
+        },
+        "dl_bitrate_58": {
+            "original": 11819618.0,
+            "normalized": -0.93697
+        },
+        "ul_bitrate_58": {
+            "original": 56417.0,
+            "normalized": 4.37294
+        },
+        "cell_x_dl_retx_58": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_58": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_58": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_58": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_58": {
+            "original": 420.0,
+            "normalized": 4.41556
+        },
+        "dl_total_bytes_non_incr_58": {
+            "original": 7507335.0,
+            "normalized": -0.9709
+        },
+        "dl_bitrate_59": {
+            "original": 15071806.0,
+            "normalized": -0.94013
+        },
+        "ul_bitrate_59": {
+            "original": 56132.0,
+            "normalized": 4.36033
+        },
+        "cell_x_dl_retx_59": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_59": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_59": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_59": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_59": {
+            "original": 420.0,
+            "normalized": 4.38443
+        },
+        "dl_total_bytes_non_incr_59": {
+            "original": 9353163.0,
+            "normalized": -0.96938
+        },
+        "dl_bitrate_60": {
+            "original": 13104589.0,
+            "normalized": -0.92946
+        },
+        "ul_bitrate_60": {
+            "original": 55470.0,
+            "normalized": 4.39607
+        },
+        "cell_x_dl_retx_60": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_60": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_60": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_60": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_60": {
+            "original": 420.0,
+            "normalized": 4.41791
+        },
+        "dl_total_bytes_non_incr_60": {
+            "original": 8474826.0,
+            "normalized": -0.964
+        },
+        "dl_bitrate_61": {
+            "original": 14102615.0,
+            "normalized": -0.92982
+        },
+        "ul_bitrate_61": {
+            "original": 56814.0,
+            "normalized": 4.36447
+        },
+        "cell_x_dl_retx_61": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_61": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_61": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_61": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_61": {
+            "original": 420.0,
+            "normalized": 4.43995
+        },
+        "dl_total_bytes_non_incr_61": {
+            "original": 8941156.0,
+            "normalized": -0.95791
+        },
+        "dl_bitrate_62": {
+            "original": 12112956.0,
+            "normalized": -0.9357
+        },
+        "ul_bitrate_62": {
+            "original": 55866.0,
+            "normalized": 4.39935
+        },
+        "cell_x_dl_retx_62": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_62": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_62": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_62": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_62": {
+            "original": 420.0,
+            "normalized": 4.45944
+        },
+        "dl_total_bytes_non_incr_62": {
+            "original": 7613306.0,
+            "normalized": -0.96355
+        },
+        "dl_bitrate_63": {
+            "original": 13728181.0,
+            "normalized": -0.9296
+        },
+        "ul_bitrate_63": {
+            "original": 55734.0,
+            "normalized": 4.39786
+        },
+        "cell_x_dl_retx_63": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_63": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_63": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_63": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_63": {
+            "original": 420.0,
+            "normalized": 4.45721
+        },
+        "dl_total_bytes_non_incr_63": {
+            "original": 8723577.0,
+            "normalized": -0.9616
+        },
+        "dl_bitrate_64": {
+            "original": 14541885.0,
+            "normalized": -0.9481
+        },
+        "ul_bitrate_64": {
+            "original": 55837.0,
+            "normalized": 4.35423
+        },
+        "cell_x_dl_retx_64": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_64": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_64": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_64": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_64": {
+            "original": 504.0,
+            "normalized": 4.40665
+        },
+        "dl_total_bytes_non_incr_64": {
+            "original": 9090601.0,
+            "normalized": -0.97373
+        },
+        "dl_bitrate_65": {
+            "original": 13778155.0,
+            "normalized": -0.93222
+        },
+        "ul_bitrate_65": {
+            "original": 55538.0,
+            "normalized": 4.37863
+        },
+        "cell_x_dl_retx_65": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_65": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_65": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_65": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_65": {
+            "original": 420.0,
+            "normalized": 4.47617
+        },
+        "dl_total_bytes_non_incr_65": {
+            "original": 8605801.0,
+            "normalized": -0.96596
+        },
+        "dl_bitrate_66": {
+            "original": 12393099.0,
+            "normalized": -0.93609
+        },
+        "ul_bitrate_66": {
+            "original": 55613.0,
+            "normalized": 4.38173
+        },
+        "cell_x_dl_retx_66": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_66": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_66": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_66": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_66": {
+            "original": 420.0,
+            "normalized": 4.47369
+        },
+        "dl_total_bytes_non_incr_66": {
+            "original": 7976974.0,
+            "normalized": -0.96324
+        },
+        "dl_bitrate_67": {
+            "original": 13605715.0,
+            "normalized": -0.92976
+        },
+        "ul_bitrate_67": {
+            "original": 55488.0,
+            "normalized": 4.40296
+        },
+        "cell_x_dl_retx_67": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_67": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_67": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_67": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_67": {
+            "original": 420.0,
+            "normalized": 4.50768
+        },
+        "dl_total_bytes_non_incr_67": {
+            "original": 8588830.0,
+            "normalized": -0.95871
+        },
+        "dl_bitrate_68": {
+            "original": 14004139.0,
+            "normalized": -0.93656
+        },
+        "ul_bitrate_68": {
+            "original": 56084.0,
+            "normalized": 4.39121
+        },
+        "cell_x_dl_retx_68": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_68": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_68": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_68": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_68": {
+            "original": 420.0,
+            "normalized": 4.38968
+        },
+        "dl_total_bytes_non_incr_68": {
+            "original": 8796733.0,
+            "normalized": -0.96592
+        },
+        "dl_bitrate_69": {
+            "original": 11132437.0,
+            "normalized": -0.93302
+        },
+        "ul_bitrate_69": {
+            "original": 55965.0,
+            "normalized": 4.39206
+        },
+        "cell_x_dl_retx_69": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_69": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_69": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_69": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_69": {
+            "original": 420.0,
+            "normalized": 4.39685
+        },
+        "dl_total_bytes_non_incr_69": {
+            "original": 7048588.0,
+            "normalized": -0.96449
+        },
+        "dl_bitrate_70": {
+            "original": 15264800.0,
+            "normalized": -0.94085
+        },
+        "ul_bitrate_70": {
+            "original": 56425.0,
+            "normalized": 4.35546
+        },
+        "cell_x_dl_retx_70": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_70": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_70": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_70": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_70": {
+            "original": 420.0,
+            "normalized": 4.41041
+        },
+        "dl_total_bytes_non_incr_70": {
+            "original": 9658992.0,
+            "normalized": -0.97349
+        },
+        "dl_bitrate_71": {
+            "original": 13440958.0,
+            "normalized": -0.94054
+        },
+        "ul_bitrate_71": {
+            "original": 55323.0,
+            "normalized": 4.39261
+        },
+        "cell_x_dl_retx_71": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_71": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_71": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_71": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_71": {
+            "original": 420.0,
+            "normalized": 4.45712
+        },
+        "dl_total_bytes_non_incr_71": {
+            "original": 8511270.0,
+            "normalized": -0.96777
+        },
+        "dl_bitrate_72": {
+            "original": 13673178.0,
+            "normalized": -0.93334
+        },
+        "ul_bitrate_72": {
+            "original": 56037.0,
+            "normalized": 4.37859
+        },
+        "cell_x_dl_retx_72": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_72": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_72": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_72": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_72": {
+            "original": 504.0,
+            "normalized": 4.40826
+        },
+        "dl_total_bytes_non_incr_72": {
+            "original": 8645208.0,
+            "normalized": -0.9666
+        },
+        "dl_bitrate_73": {
+            "original": 11156002.0,
+            "normalized": -0.93421
+        },
+        "ul_bitrate_73": {
+            "original": 53321.0,
+            "normalized": 4.37719
+        },
+        "cell_x_dl_retx_73": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_73": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_73": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_73": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_73": {
+            "original": 420.0,
+            "normalized": 4.32962
+        },
+        "dl_total_bytes_non_incr_73": {
+            "original": 7017939.0,
+            "normalized": -0.96843
+        },
+        "dl_bitrate_74": {
+            "original": 15265803.0,
+            "normalized": -0.92573
+        },
+        "ul_bitrate_74": {
+            "original": 56186.0,
+            "normalized": 4.37487
+        },
+        "cell_x_dl_retx_74": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_74": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_74": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_74": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_74": {
+            "original": 420.0,
+            "normalized": 4.43123
+        },
+        "dl_total_bytes_non_incr_74": {
+            "original": 9689267.0,
+            "normalized": -0.95441
+        },
+        "dl_bitrate_75": {
+            "original": 12605751.0,
+            "normalized": -0.93586
+        },
+        "ul_bitrate_75": {
+            "original": 55353.0,
+            "normalized": 4.37071
+        },
+        "cell_x_dl_retx_75": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_75": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_75": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_75": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_75": {
+            "original": 420.0,
+            "normalized": 4.42832
+        },
+        "dl_total_bytes_non_incr_75": {
+            "original": 7939215.0,
+            "normalized": -0.96474
+        },
+        "dl_bitrate_76": {
+            "original": 14313365.0,
+            "normalized": -0.93144
+        },
+        "ul_bitrate_76": {
+            "original": 55610.0,
+            "normalized": 4.37013
+        },
+        "cell_x_dl_retx_76": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_76": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_76": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_76": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_76": {
+            "original": 420.0,
+            "normalized": 4.37645
+        },
+        "dl_total_bytes_non_incr_76": {
+            "original": 9096387.0,
+            "normalized": -0.9665
+        },
+        "dl_bitrate_77": {
+            "original": 10639697.0,
+            "normalized": -0.93898
+        },
+        "ul_bitrate_77": {
+            "original": 44277.0,
+            "normalized": 4.40615
+        },
+        "cell_x_dl_retx_77": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_77": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_77": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_77": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_77": {
+            "original": 420.0,
+            "normalized": 4.47068
+        },
+        "dl_total_bytes_non_incr_77": {
+            "original": 6665506.0,
+            "normalized": -0.96969
+        },
+        "dl_bitrate_78": {
+            "original": 13484807.0,
+            "normalized": -0.93508
+        },
+        "ul_bitrate_78": {
+            "original": 55114.0,
+            "normalized": 4.36811
+        },
+        "cell_x_dl_retx_78": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_78": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_78": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_78": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_78": {
+            "original": 420.0,
+            "normalized": 4.35015
+        },
+        "dl_total_bytes_non_incr_78": {
+            "original": 8543762.0,
+            "normalized": -0.96376
+        },
+        "dl_bitrate_79": {
+            "original": 13740199.0,
+            "normalized": -0.93463
+        },
+        "ul_bitrate_79": {
+            "original": 56009.0,
+            "normalized": 4.35462
+        },
+        "cell_x_dl_retx_79": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_79": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_79": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_79": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_79": {
+            "original": 420.0,
+            "normalized": 4.36927
+        },
+        "dl_total_bytes_non_incr_79": {
+            "original": 8649416.0,
+            "normalized": -0.96252
+        },
+        "dl_bitrate_80": {
+            "original": 11484134.0,
+            "normalized": -0.92917
+        },
+        "ul_bitrate_80": {
+            "original": 56300.0,
+            "normalized": 4.35617
+        },
+        "cell_x_dl_retx_80": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_80": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_80": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_80": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_80": {
+            "original": 504.0,
+            "normalized": 4.44297
+        },
+        "dl_total_bytes_non_incr_80": {
+            "original": 7288251.0,
+            "normalized": -0.9564
+        },
+        "dl_bitrate_81": {
+            "original": 15254899.0,
+            "normalized": -0.92961
+        },
+        "ul_bitrate_81": {
+            "original": 55900.0,
+            "normalized": 4.37542
+        },
+        "cell_x_dl_retx_81": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_81": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_81": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_81": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_81": {
+            "original": 420.0,
+            "normalized": 4.3701
+        },
+        "dl_total_bytes_non_incr_81": {
+            "original": 9614304.0,
+            "normalized": -0.96349
+        },
+        "dl_bitrate_82": {
+            "original": 12576098.0,
+            "normalized": -0.93611
+        },
+        "ul_bitrate_82": {
+            "original": 55211.0,
+            "normalized": 4.36994
+        },
+        "cell_x_dl_retx_82": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_82": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_82": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_82": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_82": {
+            "original": 420.0,
+            "normalized": 4.43074
+        },
+        "dl_total_bytes_non_incr_82": {
+            "original": 7928726.0,
+            "normalized": -0.96823
+        },
+        "dl_bitrate_83": {
+            "original": 13875022.0,
+            "normalized": -0.93903
+        },
+        "ul_bitrate_83": {
+            "original": 54946.0,
+            "normalized": 4.3644
+        },
+        "cell_x_dl_retx_83": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_83": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_83": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_83": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_83": {
+            "original": 420.0,
+            "normalized": 4.42806
+        },
+        "dl_total_bytes_non_incr_83": {
+            "original": 8855174.0,
+            "normalized": -0.9687
+        },
+        "dl_bitrate_84": {
+            "original": 11987737.0,
+            "normalized": -0.93902
+        },
+        "ul_bitrate_84": {
+            "original": 54075.0,
+            "normalized": 4.36792
+        },
+        "cell_x_dl_retx_84": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_84": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_84": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_84": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_84": {
+            "original": 420.0,
+            "normalized": 4.45409
+        },
+        "dl_total_bytes_non_incr_84": {
+            "original": 7603189.0,
+            "normalized": -0.9665
+        },
+        "dl_bitrate_85": {
+            "original": 13775976.0,
+            "normalized": -0.93843
+        },
+        "ul_bitrate_85": {
+            "original": 54831.0,
+            "normalized": 4.33713
+        },
+        "cell_x_dl_retx_85": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_85": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_85": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_85": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_85": {
+            "original": 420.0,
+            "normalized": 4.3862
+        },
+        "dl_total_bytes_non_incr_85": {
+            "original": 8736564.0,
+            "normalized": -0.97227
+        },
+        "dl_bitrate_86": {
+            "original": 13573601.0,
+            "normalized": -0.93025
+        },
+        "ul_bitrate_86": {
+            "original": 52281.0,
+            "normalized": 4.32486
+        },
+        "cell_x_dl_retx_86": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_86": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_86": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_86": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_86": {
+            "original": 420.0,
+            "normalized": 4.3492
+        },
+        "dl_total_bytes_non_incr_86": {
+            "original": 8543089.0,
+            "normalized": -0.96375
+        },
+        "dl_bitrate_87": {
+            "original": 11019639.0,
+            "normalized": -0.9319
+        },
+        "ul_bitrate_87": {
+            "original": 54232.0,
+            "normalized": 4.33186
+        },
+        "cell_x_dl_retx_87": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_87": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_87": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_87": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_87": {
+            "original": 420.0,
+            "normalized": 4.39798
+        },
+        "dl_total_bytes_non_incr_87": {
+            "original": 6973846.0,
+            "normalized": -0.96134
+        },
+        "dl_bitrate_88": {
+            "original": 15250798.0,
+            "normalized": -0.93561
+        },
+        "ul_bitrate_88": {
+            "original": 55183.0,
+            "normalized": 4.31721
+        },
+        "cell_x_dl_retx_88": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_88": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_88": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_88": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_88": {
+            "original": 504.0,
+            "normalized": 4.36832
+        },
+        "dl_total_bytes_non_incr_88": {
+            "original": 9636864.0,
+            "normalized": -0.95955
+        },
+        "dl_bitrate_89": {
+            "original": 13306530.0,
+            "normalized": -0.93698
+        },
+        "ul_bitrate_89": {
+            "original": 55037.0,
+            "normalized": 4.33192
+        },
+        "cell_x_dl_retx_89": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_89": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_89": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_89": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_89": {
+            "original": 420.0,
+            "normalized": 4.38963
+        },
+        "dl_total_bytes_non_incr_89": {
+            "original": 8392834.0,
+            "normalized": -0.96597
+        },
+        "dl_bitrate_90": {
+            "original": 13058143.0,
+            "normalized": -0.93845
+        },
+        "ul_bitrate_90": {
+            "original": 52675.0,
+            "normalized": 4.34272
+        },
+        "cell_x_dl_retx_90": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_90": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_90": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_90": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_90": {
+            "original": 420.0,
+            "normalized": 4.34505
+        },
+        "dl_total_bytes_non_incr_90": {
+            "original": 8287988.0,
+            "normalized": -0.97215
+        },
+        "dl_bitrate_91": {
+            "original": 11858720.0,
+            "normalized": -0.93624
+        },
+        "ul_bitrate_91": {
+            "original": 54404.0,
+            "normalized": 4.3248
+        },
+        "cell_x_dl_retx_91": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_91": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_91": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_91": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_91": {
+            "original": 420.0,
+            "normalized": 4.4129
+        },
+        "dl_total_bytes_non_incr_91": {
+            "original": 7482850.0,
+            "normalized": -0.96484
+        },
+        "dl_bitrate_92": {
+            "original": 15439080.0,
+            "normalized": -0.9345
+        },
+        "ul_bitrate_92": {
+            "original": 55345.0,
+            "normalized": 4.32132
+        },
+        "cell_x_dl_retx_92": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_92": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_92": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_92": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_92": {
+            "original": 420.0,
+            "normalized": 4.39288
+        },
+        "dl_total_bytes_non_incr_92": {
+            "original": 9790844.0,
+            "normalized": -0.96252
+        },
+        "dl_bitrate_93": {
+            "original": 12362216.0,
+            "normalized": -0.93166
+        },
+        "ul_bitrate_93": {
+            "original": 53346.0,
+            "normalized": 4.32024
+        },
+        "cell_x_dl_retx_93": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_93": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_93": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_93": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_93": {
+            "original": 420.0,
+            "normalized": 4.3346
+        },
+        "dl_total_bytes_non_incr_93": {
+            "original": 7752858.0,
+            "normalized": -0.95997
+        },
+        "dl_bitrate_94": {
+            "original": 13296571.0,
+            "normalized": -0.92967
+        },
+        "ul_bitrate_94": {
+            "original": 55316.0,
+            "normalized": 4.33368
+        },
+        "cell_x_dl_retx_94": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_94": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_94": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_94": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_94": {
+            "original": 420.0,
+            "normalized": 4.41226
+        },
+        "dl_total_bytes_non_incr_94": {
+            "original": 8236697.0,
+            "normalized": -0.96023
+        },
+        "dl_bitrate_95": {
+            "original": 12657744.0,
+            "normalized": -0.93507
+        },
+        "ul_bitrate_95": {
+            "original": 55512.0,
+            "normalized": 4.33136
+        },
+        "cell_x_dl_retx_95": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_95": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_95": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_95": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_95": {
+            "original": 504.0,
+            "normalized": 4.37049
+        },
+        "dl_total_bytes_non_incr_95": {
+            "original": 8190349.0,
+            "normalized": -0.96311
+        },
+        "dl_bitrate_96": {
+            "original": 13814040.0,
+            "normalized": -0.94107
+        },
+        "ul_bitrate_96": {
+            "original": 54671.0,
+            "normalized": 4.32653
+        },
+        "cell_x_dl_retx_96": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_96": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_96": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_96": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_96": {
+            "original": 420.0,
+            "normalized": 4.3642
+        },
+        "dl_total_bytes_non_incr_96": {
+            "original": 8723090.0,
+            "normalized": -0.97108
+        },
+        "dl_bitrate_97": {
+            "original": 13985903.0,
+            "normalized": -0.93475
+        },
+        "ul_bitrate_97": {
+            "original": 55326.0,
+            "normalized": 4.31663
+        },
+        "cell_x_dl_retx_97": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_97": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_97": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_97": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_97": {
+            "original": 420.0,
+            "normalized": 4.42965
+        },
+        "dl_total_bytes_non_incr_97": {
+            "original": 8888464.0,
+            "normalized": -0.96675
+        },
+        "dl_bitrate_98": {
+            "original": 11338745.0,
+            "normalized": -0.94402
+        },
+        "ul_bitrate_98": {
+            "original": 54435.0,
+            "normalized": 4.35415
+        },
+        "cell_x_dl_retx_98": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_98": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_98": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_98": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_98": {
+            "original": 420.0,
+            "normalized": 4.33685
+        },
+        "dl_total_bytes_non_incr_98": {
+            "original": 7043453.0,
+            "normalized": -0.97449
+        },
+        "dl_bitrate_99": {
+            "original": 15371681.0,
+            "normalized": -0.92806
+        },
+        "ul_bitrate_99": {
+            "original": 54784.0,
+            "normalized": 4.31004
+        },
+        "cell_x_dl_retx_99": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_99": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_99": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_99": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_99": {
+            "original": 420.0,
+            "normalized": 4.29227
+        },
+        "dl_total_bytes_non_incr_99": {
+            "original": 9805281.0,
+            "normalized": -0.95469
+        },
+        "dl_bitrate_100": {
+            "original": 13930772.0,
+            "normalized": -0.93517
+        },
+        "ul_bitrate_100": {
+            "original": 54441.0,
+            "normalized": 4.32771
+        },
+        "cell_x_dl_retx_100": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_100": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_100": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_100": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_100": {
+            "original": 420.0,
+            "normalized": 4.41588
+        },
+        "dl_total_bytes_non_incr_100": {
+            "original": 8720594.0,
+            "normalized": -0.96276
+        },
+        "dl_bitrate_101": {
+            "original": 13463686.0,
+            "normalized": -0.93191
+        },
+        "ul_bitrate_101": {
+            "original": 53040.0,
+            "normalized": 4.33385
+        },
+        "cell_x_dl_retx_101": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_101": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_101": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_101": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_101": {
+            "original": 420.0,
+            "normalized": 4.39134
+        },
+        "dl_total_bytes_non_incr_101": {
+            "original": 8526708.0,
+            "normalized": -0.95648
+        },
+        "dl_bitrate_102": {
+            "original": 11314047.0,
+            "normalized": -0.93653
+        },
+        "ul_bitrate_102": {
+            "original": 54447.0,
+            "normalized": 4.33393
+        },
+        "cell_x_dl_retx_102": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_102": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_102": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_102": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_102": {
+            "original": 420.0,
+            "normalized": 4.35281
+        },
+        "dl_total_bytes_non_incr_102": {
+            "original": 7179990.0,
+            "normalized": -0.9648
+        },
+        "dl_bitrate_103": {
+            "original": 15315636.0,
+            "normalized": -0.93096
+        },
+        "ul_bitrate_103": {
+            "original": 55752.0,
+            "normalized": 4.33593
+        },
+        "cell_x_dl_retx_103": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_103": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_103": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_103": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_103": {
+            "original": 504.0,
+            "normalized": 4.37814
+        },
+        "dl_total_bytes_non_incr_103": {
+            "original": 9684040.0,
+            "normalized": -0.96249
+        },
+        "dl_bitrate_104": {
+            "original": 13540475.0,
+            "normalized": -0.9364
+        },
+        "ul_bitrate_104": {
+            "original": 53974.0,
+            "normalized": 4.32716
+        },
+        "cell_x_dl_retx_104": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_104": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_104": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_104": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_104": {
+            "original": 420.0,
+            "normalized": 4.3725
+        },
+        "dl_total_bytes_non_incr_104": {
+            "original": 8556179.0,
+            "normalized": -0.96921
+        },
+        "dl_bitrate_105": {
+            "original": 13915210.0,
+            "normalized": -0.9262
+        },
+        "ul_bitrate_105": {
+            "original": 55121.0,
+            "normalized": 4.31357
+        },
+        "cell_x_dl_retx_105": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_105": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_105": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_105": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_105": {
+            "original": 420.0,
+            "normalized": -0.71234
+        },
+        "dl_total_bytes_non_incr_105": {
+            "original": 8797960.0,
+            "normalized": -1.1038
+        },
+        "dl_bitrate_106": {
+            "original": 11595485.0,
+            "normalized": -0.93188
+        },
+        "ul_bitrate_106": {
+            "original": 55805.0,
+            "normalized": 4.38419
+        },
+        "cell_x_dl_retx_106": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_106": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_106": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_106": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_106": {
+            "original": 420.0,
+            "normalized": 4.47978
+        },
+        "dl_total_bytes_non_incr_106": {
+            "original": 7301025.0,
+            "normalized": -0.96494
+        },
+        "dl_bitrate_107": {
+            "original": 15416801.0,
+            "normalized": -0.93234
+        },
+        "ul_bitrate_107": {
+            "original": 56017.0,
+            "normalized": 4.39244
+        },
+        "cell_x_dl_retx_107": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_107": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_107": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_107": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_107": {
+            "original": 420.0,
+            "normalized": 4.38219
+        },
+        "dl_total_bytes_non_incr_107": {
+            "original": 9746292.0,
+            "normalized": -0.96444
+        },
+        "dl_bitrate_108": {
+            "original": 13384726.0,
+            "normalized": -0.92302
+        },
+        "ul_bitrate_108": {
+            "original": 56431.0,
+            "normalized": 4.41975
+        },
+        "cell_x_dl_retx_108": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_108": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_108": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_108": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_108": {
+            "original": 420.0,
+            "normalized": 4.47002
+        },
+        "dl_total_bytes_non_incr_108": {
+            "original": 8453366.0,
+            "normalized": -0.95602
+        },
+        "dl_bitrate_109": {
+            "original": 13878175.0,
+            "normalized": -0.9329
+        },
+        "ul_bitrate_109": {
+            "original": 55749.0,
+            "normalized": 4.41361
+        },
+        "cell_x_dl_retx_109": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_109": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_109": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_109": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_109": {
+            "original": 420.0,
+            "normalized": 4.43014
+        },
+        "dl_total_bytes_non_incr_109": {
+            "original": 8724184.0,
+            "normalized": -0.96174
+        },
+        "dl_bitrate_110": {
+            "original": 11797915.0,
+            "normalized": -0.92708
+        },
+        "ul_bitrate_110": {
+            "original": 55776.0,
+            "normalized": 4.42104
+        },
+        "cell_x_dl_retx_110": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_110": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_110": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_110": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_110": {
+            "original": 420.0,
+            "normalized": 4.40887
+        },
+        "dl_total_bytes_non_incr_110": {
+            "original": 7479002.0,
+            "normalized": -0.95609
+        },
+        "dl_bitrate_111": {
+            "original": 15659462.0,
+            "normalized": -0.93345
+        },
+        "ul_bitrate_111": {
+            "original": 55505.0,
+            "normalized": 4.42294
+        },
+        "cell_x_dl_retx_111": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_111": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_111": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_111": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_111": {
+            "original": 504.0,
+            "normalized": 4.40679
+        },
+        "dl_total_bytes_non_incr_111": {
+            "original": 9858197.0,
+            "normalized": -0.96584
+        },
+        "dl_bitrate_112": {
+            "original": 13241208.0,
+            "normalized": -0.9243
+        },
+        "ul_bitrate_112": {
+            "original": 55505.0,
+            "normalized": 4.47128
+        },
+        "cell_x_dl_retx_112": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_112": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_112": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_112": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_112": {
+            "original": 420.0,
+            "normalized": 4.52663
+        },
+        "dl_total_bytes_non_incr_112": {
+            "original": 8304057.0,
+            "normalized": -0.95738
+        },
+        "dl_bitrate_113": {
+            "original": 13893991.0,
+            "normalized": -0.93041
+        },
+        "ul_bitrate_113": {
+            "original": 56215.0,
+            "normalized": 4.42933
+        },
+        "cell_x_dl_retx_113": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_113": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_113": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_113": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_113": {
+            "original": 420.0,
+            "normalized": 4.42863
+        },
+        "dl_total_bytes_non_incr_113": {
+            "original": 8824632.0,
+            "normalized": -0.95998
+        },
+        "dl_bitrate_114": {
+            "original": 11790822.0,
+            "normalized": -0.93126
+        },
+        "ul_bitrate_114": {
+            "original": 55329.0,
+            "normalized": 4.34976
+        },
+        "cell_x_dl_retx_114": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_114": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_114": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_114": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_114": {
+            "original": 420.0,
+            "normalized": -0.71613
+        },
+        "dl_total_bytes_non_incr_114": {
+            "original": 7485328.0,
+            "normalized": -1.10885
+        },
+        "dl_bitrate_115": {
+            "original": 15313801.0,
+            "normalized": -0.93321
+        },
+        "ul_bitrate_115": {
+            "original": 55327.0,
+            "normalized": 4.38468
+        },
+        "cell_x_dl_retx_115": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_115": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_115": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_115": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_115": {
+            "original": 420.0,
+            "normalized": 4.42776
+        },
+        "dl_total_bytes_non_incr_115": {
+            "original": 9731649.0,
+            "normalized": -0.96434
+        },
+        "dl_bitrate_116": {
+            "original": 12711933.0,
+            "normalized": -0.9315
+        },
+        "ul_bitrate_116": {
+            "original": 55881.0,
+            "normalized": 4.38839
+        },
+        "cell_x_dl_retx_116": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_116": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_116": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_116": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_116": {
+            "original": 420.0,
+            "normalized": 4.40094
+        },
+        "dl_total_bytes_non_incr_116": {
+            "original": 7940086.0,
+            "normalized": -0.96318
+        },
+        "dl_bitrate_117": {
+            "original": 14221353.0,
+            "normalized": -0.93355
+        },
+        "ul_bitrate_117": {
+            "original": 55649.0,
+            "normalized": 4.42256
+        },
+        "cell_x_dl_retx_117": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_117": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_117": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_117": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_117": {
+            "original": 420.0,
+            "normalized": 4.431
+        },
+        "dl_total_bytes_non_incr_117": {
+            "original": 8987934.0,
+            "normalized": -0.96614
+        },
+        "dl_bitrate_118": {
+            "original": 12053328.0,
+            "normalized": -0.93005
+        },
+        "ul_bitrate_118": {
+            "original": 56489.0,
+            "normalized": 4.46413
+        },
+        "cell_x_dl_retx_118": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_118": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_118": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_118": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_118": {
+            "original": 420.0,
+            "normalized": 4.48024
+        },
+        "dl_total_bytes_non_incr_118": {
+            "original": 7703183.0,
+            "normalized": -0.95993
+        },
+        "dl_bitrate_119": {
+            "original": 13802175.0,
+            "normalized": -0.93143
+        },
+        "ul_bitrate_119": {
+            "original": 54015.0,
+            "normalized": 4.38275
+        },
+        "cell_x_dl_retx_119": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_119": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_119": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_119": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_119": {
+            "original": 504.0,
+            "normalized": 4.46864
+        },
+        "dl_total_bytes_non_incr_119": {
+            "original": 8609582.0,
+            "normalized": -0.96179
+        },
+        "dl_bitrate_120": {
+            "original": 14079717.0,
+            "normalized": -0.93505
+        },
+        "ul_bitrate_120": {
+            "original": 55530.0,
+            "normalized": 4.43762
+        },
+        "cell_x_dl_retx_120": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_dl_tx_120": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_retx_120": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "cell_x_ul_tx_120": {
+            "original": -1.0,
+            "normalized": 0.0
+        },
+        "ul_total_bytes_non_incr_120": {
+            "original": 420.0,
+            "normalized": 4.44598
+        },
+        "dl_total_bytes_non_incr_120": {
+            "original": 9022744.0,
+            "normalized": -0.96452
+        },
+        "attack": {
+            "original": 0.0
+        },
+        "hour": {
+            "original": 20.0,
+            "normalized": 1.32468
+        },
+        "dayofweek": {
+            "original": 5.0,
+            "normalized": -2.36192
+        },
+        "day": {
+            "original": 23.0,
+            "normalized": -2.36192
+        },
+        "month": {
+            "original": 3.0,
+            "normalized": 0.0
+        },
+        "is_weekend": {
+            "original": 1.0,
+            "normalized": 0.0
+        }
+    }
+}

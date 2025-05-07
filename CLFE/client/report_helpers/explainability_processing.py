@@ -11,6 +11,16 @@ import re
 from datetime import datetime
 import pandas as pd # Added pandas here as it's used within the functions
 import random # Added random here as it's used within the functions
+import sys
+
+# Importar feature_metadata para denormalização
+try:
+    sys.path.append('/Users/joaofonseca/git/Flower_Projects_MEI/CLFE')
+    from explainability.feature_metadata import feature_metadata
+    FEATURE_METADATA_AVAILABLE = True
+except ImportError:
+    FEATURE_METADATA_AVAILABLE = False
+    print("feature_metadata não pode ser importado, valores originais não estarão disponíveis")
 
 from .formatting import extract_feature_name, format_value, get_interpretation
 
@@ -112,6 +122,65 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                             df_original['month'] = df_original['_time'].dt.month
                             df_original['is_weekend'] = (df_original['dayofweek'] >= 5).astype(int)
                             logger.info("Features temporais extraídas com sucesso do dataset original")
+                            
+                            # Gerar instance_info.json com todas as features após criação das features temporais
+                            try:
+                                # Obter a instância original com as features temporais incluídas
+                                instance_row = df_original.iloc[sample_idx]
+                                
+                                # Colunas a serem excluídas na exportação
+                                exclude_cols = ['indice', 'imeisv', 'index', '_time']
+                                
+                                # Criar dicionário com todos os valores de features
+                                feature_values = {}
+                                
+                                # Para cada feature disponível no dataset
+                                for col in df_original.columns:
+                                    if col not in exclude_cols:
+                                        value = instance_row[col]
+                                        if isinstance(value, (np.integer, np.floating)):
+                                            value = float(value)
+                                        else:
+                                            value = str(value)
+                                        
+                                        feature_values[col] = {
+                                            'original': value
+                                        }
+                                
+                                # Adicionar valores normalizados quando disponíveis
+                                for i, name in enumerate(explainer.feature_names):
+                                    norm_val = instance[i]
+                                    if isinstance(norm_val, (np.integer, np.floating)):
+                                        norm_val = float(norm_val)
+                                        
+                                    if name in feature_values:
+                                        feature_values[name]['normalized'] = round(norm_val, 5)
+                                    else:
+                                        feature_values[name] = {
+                                            'normalized': round(norm_val, 5)
+                                        }
+                                
+                                # Criar estrutura completa do arquivo
+                                instance_info = {
+                                    'original_index': sample_idx,
+                                    'prediction': round(float(prediction), 5),
+                                    'predicted_class': 'Ataque' if prediction > 0.5 else 'Normal',
+                                    'prediction_confidence': round((prediction if prediction > 0.5 else 1 - prediction) * 100, 2),
+                                    'original_target': int(instance_row['attack']) if 'attack' in instance_row else None,
+                                    'original_target_class': 'Ataque' if 'attack' in instance_row and instance_row['attack'] == 1 else 'Normal',
+                                    'prediction_correct': (prediction > 0.5) == (instance_row['attack'] == 1) if 'attack' in instance_row else None,
+                                    'feature_count': len(feature_values),
+                                    'features': feature_values
+                                }
+                                
+                                # Salvar o arquivo
+                                instance_info_path = base_reports / 'instance_info.json'
+                                with open(instance_info_path, 'w') as f:
+                                    json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                                
+                                logger.info(f"Arquivo instance_info.json com todos os valores de features criado em {instance_info_path}")
+                            except Exception as e:
+                                logger.error(f"Erro ao gerar instance_info.json: {e}", exc_info=True)
                     
                     # Se tivermos o índice original, usamos para buscar os valores originais
                     original_instance = df_original.iloc[sample_idx]
@@ -180,22 +249,61 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                 # NOVO: Salvar explained_instance_info.json para o relatório HTML
                 instance_info_path = base_reports / "explained_instance_info.json"
                 try:
-                    # Extrair os valores das principais features para exibição
+                    # Nova abordagem: manter valores originais E normalizados
+                    
+                    # Dicionário para armazenar ambos os conjuntos de valores
                     features_dict = {}
-                    if lime_exp.as_list():
-                        # Pegar até 20 features com maior impacto
-                        for feature_idx, _ in sorted(lime_exp.as_list(), key=lambda x: abs(x[1]), reverse=True)[:20]:
-                            feature_name = explainer.feature_names[feature_idx]
-                            # Preferir valor original (desnormalizado) se disponível
-                            if original_values_dict and feature_name in original_values_dict:
-                                raw_val = original_values_dict[feature_name]
-                            else:
-                                raw_val = instance[feature_idx]
-                            
-                            # Converter numpy types ou outros para float sempre que possível
-                            if isinstance(raw_val, (np.integer, np.floating)):
-                                raw_val = float(raw_val)
-                            features_dict[feature_name] = raw_val
+                    original_values = {}
+                    normalized_values = {}
+                    
+                    # Primeiro, carregar todos os valores normalizados
+                    for i, name in enumerate(explainer.feature_names):
+                        norm_val = instance[i]
+                        if isinstance(norm_val, (np.integer, np.floating)):
+                            norm_val = float(norm_val)
+                        
+                        # Apenas incluir se o valor for diferente de zero
+                        if abs(norm_val) > 0.001:  # Filtrar valores próximos de zero
+                            normalized_values[name] = round(norm_val, 5)
+                    
+                    # Depois, carregar os valores originais quando disponíveis
+                    if original_values_dict:
+                        # Remover colunas que não são features
+                        cols_to_drop = []
+                        for col in ['indice', 'imeisv', 'index', 'attack', '_time']:
+                            if col in original_instance.index:
+                                cols_to_drop.append(col)
+                        
+                        # Criar Series apenas com as features
+                        original_features = original_instance.drop(cols_to_drop) if cols_to_drop else original_instance
+                        
+                        # Carregar valores originais disponíveis
+                        for name in explainer.feature_names:
+                            if name in original_features:
+                                val = original_features[name]
+                                if isinstance(val, (np.integer, np.floating)):
+                                    val = float(val)
+                                
+                                # Apenas incluir se o valor for diferente de zero
+                                if abs(val) > 0.001:
+                                    original_values[name] = round(val, 5)
+                        
+                        logger.info(f"Carregados {len(original_values)} valores originais e {len(normalized_values)} valores normalizados")
+                    else:
+                        logger.warning(f"Dataset original não encontrado, apenas valores normalizados disponíveis")
+                    
+                    # Combinar em um único dicionário estruturado com 'original' e 'normalized'
+                    for name in set(list(original_values.keys()) + list(normalized_values.keys())):
+                        features_dict[name] = {}
+                        if name in normalized_values:
+                            features_dict[name]['normalized'] = normalized_values[name]
+                        if name in original_values:
+                            features_dict[name]['original'] = original_values[name]
+                        # Se só tiver o valor normalizado, copiar para 'original' também como fallback
+                        elif name in normalized_values:
+                            features_dict[name]['original'] = normalized_values[name]
+                    
+                    logger.info(f"Total de {len(features_dict)} features incluídas no explained_instance_info.json")
                     
                     # Determinar a classe predita
                     predicted_class = "Ataque" if prediction > 0.5 else "Normal"
