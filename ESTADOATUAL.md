@@ -1,6 +1,6 @@
 # Estado Atual do Projeto – CLFE (Classificação Linear Federada Explicável)
 
-> Última atualização: 2025-05-06 11:05
+> Última atualização: 2025-05-07 09:31
 
 ---
 
@@ -24,7 +24,7 @@
 | ✅ | Conversão RLFE → **CLFE** (sigmoid + BCE) | Modelo |
 | ✅ | Métricas de classificação (acc/prec/recall/F1) | Modelo |
 | ✅ | Sistema de **metadados de features** | Explainability |
-| ✅ | Gráficos + relatório HTML (valores originais) | Explainability |
+| ✅ | Gráficos completos (métricas, tempos e `explainability_times.png`) + relatório HTML | Explainability |
 | ✅ | Módulo `export_utils.py` unifica exportação de artefatos | Infraestrutura |
 | 🔄 | Saída de explicações em `instance_explanations/` | Explainability |
 | 🔄 | Investigar *extra_feature_X* & alinhar datasets | Dados |
@@ -58,7 +58,7 @@ Legenda: ✅ Concluído 🔄 Em progresso ☐ Pendente
 - ☐ Explorar regularização / múltiplas camadas se necessário
 
 ### 3.4 Explicabilidade
-- ✅ LIME Top-10 & completo, cores verde/vermelho
+- ✅ LIME/SHAP visualizações e **gráficos de tempos (processing_times, explainability_times)**
 - ✅ SHAP global + categorias específicas (`dl_bitrate`, …)
 - 🔄 Gravar todas as explicações em `instance_explanations/`
 - ☐ Incluir categoria **time_features** nos gráficos agregados
@@ -95,6 +95,7 @@ Legenda: ✅ Concluído 🔄 Em progresso ☐ Pendente
 
 | Data | Alteração | Autor |
 |------|-----------|-------|
+| 2025-05-07 | Gráficos de tempos corrigidos + novo `explainability_times.png` | _AI assistant_ |
 | 2025-05-06 | Criação do módulo `export_utils.py` e atualização geral | _AI assistant_ |
 | 2025-05-06 | Documento reestruturado: visão geral, kanban, roadmap | _AI assistant_ |
 | 2025-05-02 | Conversão RLFE → CLFE, métricas de classificação | JF |

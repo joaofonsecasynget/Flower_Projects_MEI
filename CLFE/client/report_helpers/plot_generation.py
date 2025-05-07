@@ -302,7 +302,57 @@ def generate_evolution_plots(history: Dict[str, List[Any]], base_reports: Path) 
             plot_files.append(plot_filename)
             logger.info(f"Generated plot: {plot_path}")
 
-        # 6. GRÁFICO DE COMPARAÇÃO DE ACURÁCIA - Treino, Validação e Teste
+        # 6. GRÁFICO DE TEMPOS DE EXPLICABILIDADE (LIME, SHAP - barras)
+        # Chaves para tempos de explicabilidade
+        explainability_keys = ['lime_duration_seconds', 'shap_duration_seconds']
+        
+        if any(key in history for key in explainability_keys) and any(history.get(key, [0])[-1] > 0 for key in explainability_keys):
+            plt.figure(figsize=(10, 6))
+            
+            available_metrics = [m for m in explainability_keys if m in history and any(v > 0 for v in history[m])]
+            
+            # Para explicabilidade, geralmente só temos valores na última ronda
+            # Vamos extrair os valores não-zero de cada métrica
+            data = {}
+            for metric in available_metrics:
+                metric_name = metric.replace('_duration_seconds', '')
+                non_zero_values = [v for v in history[metric] if v > 0]
+                if non_zero_values:
+                    data[metric_name] = non_zero_values[-1]  # Pegar o último valor não-zero
+            
+            # Criar gráfico de barras
+            if data:
+                names = list(data.keys())
+                values = list(data.values())
+                
+                # Definir cores para as barras
+                bar_colors = [colors.get(name, '#333333') for name in names]
+                
+                bars = plt.bar(names, values, color=bar_colors)
+                
+                # Adicionar valores acima das barras
+                for bar in bars:
+                    height = bar.get_height()
+                    plt.text(bar.get_x() + bar.get_width()/2., height + 0.1,
+                           f'{height:.2f}s', ha='center', va='bottom', fontsize=10)
+                
+                plt.xlabel("Método de Explicabilidade", fontsize=12, fontweight='bold')
+                plt.ylabel("Tempo (segundos)", fontsize=12, fontweight='bold')
+                plt.title("Tempos de Processamento das Explicabilidades", fontsize=14, fontweight='bold')
+                plt.xticks(fontsize=10)
+                plt.yticks(fontsize=10)
+                plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+                
+                plt.tight_layout()
+                plot_filename = "explainability_times.png"
+                plot_path = base_reports / plot_filename
+                plt.savefig(plot_path, dpi=120)
+                plt.close()
+                # Não adicionamos explainability_times.png à lista de plot_files
+                # para evitar que apareça na seção de evolução de métricas
+                logger.info(f"Generated plot: {plot_path}")
+
+        # 7. GRÁFICO DE COMPARAÇÃO DE ACURÁCIA - Treino, Validação e Teste
         if all(key in history for key in ['val_accuracy', 'test_accuracy']):
             plt.figure(figsize=(10, 6))
             
