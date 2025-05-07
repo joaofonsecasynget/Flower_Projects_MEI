@@ -48,6 +48,9 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
         # Gerar LIME
         lime_start = time.time()
         try:
+            # Garantir que o diretório base_reports existe
+            os.makedirs(base_reports, exist_ok=True)
+            
             # Escolher instância para explicar
             if sample_idx is None:
                 # Selecionar instância aleatória
@@ -69,9 +72,21 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
             
             # Tentar carregar o dataset original para obter valores não normalizados
             try:
-                # Caminho para o dataset original (ajuste conforme necessário)
-                original_dataset_path = '/app/DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv'
-                if os.path.exists(original_dataset_path):
+                # Tentar múltiplos caminhos possíveis para o dataset original
+                possible_paths = [
+                    '/app/DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv',  # Caminho no Docker
+                    '../DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv',      # Caminho relativo
+                    '/Users/joaofonseca/git/Flower_Projects_MEI/DatasetIOT/transformed_dataset_imeisv_8642840401612300.csv'  # Caminho absoluto local
+                ]
+                
+                original_dataset_path = None
+                for path in possible_paths:
+                    if os.path.exists(path):
+                        original_dataset_path = path
+                        logger.info(f"Dataset original encontrado em: {path}")
+                        break
+                
+                if original_dataset_path:
                     logger.info(f"Carregando valores originais de {original_dataset_path}")
                     # import pandas as pd # No longer needed here, imported at module level
                     df_original = pd.read_csv(original_dataset_path)
@@ -167,16 +182,20 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                 try:
                     # Extrair os valores das principais features para exibição
                     features_dict = {}
-                    if lime_exp.as_list() and original_values_dict:
+                    if lime_exp.as_list():
                         # Pegar até 20 features com maior impacto
                         for feature_idx, _ in sorted(lime_exp.as_list(), key=lambda x: abs(x[1]), reverse=True)[:20]:
                             feature_name = explainer.feature_names[feature_idx]
-                            # Usar valor original quando disponível
-                            if feature_name in original_values_dict:
-                                features_dict[feature_name] = original_values_dict[feature_name]
-                            # Caso contrário usar valor normalizado
+                            # Preferir valor original (desnormalizado) se disponível
+                            if original_values_dict and feature_name in original_values_dict:
+                                raw_val = original_values_dict[feature_name]
                             else:
-                                features_dict[feature_name] = float(instance[feature_idx])
+                                raw_val = instance[feature_idx]
+                            
+                            # Converter numpy types ou outros para float sempre que possível
+                            if isinstance(raw_val, (np.integer, np.floating)):
+                                raw_val = float(raw_val)
+                            features_dict[feature_name] = raw_val
                     
                     # Determinar a classe predita
                     predicted_class = "Ataque" if prediction > 0.5 else "Normal"
@@ -196,12 +215,30 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     }
                     
                     # Salvar as informações
-                    with open(instance_info_path, 'w') as f:
-                        json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
-                    
-                    logger.info(f"Informações da instância salvas em {instance_info_path}")
+                    try:
+                        with open(instance_info_path, 'w') as f:
+                            json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                        
+                        logger.info(f"Informações da instância salvas com sucesso em {instance_info_path}")
+                        
+                        # Verificar se o arquivo foi realmente criado
+                        if os.path.exists(instance_info_path):
+                            logger.info(f"Arquivo {instance_info_path} existe e tem tamanho {os.path.getsize(instance_info_path)} bytes")
+                        else:
+                            logger.error(f"Arquivo {instance_info_path} não existe após a tentativa de criação")
+                            
+                            # Tentar caminho alternativo como fallback
+                            fallback_path = os.path.join(str(base_reports), "explained_instance_info.json")
+                            logger.info(f"Tentando salvar em caminho alternativo: {fallback_path}")
+                            with open(fallback_path, 'w') as f:
+                                json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                            logger.info(f"Informações salvas em caminho alternativo: {fallback_path}")
+                    except Exception as e:
+                        logger.error(f"Erro ao escrever no arquivo {instance_info_path}: {e}", exc_info=True)
                 except Exception as e:
                     logger.error(f"Erro ao salvar explained_instance_info.json: {e}", exc_info=True)
+                
+                # Código de fallback removido para simplificar
             except Exception as e:
                 logger.error(f"Erro ao salvar LIME explainer com payload: {e}", exc_info=True)
 

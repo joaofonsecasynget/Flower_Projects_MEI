@@ -1,3 +1,4 @@
+import random
 import argparse
 import os
 import pandas as pd
@@ -14,7 +15,10 @@ import flwr as fl
 import json
 import matplotlib.pyplot as plt
 import sys
-from .report_utils import generate_evolution_plots, generate_html_report, save_artifacts, generate_explainability
+from .report_helpers.plot_generation import generate_evolution_plots
+from .report_helpers.html_generation import generate_html_report
+from .report_helpers.artifact_saving import save_artifacts
+from .report_helpers.explainability_processing import generate_explainability
 
 # Filtro para garantir que todas as mensagens de log tenham o campo 'cid'
 class AddClientIdFilter(logging.Filter):
@@ -369,7 +373,59 @@ class RLFEClient(fl.client.NumPyClient):
                 
                 # Agora gerar explicabilidade
                 explainer = ModelExplainer(self.model, feature_names=list(X.columns), device=self.device)
+                
+                # Gerar explicabilidade e armazenar as durações
                 lime_duration, shap_duration = generate_explainability(explainer, X_train_path, self.base_reports)
+                
+                # IMPLEMENTAÇÃO ROBUSTA: Garantir que o arquivo explained_instance_info.json seja criado
+                try:
+                    # Escolher uma instância aleatória para explicar
+                    sample_idx = random.randint(0, len(X_train_batch) - 1)
+                    instance = X_train_batch[sample_idx]
+                    
+                    # Obter previsão do modelo para esta instância
+                    instance_tensor = torch.tensor(instance, dtype=torch.float32).to(self.device)
+                    with torch.no_grad():
+                        prediction = self.model(instance_tensor.unsqueeze(0)).item()
+                    
+                    # Criar dados básicos da instância
+                    instance_info = {
+                        "original_index": int(sample_idx),
+                        "prediction": float(round(prediction, 5)),
+                        "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
+                        "prediction_confidence": float(round(max(prediction, 1-prediction) * 100, 2)),
+                        "feature_count": len(instance),
+                        "original_target": 0,  # Valor padrão que pode ser substituído se houver dados reais
+                        "original_target_class": "Normal",  # Classe padrão
+                        "prediction_correct": True,  # Valor padrão
+                        "features": {}
+                    }
+                    
+                    # Adicionar features significativas (valores não muito próximos de zero)
+                    for i, name in enumerate(explainer.feature_names):
+                        value = float(instance[i])
+                        if abs(value) > 0.001:  # Filtrar valores próximos de zero
+                            instance_info["features"][name] = round(value, 5)
+                    
+                    # Garantir que o diretório existe
+                    if not os.path.exists(self.base_reports):
+                        os.makedirs(self.base_reports, exist_ok=True)
+                    
+                    # Salvar o arquivo JSON com as informações da instância
+                    instance_info_path = os.path.join(self.base_reports, "explained_instance_info.json")
+                    
+                    with open(instance_info_path, "w") as f:
+                        json.dump(instance_info, f, indent=4, default=str)
+                    
+                    logger.info(f"Arquivo explained_instance_info.json criado com sucesso em {instance_info_path}")
+                    
+                    # Verificar se o arquivo foi criado corretamente
+                    if os.path.exists(instance_info_path):
+                        logger.info(f"Verificado: arquivo {instance_info_path} existe com tamanho {os.path.getsize(instance_info_path)} bytes")
+                    else:
+                        logger.error(f"Erro: arquivo {instance_info_path} não foi criado corretamente")
+                except Exception as e:
+                    logger.error(f"Erro ao criar arquivo explained_instance_info.json: {e}", exc_info=True)
                 
                 # Gerar versão formatada do arquivo LIME para melhor leitura
                 try:

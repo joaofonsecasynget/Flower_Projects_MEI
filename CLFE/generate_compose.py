@@ -49,8 +49,8 @@ service_template = """
       dockerfile: Dockerfile
     container_name: client_{cid}
     volumes:
-      - ./client/reports:/app/reports
-      - ./client/results:/app/results
+      - ./client/reports/client_{cid}:/app/reports/client_{cid}
+      - ./client/results/client_{cid}:/app/results/client_{cid}
       - ./DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app
     command: ["python", "-m", "client.client", "--cid", "{cid}", "--num_clients", "{num_clients}", "--num_total_clients", "{num_total_clients}", "--server_address", "server:9091"]

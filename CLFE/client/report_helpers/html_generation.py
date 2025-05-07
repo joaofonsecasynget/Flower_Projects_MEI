@@ -85,6 +85,22 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             lime_explanation_text_html = html.escape(f.read())
     else:
         lime_explanation_text_html = 'Arquivo de explicação LIME formatado não encontrado.'
+        
+    # Verificar existência dos arquivos de imagem e preparar o HTML correspondente
+    lime_img_path = os.path.join(base_reports, 'lime_final.png')
+    shap_img_path = os.path.join(base_reports, 'shap_final.png')
+    
+    # HTML para a imagem LIME
+    if os.path.exists(lime_img_path):
+        lime_img_html = '<img src="lime_final.png" alt="LIME final" style="width:100%; max-width:600px;">'
+    else:
+        lime_img_html = '<p><em>Visualização LIME não disponível.</em></p>'
+    
+    # HTML para a imagem SHAP
+    if os.path.exists(shap_img_path):
+        shap_img_html = '<img src="shap_final.png" alt="SHAP final" style="width:100%; max-width:600px;">'
+    else:
+        shap_img_html = '<p><em>Visualização SHAP não disponível.</em></p>'
 
     # --- NOVO: gerar tabelas de métricas por ronda ---
     _time_key_alias = {
@@ -296,11 +312,14 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 20px;">
                 <div style="flex:1; min-width:300px;">
                     <h3>LIME</h3>
-                    <img src="lime_final.png" alt="LIME final" style="width:100%; max-width:600px;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Visualização LIME não disponível.</em></p>';"><p><a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p><p><a href="lime_explanation_formatado.txt" target="_blank">Ver LIME (formatado)</a></p>
+                    {lime_img_html}
+                    <p><a href="lime_explanation.txt" target="_blank">Ver LIME (texto)</a></p>
+                    <p><a href="lime_explanation_formatado.txt" target="_blank">Ver LIME (formatado)</a></p>
                 </div>
                 <div style="flex:1; min-width:300px;">
                     <h3>SHAP</h3>
-                    <img src="shap_final.png" alt="SHAP final" style="width:100%; max-width:600px;" onerror="this.style.display='none'; this.parentElement.innerHTML += '<p><em>Visualização SHAP não disponível.</em></p>';"><p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
+                    {shap_img_html}
+                    <p><a href="shap_values.npy" download>Download SHAP Values (.npy)</a></p>
                 </div>
             </div>
         </div>
