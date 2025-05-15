@@ -1,5 +1,6 @@
 # Ignore large datasets folder
 transformed_dataset_imeisv_8609960480666910/
+DatasetsNew/
 
 # Ignore zip files
 *.zip 
