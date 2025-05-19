@@ -1,6 +1,6 @@
 # Estado Atual do Projeto – CLFE (Classificação Linear Federada Explicável)
 
-> Última atualização: 2025-05-07 10:08
+> Última atualização: 2025-05-19 11:23
 
 ---
 
@@ -28,7 +28,9 @@
 | ✅ | Módulo `export_utils.py` unifica exportação de artefatos | Infraestrutura |
 | 🔄 | Saída de explicações em `instance_explanations/` | Explainability |
 | 🔄 | Investigar *extra_feature_X* & alinhar datasets | Dados |
-| 🔄 | Executar cenários com vários clientes/rondas | Experimentos |
+| ✅ | Executar cenários com vários clientes/rondas | Experimentos |
+| 🔄 | Identificado desbalanceamento entre classes (recall alto, precisão baixa) | Modelo |
+| ☐ | Implementar técnicas para lidar com desbalanceamento de classes | Modelo |
 | ☐ | Portar **ADF** para o dataset IoT | Comparação |
 | ☐ | Adicionar testes unitários/CI | Qualidade |
 | ☐ | Remover código legado `*_fix.py` / `.bak` | Manutenção |
@@ -55,6 +57,12 @@ Legenda: ✅ Concluído 🔄 Em progresso ☐ Pendente
 - ✅ LinearClassificationModel (sigmoid) + BCE
 - ✅ Agregação de métricas no servidor
 - 🔄 Avaliar overfitting (accuracy ≈ 99 %)
+- 🔄 Identificado desbalanceamento do dataset (recall ~1.0, precisão ~0.08)
+- ☐ Implementar soluções para desbalanceamento de classes:
+  - Ajuste de threshold de classificação (prioridade 1)
+  - Implementação de pesos de classes (prioridade 2)
+  - Under-sampling estratificado por cliente (prioridade 3)
+  - Métricas de avaliação alternativas (complementar)
 - ☐ Explorar regularização / múltiplas camadas se necessário
 
 ### 3.4 Explicabilidade

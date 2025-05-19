@@ -179,6 +179,19 @@ def generate_html_report(history, plot_files, base_reports, client_id, dataset_p
             if isinstance(val, (int, float)):
                 return f"{val:.4f}"  # Sempre 4 casas decimais para RMSE
             return val
+        # Tratamento especial para valores de Recall, sempre mostrar 4 casas decimais
+        elif key in ['val_recall', 'test_recall']:
+            val = _get(key, idx, default, prec)
+            # Se for string, tentar converter para float
+            if isinstance(val, str):
+                try:
+                    val = float(val)
+                except ValueError:
+                    return val
+            # Para valores numéricos de recall, sempre usar 4 casas decimais
+            if isinstance(val, (int, float)):
+                return f"{val:.4f}"
+            return val
         else:
             # Para outros valores, usar o comportamento padrão
             val = _get(key, idx, default, prec)
