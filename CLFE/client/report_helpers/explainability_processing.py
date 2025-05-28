@@ -176,8 +176,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                                 # Salvar o arquivo
                                 instance_info_path = base_reports / 'instance_info.json'
                                 with open(instance_info_path, 'w') as f:
-                                    json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
-                                
+                                    json.dump(instance_info, f, indent=4, default=lambda o: int(o) if isinstance(o, np.integer) else float(o) if isinstance(o, np.floating) else bool(o) if isinstance(o, np.bool_) else repr(o))
                                 logger.info(f"Arquivo instance_info.json com todos os valores de features criado em {instance_info_path}")
                             except Exception as e:
                                 logger.error(f"Erro ao gerar instance_info.json: {e}", exc_info=True)
@@ -243,7 +242,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     'payload': lime_exp.payload
                 }
                 with open(lime_explainer_path, 'w') as f:
-                    json.dump(explanation_data_to_save, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating, Path, datetime)) else repr(o))
+                    json.dump(explanation_data_to_save, f, indent=4, default=lambda o: int(o) if isinstance(o, np.integer) else float(o) if isinstance(o, np.floating) else bool(o) if isinstance(o, np.bool_) else repr(o))
                 logger.info(f"LIME explainer com payload salvo em {lime_explainer_path}")
                 
                 # NOVO: Salvar explained_instance_info.json para o relatório HTML
@@ -325,7 +324,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                     # Salvar as informações
                     try:
                         with open(instance_info_path, 'w') as f:
-                            json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                            json.dump(instance_info, f, indent=4, default=lambda o: int(o) if isinstance(o, np.integer) else float(o) if isinstance(o, np.floating) else bool(o) if isinstance(o, np.bool_) else repr(o))
                         
                         logger.info(f"Informações da instância salvas com sucesso em {instance_info_path}")
                         
@@ -339,7 +338,7 @@ def generate_explainability(explainer, X_train, base_reports, sample_idx=None):
                             fallback_path = os.path.join(str(base_reports), "explained_instance_info.json")
                             logger.info(f"Tentando salvar em caminho alternativo: {fallback_path}")
                             with open(fallback_path, 'w') as f:
-                                json.dump(instance_info, f, indent=4, default=lambda o: str(o) if isinstance(o, (np.integer, np.floating)) else repr(o))
+                                json.dump(instance_info, f, indent=4, default=lambda o: int(o) if isinstance(o, np.integer) else float(o) if isinstance(o, np.floating) else bool(o) if isinstance(o, np.bool_) else repr(o))
                             logger.info(f"Informações salvas em caminho alternativo: {fallback_path}")
                     except Exception as e:
                         logger.error(f"Erro ao escrever no arquivo {instance_info_path}: {e}", exc_info=True)
