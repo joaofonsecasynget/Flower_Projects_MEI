@@ -16,7 +16,7 @@ class LinearClassificationModel(nn.Module):
         self.linear = nn.Linear(input_size, output_size)
     
     def forward(self, x):
-        return torch.sigmoid(self.linear(x))
+        return self.linear(x)
 
 class CustomDataset(Dataset):
     def __init__(self, features, targets):
@@ -33,8 +33,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         return self.features[idx], self.targets[idx]
 
-def train(model, dataloader, epochs=1, device="cpu"):
-    criterion = nn.BCELoss()
+def train(model, dataloader, criterion, epochs=1, device="cpu"):
     optimizer = torch.optim.Adam(model.parameters())
     model.train()
     for epoch in range(epochs):
@@ -51,8 +50,7 @@ def train(model, dataloader, epochs=1, device="cpu"):
         print(f"[TRAIN] Epoch {epoch+1} | Loss: {avg_loss:.4f}")
     return avg_loss
 
-def evaluate(model, dataloader, device="cpu"):
-    criterion = nn.BCELoss()
+def evaluate(model, dataloader, criterion, device="cpu"):
     model.eval()
     losses = []
     preds = []
@@ -60,10 +58,12 @@ def evaluate(model, dataloader, device="cpu"):
     with torch.no_grad():
         for features, targets in dataloader:
             features, targets = features.to(device), targets.to(device)
-            outputs = model(features)
-            loss = criterion(outputs, targets.view(-1, 1))
+            logits = model(features) # Modelo retorna logits
+            loss = criterion(logits, targets.view(-1, 1)) # Usa o criterion passado (BCEWithLogitsLoss)
             losses.append(loss.item())
-            preds.extend(outputs.cpu().numpy().flatten())
+            
+            probabilities = torch.sigmoid(logits) # Calcular probabilidades para métricas
+            preds.extend(probabilities.cpu().numpy().flatten()) # Armazenar probabilidades
             trues.extend(targets.cpu().numpy().flatten())
     
     # Cálculo de métricas de classificação

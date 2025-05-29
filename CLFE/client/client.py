@@ -19,6 +19,7 @@ from .report_helpers.plot_generation import generate_evolution_plots
 from .report_helpers.html_generation import generate_html_report
 from .report_helpers.artifact_saving import save_artifacts
 from .report_helpers.explainability_processing import generate_explainability
+from .report_helpers.explainability_processing import generate_explainability_formatado
 
 # Filtro para garantir que todas as mensagens de log tenham o campo 'cid'
 class AddClientIdFilter(logging.Filter):
@@ -42,7 +43,7 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s][%(levelname)s] %(m
 logger = ClientLoggerAdapter(logger, {'cid': args.cid if 'args' in globals() else '?'})
 
 # Argumentos do script
-parser = argparse.ArgumentParser(description="RLFE Federated Client")
+parser = argparse.ArgumentParser(description="CLFE Federated Client")
 parser.add_argument('--cid', type=int, required=True, help='ID do cliente (1-indexed)')
 parser.add_argument('--num_clients', type=int, required=True, help='Número de clientes a executar neste teste')
 parser.add_argument('--num_total_clients', type=int, default=10, help='Número total de clientes para particionamento dos dados')
@@ -101,7 +102,7 @@ df = pd.read_csv(args.dataset_path)
 #     df = df.drop(columns=const_cols)
 
 # 2. Remover colunas de identificação e tempo (não preditivas)
-irrelevant_cols = ['índice', 'indice', 'imeisv']  # Removido '_time' para permitir extração de features
+irrelevant_cols = ['indice', 'imeisv']  # Removido '_time' para permitir extração de features
 cols_to_remove = [col for col in irrelevant_cols if col in df.columns]
 if cols_to_remove:
     logger.info(f"Removing identifier/time columns: {cols_to_remove}")
@@ -172,15 +173,31 @@ y = client_data[target_col]
 logger.info(f"Target column: {target_col}")
 logger.info(f"Target values distribution: {y.value_counts().to_dict()}")
 logger.info(f"Number of features: {X.shape[1]}")
-logger.info(f"Features list: {X.columns.tolist()}")
+feature_names = list(X.columns) # Capturar nomes das features
+logger.info(f"Features list: {feature_names}")
 
 # Normalização
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Split train/val/test
-X_train, X_temp, y_train, y_temp = train_test_split(X_scaled, y, test_size=0.3, random_state=args.seed)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=args.seed)
+X_train, X_temp, y_train, y_temp = train_test_split(X_scaled, y, test_size=0.3, random_state=args.seed, stratify=y)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=args.seed, stratify=y_temp)
+
+# Criar DataFrame para X_train escalado com nomes de colunas
+X_train_df_scaled = pd.DataFrame(X_train, columns=feature_names)
+
+# Calcular pos_weight para BCEWithLogitsLoss
+# Assumindo que y_train é uma Pandas Series e contém 0 para 'normal' e 1 para 'ataque'
+num_normal = (y_train == 0).sum()
+num_ataque = (y_train == 1).sum()
+
+if num_ataque == 0: # Evitar divisão por zero se não houver amostras de ataque em y_train para este cliente
+    logger.warning(f"Cliente {args.cid}: Nenhuma amostra de ataque encontrada em y_train. Usando pos_weight=1.0. Distribuição y_train: {y_train.value_counts().to_dict()}")
+    pos_weight_value = 1.0
+else:
+    pos_weight_value = float(num_normal) / float(num_ataque)
+logger.info(f"Cliente {args.cid}: Calculado pos_weight para a função de perda: {pos_weight_value:.4f} (Normal: {num_normal}, Ataque: {num_ataque})")
 
 train_ds = CustomDataset(X_train, y_train)
 val_ds = CustomDataset(X_val, y_val)
@@ -193,17 +210,21 @@ test_loader = torch.utils.data.DataLoader(test_ds, batch_size=32, shuffle=False)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 input_size = X_train.shape[1]
 model = LinearClassificationModel(input_size).to(device)
-explainer = ModelExplainer(model, feature_names=list(X.columns), device=device)
+explainer = ModelExplainer(model, feature_names=feature_names, device=device) # Usar a variável feature_names
 
 # Definindo a classe do cliente Flower
-class RLFEClient(fl.client.NumPyClient):
-    def __init__(self, model, train_loader, val_loader, test_loader, epochs, device):
+class CLFEClient(fl.client.NumPyClient):
+    def __init__(self, model, train_loader, val_loader, test_loader, epochs, device, pos_weight,
+                 X_train_df_scaled, feature_names, scaler): # NOVOS PARÂMETROS
         self.model = model
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.test_loader = test_loader
         self.epochs = epochs
         self.device = device
+        self.pos_weight = pos_weight # Armazenar pos_weight
+        # Instanciar a função de perda com o pos_weight
+        self.criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([self.pos_weight], device=self.device))
         
         # Criar diretórios para armazenar resultados
         self.base_reports = Path("reports") / f"client_{args.cid}"
@@ -218,10 +239,11 @@ class RLFEClient(fl.client.NumPyClient):
         self.fit_start_time = 0
         self.eval_start_time = 0
         
-        # Feature names para explicabilidade
-        self.feature_names = []
-        if 'X' in globals() and isinstance(X, pd.DataFrame):
-            self.feature_names = list(X.columns)
+        # Feature names, DataFrame de treino escalado e scaler para explicabilidade e potencial desnormalização
+        self.X_train_df_scaled = X_train_df_scaled
+        self.feature_names = feature_names
+        self.scaler = scaler
+    # self.reset_history() # reset_history é chamado depois, não há problema
             
     def reset_history(self):
         """Reinicializa o histórico de métricas."""
@@ -275,7 +297,7 @@ class RLFEClient(fl.client.NumPyClient):
         start_time = time.time()
         logger.info(f"[CID: {args.cid}] Received training instructions: {config}")
         self.set_parameters(parameters)
-        train_loss = train(self.model, self.train_loader, epochs=self.epochs, device=self.device)
+        train_loss = train(self.model, self.train_loader, self.criterion, epochs=self.epochs, device=self.device)
         val_loss, val_rmse, _, _, val_accuracy, val_precision, val_recall, val_f1 = evaluate(self.model, self.val_loader, device=self.device)
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Train loss: {train_loss:.4f}")
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Val loss: {val_loss:.4f} | Val RMSE: {val_rmse:.2f}")
@@ -324,7 +346,7 @@ class RLFEClient(fl.client.NumPyClient):
         start_time = time.time()
         
         # Calcular métricas no conjunto de validação
-        val_loss, val_rmse, _, _, val_accuracy, val_precision, val_recall, val_f1 = evaluate(self.model, self.val_loader, self.device)
+        val_loss, val_rmse, _, _, val_accuracy, val_precision, val_recall, val_f1 = evaluate(self.model, self.val_loader, self.criterion, self.device)
         
         # Calcular duração da avaliação
         pure_eval_duration = time.time() - start_time
@@ -344,7 +366,7 @@ class RLFEClient(fl.client.NumPyClient):
         self.history["evaluate_duration_seconds"].append(pure_eval_duration)
         
         # Calcular métricas de teste
-        test_loss, test_rmse, _, _, test_accuracy, test_precision, test_recall, test_f1 = evaluate(self.model, self.test_loader, self.device)
+        test_loss, test_rmse, _, _, test_accuracy, test_precision, test_recall, test_f1 = evaluate(self.model, self.test_loader, self.criterion, self.device)
         
         # Adicionar métricas de teste ao histórico
         self.history["test_loss"].append(float(test_loss))
@@ -366,86 +388,161 @@ class RLFEClient(fl.client.NumPyClient):
         if config['round_number'] == config['num_rounds']:
             # Primeiro, vamos salvar X_train para gerar explicabilidade
             try:
-                X_train_batch = next(iter(self.train_loader))[0].numpy()
-                X_train_path = self.base_reports / "X_train.npy"
-                np.save(X_train_path, X_train_batch)
-                logger.info(f"Saved X_train for explainability at {X_train_path}")
-                
-                # Agora gerar explicabilidade
-                explainer = ModelExplainer(self.model, feature_names=list(X.columns), device=self.device)
-                
-                # Gerar explicabilidade e armazenar as durações
-                lime_duration, shap_duration = generate_explainability(explainer, X_train_path, self.base_reports)
+                background_data_np = None
+                feature_names_list = []
+                X_background_path = None
+
+                if hasattr(self, 'X_train_df_scaled') and self.X_train_df_scaled is not None and not self.X_train_df_scaled.empty:
+                    background_data_np = self.X_train_df_scaled.to_numpy()
+                    MAX_BACKGROUND_SAMPLES = 500
+                    if background_data_np.shape[0] > MAX_BACKGROUND_SAMPLES:
+                        logger.info(f"Amostrando dados de fundo de {background_data_np.shape[0]} para {MAX_BACKGROUND_SAMPLES} instâncias.")
+                        indices = np.random.choice(background_data_np.shape[0], MAX_BACKGROUND_SAMPLES, replace=False)
+                        background_data_np = background_data_np[indices]
+                    
+                    X_background_path = self.base_reports / "X_train_background.npy"
+                    np.save(X_background_path, background_data_np)
+                    logger.info(f"Dados de fundo (self.X_train_df_scaled) para explicabilidade salvos em {X_background_path} com {background_data_np.shape[0]} instâncias.")
+                    feature_names_list = list(self.X_train_df_scaled.columns)
+                else:
+                    logger.warning("self.X_train_df_scaled não está disponível/vazio. Usando fallback: 1º batch do train_loader para dados de fundo.")
+                    if self.train_loader and len(self.train_loader.dataset) > 0:
+                        first_train_batch_features, _ = next(iter(self.train_loader))
+                        background_data_np = first_train_batch_features.numpy()
+                        X_background_path = self.base_reports / "X_train_batch_fallback_background.npy"
+                        np.save(X_background_path, background_data_np)
+                        logger.info(f"Dados de fundo (fallback: X_train batch) para explicabilidade salvos em {X_background_path}")
+                        num_features = background_data_np.shape[1] if len(background_data_np.shape) > 1 else 0
+                        feature_names_list = [f'feature_{i}' for i in range(num_features)]
+                    else:
+                        logger.error("Train_loader vazio ou não disponível. Não é possível obter dados de fundo para explicabilidade.")
+                        # Define background_data_np como um array vazio para evitar erros subsequentes se não houver dados
+                        background_data_np = np.array([]) 
+                        X_background_path = self.base_reports / "empty_background.npy"
+                        np.save(X_background_path, background_data_np) # Salva um array vazio
+
+                if not feature_names_list and background_data_np.size > 0: # Se nomes não definidos mas dados existem
+                     num_features = background_data_np.shape[1] if len(background_data_np.shape) > 1 else 0
+                     feature_names_list = [f'feature_generic_{i}' for i in range(num_features)]
+                elif not feature_names_list and background_data_np.size == 0:
+                    logger.warning("Não foi possível determinar nomes de features pois não há dados de fundo.")
+                    feature_names_list = ['fallback_feature'] # Evitar erro no ModelExplainer
+
+                explainer = ModelExplainer(self.model, feature_names=feature_names_list, device=self.device)
+                if X_background_path and background_data_np.size > 0:
+                    lime_duration, shap_duration = generate_explainability(explainer, X_background_path, self.base_reports)
+                else:
+                    logger.warning("Skipping LIME/SHAP generation due to missing background data or path.")
                 
                 # IMPLEMENTAÇÃO ROBUSTA: Garantir que o arquivo explained_instance_info.json seja criado
                 try:
-                    # Escolher uma instância aleatória para explicar
-                    sample_idx = random.randint(0, len(X_train_batch) - 1)
-                    instance = X_train_batch[sample_idx]
+                    instance_to_explain_normalized = None
+                    original_target_value_for_explained_instance = None
                     
-                    # Obter previsão do modelo para esta instância
-                    instance_tensor = torch.tensor(instance, dtype=torch.float32).to(self.device)
-                    with torch.no_grad():
-                        prediction = self.model(instance_tensor.unsqueeze(0)).item()
-                    
-                    # Criar dados básicos da instância
-                    instance_info = {
-                        "original_index": int(sample_idx),
-                        "prediction": float(round(prediction, 5)),
-                        "predicted_class": "Ataque" if prediction >= 0.5 else "Normal",
-                        "prediction_confidence": float(round(max(prediction, 1-prediction) * 100, 2)),
-                        "feature_count": len(instance),
-                        "original_target": 0,  # Valor padrão que pode ser substituído se houver dados reais
-                        "original_target_class": "Normal",  # Classe padrão
-                        "prediction_correct": True,  # Valor padrão
-                        "features": {}
-                    }
-                    
-                    # Adicionar features significativas (valores não muito próximos de zero)
-                    for i, name in enumerate(explainer.feature_names):
-                        value = float(instance[i])
-                        if abs(value) > 0.001:  # Filtrar valores próximos de zero
-                            instance_info["features"][name] = round(value, 5)
-                    
-                    # Garantir que o diretório existe
-                    if not os.path.exists(self.base_reports):
-                        os.makedirs(self.base_reports, exist_ok=True)
-                    
-                    # Salvar o arquivo JSON com as informações da instância
-                    instance_info_path = os.path.join(self.base_reports, "explained_instance_info.json")
-                    
-                    with open(instance_info_path, "w") as f:
-                        json.dump(instance_info, f, indent=4, default=str)
-                    
-                    logger.info(f"Arquivo explained_instance_info.json criado com sucesso em {instance_info_path}")
-                    
-                    # Verificar se o arquivo foi criado corretamente
-                    if os.path.exists(instance_info_path):
-                        logger.info(f"Verificado: arquivo {instance_info_path} existe com tamanho {os.path.getsize(instance_info_path)} bytes")
+                    # Selecionar aleatoriamente uma instância do conjunto de teste para explicar
+                    random_idx = -1 # Inicializar para o caso de não se encontrar nenhuma instância
+                    if self.test_loader and self.test_loader.dataset and len(self.test_loader.dataset) > 0:
+                        num_test_samples = len(self.test_loader.dataset)
+                        random_idx = random.randint(0, num_test_samples - 1)
+                        
+                        # CustomDataset[idx] retorna (feature_tensor, target_tensor)
+                        instance_tensor_for_model, original_target_tensor = self.test_loader.dataset[random_idx]
+                        
+                        instance_to_explain_normalized = None
+                        original_target_value_for_explained_instance = None
+
+                        if instance_tensor_for_model is not None and original_target_tensor is not None:
+                            try:
+                                instance_to_explain_normalized = instance_tensor_for_model.cpu().numpy()
+                                original_target_value_for_explained_instance = original_target_tensor.item()
+                                logger.info(f"Instância aleatória {random_idx} (de {num_test_samples} amostras) selecionada e convertida do conjunto de teste para explicabilidade.")
+                            except AttributeError as ae:
+                                logger.error(f"Erro de atributo ao converter instância/alvo para explicabilidade (AttributeError): {ae}. "
+                                             f"Verifique se instance_tensor_for_model (tipo: {type(instance_tensor_for_model)}) e "
+                                             f"original_target_tensor (tipo: {type(original_target_tensor)}) são tensores válidos.", exc_info=True)
+                            except Exception as e_conv:
+                                logger.error(f"Erro inesperado ao converter instância/alvo para explicabilidade: {e_conv}", exc_info=True)
+                        else:
+                            logger.warning(f"instance_tensor_for_model ou original_target_tensor é None ANTES da tentativa de conversão. "
+                                           f"instance_tensor_for_model tipo: {type(instance_tensor_for_model)}, "
+                                           f"original_target_tensor tipo: {type(original_target_tensor)}.")
+
+                        # Verificar se a instância e o seu alvo original foram obtidos e convertidos com sucesso
+                        if instance_to_explain_normalized is not None and original_target_value_for_explained_instance is not None:
+                            # Processar e guardar as informações da instância
+                            current_instance_tensor_for_processing = torch.tensor(instance_to_explain_normalized, dtype=torch.float32).to(self.device)
+                            with torch.no_grad():
+                                logits = self.model(current_instance_tensor_for_processing.unsqueeze(0))
+                                probability = torch.sigmoid(logits).item()
+                            
+                            predicted_class_value = 1 if probability >= 0.5 else 0
+                            is_correct = (predicted_class_value == int(original_target_value_for_explained_instance))
+
+                            instance_info = {
+                                "source_dataset": "test_set_random_instance",
+                                "random_instance_index_in_test_set": random_idx,
+                                "prediction": float(round(probability, 5)),
+                                "predicted_class": "Ataque" if probability >= 0.5 else "Normal",
+                                "original_target_class": "Ataque" if original_target_value_for_explained_instance == 1 else "Normal",
+                                "prediction_correct": bool(is_correct),
+                                "prediction_confidence": float(round(max(probability, 1 - probability) * 100, 2)),
+                                "feature_count": len(instance_to_explain_normalized),
+                                "features_normalized": instance_to_explain_normalized.tolist(),
+                            }
+                            
+                            instance_info_path = self.base_reports / "explained_instance_info.json"
+                            with open(instance_info_path, 'w') as f:
+                                json.dump(instance_info, f, indent=4, default=str)
+                            logger.info(f"Informações da instância de explicabilidade (do test_loader) salvas em {instance_info_path}")
+                        else:
+                            # Log se instance_to_explain_normalized ou original_target_value_for_explained_instance for None
+                            logger.warning("Falha ao obter/converter a instância de teste normalizada e/ou o seu valor alvo original. 'explained_instance_info.json' pode não ser gerado ou estar incompleto.")
                     else:
-                        logger.error(f"Erro: arquivo {instance_info_path} não foi criado corretamente")
+                        logger.warning("Test_loader vazio ou não disponível. Não é possível gerar explained_instance_info.json.")
+
                 except Exception as e:
-                    logger.error(f"Erro ao criar arquivo explained_instance_info.json: {e}", exc_info=True)
+                    logger.error(f"Erro ao gerar explained_instance_info.json OU ao criar o arquivo: {e}", exc_info=True)
                 
                 # Gerar versão formatada do arquivo LIME para melhor leitura
+                # NOVO Bloco INICIO
                 try:
-                    import importlib.util
-                    # Verificar se o script generate_lime_formatado.py existe
-                    lime_formatado_path = Path(__file__).parent / "generate_lime_formatado.py"
-                    if lime_formatado_path.exists():
-                        # Importar e executar dinamicamente
-                        spec = importlib.util.spec_from_file_location("generate_lime_formatado", lime_formatado_path)
-                        lime_formatado_module = importlib.util.module_from_spec(spec)
-                        spec.loader.exec_module(lime_formatado_module)
-                        # Extrair client_id do diretório base_reports
-                        client_id = int(self.base_reports.stem.split('_')[-1])
-                        lime_formatado_module.generate_lime_formatado(client_id)
-                        logger.info(f"Arquivo lime_explanation_formatado.txt gerado com sucesso para cliente {client_id}")
+                    # 'instance_to_explain_normalized' e 'instance_info' devem estar definidos
+                    # nas secções anteriores do método 'evaluate'.
+                    # 'background_data_np' também deve estar definido (dados de treino/fundo).
+                    # 'feature_names_list' é usado para criar o current_explainer.
+
+                    if instance_to_explain_normalized is not None and background_data_np is not None:
+                        current_explainer = ModelExplainer(self.model, feature_names=feature_names_list, device=self.device)
+                        
+                        prepared_original_target_info = {
+                            'original_target_class': instance_info.get('original_target_class'),
+                            'original_target': 1 if instance_info.get('original_target_class') == "Ataque" else 0,
+                            'prediction_correct': instance_info.get('prediction_correct'),
+                            'predicted_raw_value': instance_info.get('prediction')
+                        }
+
+                        # Nota: A função generate_explainability_formatado retorna (lime_duration, shap_duration)
+                        # A variável lime_duration já existe neste escopo devido à chamada anterior a generate_explainability.
+                        # Se precisar da duração específica desta chamada formatada, use um nome de variável diferente.
+                        _, _ = generate_explainability_formatado(
+                            explainer=current_explainer,
+                            X_background_path_or_data=background_data_np,
+                            base_reports=self.base_reports,
+                            instance_to_explain_node=instance_to_explain_normalized,
+                            scaler=self.scaler, # Assegure-se que self.scaler está disponível e é o correto
+                            feature_names=feature_names_list,
+                            original_target_info=prepared_original_target_info
+                        )
+                        logger.info(f"Explicação LIME formatada gerada com sucesso para cliente {self.client_id}")
                     else:
-                        logger.warning(f"Script generate_lime_formatado.py não encontrado em {lime_formatado_path}")
+                        if instance_to_explain_normalized is None:
+                            logger.warning("instance_to_explain_normalized é None. Não é possível gerar LIME formatado.")
+                        if background_data_np is None:
+                            logger.warning("background_data_np é None. Não é possível gerar LIME formatado.")
+
                 except Exception as e:
-                    logger.error(f"Erro ao gerar arquivo formatado LIME: {e}", exc_info=True)
-                
+                    logger.error(f"Erro ao gerar explicação LIME formatada: {e}", exc_info=True)
+                # NOVO Bloco FIM                
                 # Adicionar durações à história
                 self.history["lime_duration_seconds"].append(lime_duration)
                 self.history["shap_duration_seconds"].append(shap_duration)
@@ -509,7 +606,8 @@ class RLFEClient(fl.client.NumPyClient):
 # Iniciar a sessão de aprendizado federado
 if __name__ == "__main__":
     # Criando a instância do cliente
-    client = RLFEClient(model, train_loader, val_loader, test_loader, args.epochs, device)
+    client = CLFEClient(model, train_loader, val_loader, test_loader, args.epochs, device, pos_weight_value,
+                        X_train_df_scaled, feature_names, scaler) # Passar novos argumentos
     
     # Iniciar a conexão com o servidor Flower
     logger.info(f"Starting Flower client, connecting to server at {args.server_address}")

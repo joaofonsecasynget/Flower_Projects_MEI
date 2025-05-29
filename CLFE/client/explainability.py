@@ -32,6 +32,25 @@ class ModelExplainer:
         
         self.logger = logging.getLogger(__name__)
 
+    def get_lime_explainer(self, training_data):
+        if self.lime_explainer is None:
+            if training_data is None or training_data.shape[0] == 0:
+                self.logger.error("Dados de treino (fundo) são necessários para inicializar LimeTabularExplainer, mas não foram fornecidos ou estão vazios.")
+                return None
+            try:
+                self.lime_explainer = lime.lime_tabular.LimeTabularExplainer(
+                    training_data=training_data,
+                    feature_names=self.feature_names,
+                    class_names=['Normal', 'Ataque'], # Ajustar se necessário
+                    mode='classification',
+                    discretize_continuous=True # Ou False, dependendo da preferência/necessidade
+                )
+                self.logger.info("LimeTabularExplainer inicializado dentro de ModelExplainer.")
+            except Exception as e:
+                self.logger.error(f"Erro ao inicializar LimeTabularExplainer: {e}", exc_info=True)
+                return None
+        return self.lime_explainer
+
     def predict_fn(self, x):
         self.model.eval()
         with torch.no_grad():
@@ -76,7 +95,7 @@ class ModelExplainer:
                 X_train,
                 feature_names=self.feature_names,
                 class_names=['Normal', 'Ataque'],
-                mode='regression',
+                mode='classification',
                 random_state=42
             )
             
