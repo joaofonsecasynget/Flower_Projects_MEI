@@ -6,13 +6,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y netcat-openbsd libfreetype6-dev libpng-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --retries 10 --timeout 60 -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY client/ ./client/
 COPY DatasetIOT/ ./DatasetIOT/
 COPY server/server.py ./server.py
-
 COPY explainability/ ./explainability/
 
 # Por omissão, entra na pasta client

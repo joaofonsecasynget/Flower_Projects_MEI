@@ -1,4 +1,3 @@
-
 services:
   # Servidor Flower para coordenar a aprendizagem federada na abordagem RLFE
   server:
@@ -26,7 +25,7 @@ services:
       - ./client/results/client_1:/app/results/client_1
       - ./DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app
-    command: ["python", "-m", "client.client", "--cid", "1", "--num_clients", "2", "--num_total_clients", "6", "--server_address", "server:9091"]
+    command: ["python", "-m", "client.client", "--cid", "1", "--num_clients", "2", "--num_total_clients", "4", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
@@ -43,7 +42,7 @@ services:
       - ./client/results/client_2:/app/results/client_2
       - ./DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app
-    command: ["python", "-m", "client.client", "--cid", "2", "--num_clients", "2", "--num_total_clients", "6", "--server_address", "server:9091"]
+    command: ["python", "-m", "client.client", "--cid", "2", "--num_clients", "2", "--num_total_clients", "4", "--server_address", "server:9091"]
     networks:
       - flower-net
     depends_on:
