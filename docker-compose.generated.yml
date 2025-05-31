@@ -3,9 +3,8 @@ services:
   # Servidor Flower para coordenar a aprendizagem federada na abordagem RLFE
   server:
     build:
-      context: .
+      context: ./CLFE/server
       dockerfile: Dockerfile
-    command: ["python", "/app/server.py"]
     ports:
       - "9091:9091"
     networks:
@@ -18,13 +17,13 @@ services:
 
   client_1:
     build:
-      context: .
+      context: ./CLFE
       dockerfile: Dockerfile
     container_name: client_1
     volumes:
       - ./client/reports/client_1:/app/reports/client_1
       - ./client/results/client_1:/app/results/client_1
-      - ./DatasetIOT:/app/DatasetIOT:ro
+      - ./CLFE/DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app
     command: ["python", "-m", "client.client", "--cid", "1", "--num_clients", "2", "--num_total_clients", "20", "--server_address", "server:9091"]
     networks:
@@ -35,13 +34,13 @@ services:
 
   client_2:
     build:
-      context: .
+      context: ./CLFE
       dockerfile: Dockerfile
     container_name: client_2
     volumes:
       - ./client/reports/client_2:/app/reports/client_2
       - ./client/results/client_2:/app/results/client_2
-      - ./DatasetIOT:/app/DatasetIOT:ro
+      - ./CLFE/DatasetIOT:/app/DatasetIOT:ro
     working_dir: /app
     command: ["python", "-m", "client.client", "--cid", "2", "--num_clients", "2", "--num_total_clients", "20", "--server_address", "server:9091"]
     networks:

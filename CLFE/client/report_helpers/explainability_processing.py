@@ -1,3 +1,5 @@
+# DEBUG-CACHE-INVALIDATE-V7
+
 import os
 import json
 import numpy as np
@@ -235,6 +237,25 @@ def generate_explainability_formatado(explainer, X_background_path_or_data, base
     shap_duration = 0
     lime_start = time.time()
 
+    client_id_log = getattr(explainer, 'cid', 'UNKNOWN_LIME_FORMAT')
+    
+    logger.info(f"LIME_FORMATADO [{client_id_log}]: Iniciando formatação. Base reports: {base_reports}")
+
+    if isinstance(X_background_path_or_data, np.ndarray):
+        logger.info(f"LIME_FORMATADO [{client_id_log}]: X_background_data (recebido como X_background_path_or_data) é um ndarray com forma: {X_background_path_or_data.shape}")
+    elif isinstance(X_background_path_or_data, (str, Path)):
+        logger.info(f"LIME_FORMATADO [{client_id_log}]: X_background_path_or_data é um caminho: {X_background_path_or_data}")
+    else:
+        logger.warning(f"LIME_FORMATADO [{client_id_log}]: Tipo de X_background_path_or_data não reconhecido: {type(X_background_path_or_data)}")
+
+    if instance_to_explain_node is not None:
+        if isinstance(instance_to_explain_node, np.ndarray):
+            logger.info(f"LIME_FORMATADO [{client_id_log}]: instance_to_explain_node (instância única para formatação) é um ndarray com forma: {instance_to_explain_node.shape}")
+        else:
+            logger.info(f"LIME_FORMATADO [{client_id_log}]: instance_to_explain_node (instância única para formatação) tem tipo: {type(instance_to_explain_node)}")
+    else:
+        logger.info(f"LIME_FORMATADO [{client_id_log}]: instance_to_explain_node não foi fornecido. Uma instância aleatória dos dados de fundo será usada (lógica existente). ")
+
     try:
         X_background_data = None
         if isinstance(X_background_path_or_data, (str, Path)):
@@ -375,6 +396,7 @@ def generate_explainability_formatado(explainer, X_background_path_or_data, base
                     return []
             lime_exp = EmptyLimeExp()
         
+        logger.info(f"LIME_FORMATADO [{client_id_log}]: lime_exp.as_list() contém {len(lime_exp.as_list())} features para processar.")
         lime_txt_path = base_reports / 'lime_explanation_formatado.txt'
         os.makedirs(base_reports, exist_ok=True)
 
@@ -434,20 +456,35 @@ def generate_explainability_formatado(explainer, X_background_path_or_data, base
                     'impact': impact, 
                     'interpretation': interpretation
                 })
+
+            # DEBUG: Inspecionar temp_explanation_list e tipos de 'impact'
+            logger.debug(f"LIME_FORMATADO [{client_id_log}]: temp_explanation_list ANTES da ordenação (total {len(temp_explanation_list)} itens):")
+            for i, entry in enumerate(temp_explanation_list):
+                impact_val = entry.get('impact')
+                processed_name_val = entry.get('processed_name')
+                logger.debug(f"  LIME_FORMATADO [{client_id_log}]: Item {i}: impact={impact_val} (type: {type(impact_val)}), name={processed_name_val}")
+            logger.debug(f"LIME_FORMATADO [{client_id_log}]: Fim da inspeção de temp_explanation_list (ANTES da ordenação).")
             
-            sorted_explanation_list = sorted(temp_explanation_list, key=lambda x: abs(x['impact']), reverse=True)
+            # Filtrar para garantir que apenas itens com 'impact' numérico são ordenados
+            numeric_impact_list = [item for item in temp_explanation_list if isinstance(item.get('impact'), (int, float))]
+            if len(numeric_impact_list) != len(temp_explanation_list):
+                logger.warning(f"LIME formatado: {len(temp_explanation_list) - len(numeric_impact_list)} itens foram removidos da explicação devido a 'impact' não numérico.")
+
+            sorted_explanation_list = sorted(numeric_impact_list, key=lambda x: abs(x['impact']), reverse=True)
             
             for item in sorted_explanation_list:
                 line = f"{item['processed_name']:<30} | {item['norm_val']:<15} | {item['orig_val']:<20} | {format_value(item['impact']):<20} | {item['interpretation']}"
                 f.write(line + "\n")
 
             logger.info(f'Explicação LIME (formatada) guardada em {lime_txt_path}')
-        except Exception as e:
-            logger.error(f'Erro ao criar versão formatada da explicação LIME: {e}', exc_info=True)
-
-    except Exception as e:
-        logger.error(f'Erro em generate_explainability_formatado: {e}', exc_info=True)
+    except BaseException as e_be: # Alterar de Exception para BaseException e o nome da variável
+        # Tentar obter client_id_log se já definido, caso contrário usar um placeholder
+        error_client_id_log = locals().get('client_id_log', getattr(explainer, 'cid', 'UNKNOWN_LIME_FORMAT_EXCEPT'))
+        logger.error(f"LIME_FORMATADO [{error_client_id_log}]: Exceção BaseException capturada: {e_be}", exc_info=True)
+        # Manter o bloco finally intacto por agora, pois ele calcula lime_duration
     finally:
         lime_duration = time.time() - lime_start
+        final_client_id_log = locals().get('client_id_log', getattr(explainer, 'cid', 'UNKNOWN_LIME_FORMAT_FINALLY'))
+        logger.info(f"LIME_FORMATADO [{final_client_id_log}]: Duração da formatação LIME para esta instância: {lime_duration:.2f}s")
     
     return lime_duration, shap_duration

@@ -1,6 +1,7 @@
 """Helper functions for generating and saving plots for reports."""
 import logging
 import matplotlib.pyplot as plt
+import numpy as np # Adicionado para np.arange e outras operações numpy
 from pathlib import Path # Added for Path object type hint and usage
 from typing import Dict, List, Any # Added for type hinting
 

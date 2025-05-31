@@ -402,11 +402,7 @@ class CLFEClient(fl.client.NumPyClient):
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Fit duration: {duration:.2f} seconds")
         self.history["fit_duration_seconds"].append(duration)
 
-
-
         # Retornar parâmetros atualizados, número de exemplos e métricas (incluindo duração)
-
-
         return self.get_parameters(config={}), len(self.train_loader.dataset), {
             "train_loss": float(train_loss),
             "val_accuracy": float(val_accuracy),
