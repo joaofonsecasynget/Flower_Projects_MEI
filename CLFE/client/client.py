@@ -1,74 +1,3 @@
-# Adicionado para depuração
-print("DEBUG: Lendo explainability_processing.py de dentro do client.py")
-try:
-    with open("/app/client/report_helpers/explainability_processing.py", "r") as f:
-        lines = f.readlines()
-    # Linhas de interesse (0-indexado): 443, 444, 445 (correspondente a 1-indexado 444, 445, 446)
-    # Vamos imprimir um pouco mais de contexto para ter certeza
-    start_line_debug = 440 # 0-indexado
-    end_line_debug = 450   # 0-indexado
-    
-    print(f"DEBUG: Conteúdo de /app/client/report_helpers/explainability_processing.py (linhas {start_line_debug+1} a {end_line_debug+1}):")
-    for i in range(start_line_debug, min(end_line_debug + 1, len(lines))):
-        print(f"DEBUG: Linha {i+1}: {lines[i].rstrip()}")
-except Exception as e_debug:
-    print(f"DEBUG: Erro ao ler o ficheiro de depuração: {e_debug}")
-print("DEBUG: Fim da leitura de depuração.")
-# Fim do código de depuração
-
-# Novo bloco de depuração com inspect
-import inspect
-import sys
-import os
-
-# Adiciona o diretório pai (/app no contexto Docker) ao sys.path
-# para permitir importações absolutas a partir da raiz do projeto.
-# __file__ dentro do Docker será /app/client/client.py
-# os.path.dirname(__file__) será /app/client
-# os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) será /app
-_current_dir = os.path.dirname(os.path.abspath(__file__))
-_parent_dir = os.path.abspath(os.path.join(_current_dir, '..'))
-if _parent_dir not in sys.path:
-    sys.path.insert(0, _parent_dir)
-# Para depuração, pode descomentar a linha seguinte para ver o sys.path no log do cliente
-# print(f"DEBUG: sys.path modificado, adicionado no início: {_parent_dir}")
-# print(f"DEBUG: sys.path completo: {sys.path}")
-print("DEBUG_INSPECT: Tentando determinar o caminho de 'explainability_processing'")
-try:
-    # Tentar um import que sabemos que vai falhar se o SyntaxError estiver presente
-    # Este import é problemático porque está dentro de report_helpers/__init__.py
-    # e é acionado por qualquer import de .report_helpers
-    # Vamos tentar importar diretamente para ver o erro e o caminho
-    print("DEBUG_INSPECT: Tentando importar 'client.report_helpers.explainability_processing' diretamente...")
-    from client.report_helpers import explainability_processing as ep_inspect
-    print(f"DEBUG_INSPECT: 'explainability_processing' importado com sucesso. Caminho do módulo: {inspect.getfile(ep_inspect)}")
-except SyntaxError as se_inspect:
-    print(f"DEBUG_INSPECT: SyntaxError ao importar 'explainability_processing': {se_inspect}")
-    # Tentar obter o traceback para ver o ficheiro problemático
-    import traceback
-    tb_str = traceback.format_exc()
-    print(f"DEBUG_INSPECT: Traceback do SyntaxError:\n{tb_str}")
-    # Verificar se o módulo, apesar do erro, foi parcialmente carregado e está em sys.modules
-    if 'client.report_helpers.explainability_processing' in sys.modules:
-        mod = sys.modules['client.report_helpers.explainability_processing']
-        if hasattr(mod, '__file__'):
-            print(f"DEBUG_INSPECT: sys.modules['client.report_helpers.explainability_processing'].__file__ é {mod.__file__}")
-        else:
-            print("DEBUG_INSPECT: sys.modules['client.report_helpers.explainability_processing'] não tem atributo __file__")
-    else:
-        print("DEBUG_INSPECT: 'client.report_helpers.explainability_processing' não encontrado em sys.modules após SyntaxError.")
-except ImportError as ie_inspect:
-    print(f"DEBUG_INSPECT: ImportError ao importar 'explainability_processing': {ie_inspect}")
-    import traceback
-    tb_str = traceback.format_exc()
-    print(f"DEBUG_INSPECT: Traceback do ImportError:\n{tb_str}")
-except Exception as e_inspect_general:
-    print(f"DEBUG_INSPECT: Outra exceção ao importar 'explainability_processing': {e_inspect_general}")
-    import traceback
-    tb_str = traceback.format_exc()
-    print(f"DEBUG_INSPECT: Traceback da exceção geral:\n{tb_str}")
-print("DEBUG_INSPECT: Fim da tentativa de determinar o caminho.")
-# Fim do novo bloco de depuração
 
 import random
 import argparse
@@ -296,14 +225,16 @@ class CLFEClient(fl.client.NumPyClient):
         self.test_loader = test_loader
         self.epochs = epochs
         self.device = device
+            # Instanciar a função de perda com o pos_weight
+
         self.pos_weight = pos_weight # Armazenar pos_weight
+        self.criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([self.pos_weight], device=self.device))
 
 
         logger.info(f"CLIENT {self.cid}: Train loader has {len(self.train_loader.dataset)} samples.")
         logger.info(f"CLIENT {self.cid}: Validation loader has {len(self.val_loader.dataset)} samples.")
         logger.info(f"CLIENT {self.cid}: Test loader has {len(self.test_loader.dataset)} samples.")
     # Instanciar a função de perda com o pos_weight
-        self.criterion = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([self.pos_weight], device=self.device))
     
     # Criar diretórios para armazenar resultados
         self.base_reports = Path("reports") / f"client_{args.cid}"
@@ -387,8 +318,8 @@ class CLFEClient(fl.client.NumPyClient):
         start_time = time.time()
         logger.info(f"[CID: {args.cid}] Received training instructions: {config}")
         self.set_parameters(parameters)
-        train_loss = train(self.model, self.train_loader, epochs=self.epochs, device=self.device)
-        val_loss, val_rmse, _, _, val_accuracy, val_precision, val_recall, val_f1 = evaluate(self.model, self.val_loader, device=self.device)
+        train_loss = train(self.model, self.train_loader, epochs=self.epochs, criterion=self.criterion, device=self.device)
+        val_loss, val_rmse, _, _, val_accuracy, val_precision, val_recall, val_f1 = evaluate(self.model, self.val_loader, criterion=self.criterion, device=self.device)
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Train loss: {train_loss:.4f}")
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Val loss: {val_loss:.4f} | Val RMSE: {val_rmse:.2f}")
         logger.info(f"[CID: {args.cid}] Round {config['round_number']} - Val metrics: Acc: {val_accuracy:.4f}, Prec: {val_precision:.4f}, Recall: {val_recall:.4f}, F1: {val_f1:.4f}")
@@ -440,7 +371,7 @@ class CLFEClient(fl.client.NumPyClient):
             logger.info(f"[CID: {args.cid}] Última ronda: fazendo fit adicional para garantir métricas completas")
             # Realizar treinamento adicional para obter métricas na última ronda
             start_time = time.time()
-            train_loss = train(self.model, self.train_loader, epochs=self.epochs, device=self.device)
+            train_loss = train(self.model, self.train_loader, epochs=self.epochs, criterion=self.criterion, device=self.device)
             end_time = time.time()
             duration = end_time - start_time
             

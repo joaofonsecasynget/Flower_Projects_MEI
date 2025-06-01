@@ -1,0 +1,9 @@
+Explicação LIME Formatada (Gerada em: 2025-06-01 08:30:08)
+Fonte da Instância: Instância específica fornecida (normalizada).
+Previsão Raw do Modelo para esta Instância: 0.0047 -> Classe Prevista: 0 (Normal)
+Classe Original da Instância: Normal (Valor Target: 0)
+Previsão foi: Correta
+
+--- Contribuições das Features (Ordenadas por Impacto Absoluto) ---
+Feature                        | Valor Norm.     | Valor Original       | Impacto LIME         | Interpretação
+--------------------------------------------------------------------------------------------------------------

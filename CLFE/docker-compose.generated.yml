@@ -1,3 +1,4 @@
+
 services:
   # Servidor Flower para coordenar a aprendizagem federada na abordagem RLFE
   server:

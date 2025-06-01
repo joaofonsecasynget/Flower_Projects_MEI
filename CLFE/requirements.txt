@@ -8,3 +8,5 @@ lime
 shap
 matplotlib
 seaborn
+
+beautifulsoup4

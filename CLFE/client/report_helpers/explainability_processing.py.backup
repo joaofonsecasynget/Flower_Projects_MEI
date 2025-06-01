@@ -29,9 +29,9 @@ try:
     # project_root = current_dir.parents[2] # CLFE
     # sys.path.append(str(project_root))
     # Adicionar caminho relativo ao projeto
-    current_dir = Path(__file__).parent
-    project_root = current_dir.parent.parent
-    sys.path.append(str(project_root)) # Mantendo como estava
+current_dir = Path(__file__).parent
+project_root = current_dir.parent.parent
+sys.path.append(str(project_root)) # Mantendo como estava
     from explainability.feature_metadata import feature_metadata
     FEATURE_METADATA_AVAILABLE = True
     # logger.info("feature_metadata importado com sucesso via sys.path absoluto.") # Logger não está definido ainda
